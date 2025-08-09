@@ -2,5 +2,11 @@
 layout: default
 title: Home
 ---
-<h1>Welcome to My Site</h1>
-<p>This is the homepage.</p>
+
+# Welcome
+
+This is my Jekyll site with three sections:
+
+- [Articles](/articles/)
+- [Notes](/notes/)
+- [Contact](/contact/)
