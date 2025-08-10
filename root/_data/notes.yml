@@ -1,0 +1,53 @@
+- title: CUDA Streams Basics
+  text: "A quick visual summary of CUDA streams, overlapping memcpy with kernel execution, and typical pitfalls."
+  images:
+    - https://picsum.photos/id/1015/800/800
+    - https://picsum.photos/id/1025/800/800
+    - https://picsum.photos/id/1039/800/800
+    - https://picsum.photos/id/1043/800/800
+    - https://picsum.photos/id/1050/800/800
+
+- title: Memory Coalescing Patterns
+  text: "Examples of coalesced vs. strided access, warp efficiency, and common alignment strategies."
+  images:
+    - https://picsum.photos/id/1074/800/800
+    - https://picsum.photos/id/1084/800/800
+    - https://picsum.photos/id/106/800/800
+    - https://picsum.photos/id/129/800/800
+    - https://picsum.photos/id/178/800/800
+
+- title: Shared Memory Tiling
+  text: "Tile-based matrix multiply diagrams, bank conflict avoidance, and occupancy tradeoffs."
+  images:
+    - https://picsum.photos/id/237/800/800
+    - https://picsum.photos/id/238/800/800
+    - https://picsum.photos/id/239/800/800
+    - https://picsum.photos/id/240/800/800
+    - https://picsum.photos/id/241/800/800
+
+- title: Warp Intrinsics Cheatsheet
+  text: "Ballot, shuffle, and reduction patterns illustrated with small code snippets and diagrams."
+  images:
+    - https://picsum.photos/id/242/800/800
+    - https://picsum.photos/id/243/800/800
+    - https://picsum.photos/id/244/800/800
+    - https://picsum.photos/id/245/800/800
+    - https://picsum.photos/id/246/800/800
+
+- title: Profiling Workflow
+  text: "Nsight Systems/Compute screenshots with annotations for identifying bottlenecks."
+  images:
+    - https://picsum.photos/id/247/800/800
+    - https://picsum.photos/id/248/800/800
+    - https://picsum.photos/id/249/800/800
+    - https://picsum.photos/id/250/800/800
+    - https://picsum.photos/id/251/800/800
+
+- title: Mixed Precision Tips
+  text: "Tensor cores, loss scaling, and numerical stability gotchas in FP16/TF32 workloads."
+  images:
+    - https://picsum.photos/id/252/800/800
+    - https://picsum.photos/id/253/800/800
+    - https://picsum.photos/id/254/800/800
+    - https://picsum.photos/id/255/800/800
+    - https://picsum.photos/id/256/800/800

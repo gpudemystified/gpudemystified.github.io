@@ -1,14 +1,24 @@
 body {
   font-family: sans-serif;
-  max-width: 800px;
-  margin: auto;
+  margin: 0;
+  color: #111;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
   padding: 1rem;
+}
+
+.container--wide {
+  max-width: 1280px;
 }
 
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1rem;
 }
 
 nav ul {
@@ -16,6 +26,7 @@ nav ul {
   padding: 0;
   display: flex;
   gap: 1rem;
+  margin: 0;
 }
 
 nav a {
@@ -25,4 +36,142 @@ nav a {
 
 nav a:hover {
   text-decoration: underline;
+}
+
+/* Notes grid */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .notes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.notes-item {
+  position: relative;
+  background: #f8f8f8;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Carousel (card) */
+.carousel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #ddd;
+}
+
+.carousel-track {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  transition: transform 0.3s ease;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.carousel:hover .carousel-control {
+  opacity: 1;
+}
+
+.carousel-control.prev { left: 8px; }
+.carousel-control.next { right: 8px; }
+
+/* Modal */
+.notes-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+.notes-modal[aria-hidden="false"] {
+  display: flex;
+}
+
+.notes-modal__content {
+  background: white;
+  max-width: 1200px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .notes-modal__content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.notes-modal__media {
+  position: relative;
+  background: #000;
+}
+
+.notes-modal .carousel {
+  aspect-ratio: auto;
+  height: 70vh;
+  max-height: 80vh;
+}
+
+.notes-modal__sidebar {
+  padding: 16px;
+  overflow: auto;
+  max-height: 80vh;
+}
+
+.notes-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 18px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
 }
