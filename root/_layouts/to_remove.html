@@ -1,0 +1,115 @@
+---
+layout: default
+---
+
+{% include scroll_behaviour.jss %}
+
+<div class="notes-grid">
+  {% for note in site.data.notes %}
+  <div class="note-item" data-index="{{ forloop.index0 }}">
+    <img src="{{ note.images[0] }}" alt="Note preview">
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Modal -->
+<div class="note-modal" id="noteModal">
+  <button id="prevPost" class="arrow left">&#8592;</button>
+  <div class="note-modal-content">
+    <div class="note-images">
+      <button class="arrow left" id="prevImage">&#8592;</button>
+      <img id="modalImage" src="">
+      <button class="arrow right" id="nextImage">&#8594;</button>
+    </div>
+    <div class="note-text" id="modalText"></div>
+  </div>
+   <button class="close-modal" id="closeModal">&#10005;</button>
+   <button id="nextPost" class="arrow right">&#8594;</button>
+</div>
+
+<script>
+const notes = {{ site.data.notes | jsonify }};
+let currentNoteIndex = 0;
+let currentImageIndex = 0;
+
+const modal = document.getElementById('noteModal');
+const modalImage = document.getElementById('modalImage');
+const modalText = document.getElementById('modalText');
+
+function openModal(noteIndex) {
+  currentNoteIndex = noteIndex;
+  currentImageIndex = 0;
+  updateModal();
+  modal.style.display = 'flex';
+}
+
+function updateModal() {
+  modalImage.src = notes[currentNoteIndex].images[currentImageIndex];
+  modalText.innerHTML = notes[currentNoteIndex].text;
+}
+
+document.querySelectorAll('.note-item').forEach((item, index) => {
+  item.addEventListener('click', () => openModal(index));
+});
+
+document.getElementById('prevImage').addEventListener('click', prevImage);
+document.getElementById('nextImage').addEventListener('click', nextImage);
+document.getElementById('closeModal').addEventListener('click', () => {
+  modal.style.display = 'none';
+});
+
+function prevImage() {
+  currentImageIndex =
+    (currentImageIndex - 1 + notes[currentNoteIndex].images.length) %
+    notes[currentNoteIndex].images.length;
+  updateModal();
+}
+
+function nextImage() {
+  currentImageIndex =
+    (currentImageIndex + 1) % notes[currentNoteIndex].images.length;
+  updateModal();
+}
+
+function prevPost() {
+  currentNoteIndex = (currentNoteIndex - 1 + notes.length) % notes.length;
+  currentImageIndex = 0;
+  updateModal();
+}
+
+function nextPost() {
+  currentNoteIndex = (currentNoteIndex + 1) % notes.length;
+  currentImageIndex = 0;
+  updateModal();
+}
+
+document.getElementById('prevPost').addEventListener('click', prevPost);
+document.getElementById('nextPost').addEventListener('click', nextPost);
+
+
+/* Swipe gesture support */
+let touchStartX = 0;
+let touchEndX = 0;
+
+modalImage.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+});
+
+modalImage.addEventListener('touchend', e => {
+  touchEndX = e.changedTouches[0].screenX;
+  handleSwipe();
+});
+
+function handleSwipe() {
+  const swipeDistance = touchEndX - touchStartX;
+
+  if (Math.abs(swipeDistance) > 50) { // minimum swipe length
+    if (swipeDistance > 0) {
+      prevImage();
+    } else {
+      nextImage();
+    }
+  }
+}
+</script>
+

@@ -1,0 +1,57 @@
+html, body {
+  overflow-y: hidden; /* Hide scrollbar */
+}
+body {
+  overscroll-behavior-y: contain;
+}
+
+.articles-list {
+  list-style: none;
+  
+ 
+   gap: 1.2rem;
+  margin: 2rem 0;
+}
+
+.article-item {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  max-width: 900px;
+   margin-left: auto;
+  margin-right: auto;   
+}
+
+.article-image {
+  width: 128px;
+  height: 128px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.article-item h2 {
+  margin: 0 0 0.5rem 0;
+}
+
+.article-item h2 a {
+  text-decoration: none;
+  color: #000;
+}
+
+.article-item h2 a:hover {
+  text-decoration: underline;
+}
+
+.article-item p {
+  margin: 0;
+  color: #555;
+}
+
+.article-text {
+  display: flex;
+  flex-direction: column; /* stack title & description vertically */
+}

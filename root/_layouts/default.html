@@ -1,33 +1,55 @@
 ---
-layout: compress
+layout: default
 ---
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>{{ page.title }} | {{ site.title }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/default_header.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/article_page.css' | relative_url }}">
 </head>
 <body>
-  <header>
-    <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
-    <nav>
-      <ul>
-        {% for link in site.nav_links %}
-          <li><a href="{{ link.url | relative_url }}">{{ link.title }}</a></li>
-        {% endfor %}
-      </ul>
-    </nav>
-  </header>
+  <header class="site-header">
+  <div class="header-top">
+    <img src="/assets/images/logo.jpg" alt="Logo" class="logo" />
+    <div class="site-title-desc">
+      <h1 class="site-name">gpudemystified</h1>
+      <p class="site-description">GPU Architectures & Programming.
+        CUDA, NVIDIA & AMD Architectures | Algorithms | GPU Optimization — all demystified 🔍</p>
+    
 
-  <main>
-    {{ content }}
-  </main>
+    <div class="social-logos-row">
+  <div class="social-logos">
+    <a href="https://www.linkedin.com/in/galazar/" target="_blank" rel="noopener">
+      <img src="/assets/images/linkedin.svg" alt="LinkedIn" class="social_logo">
+    </a>
+    <a href="https://www.instagram.com/gpudemystified/" target="_blank" rel="noopener">
+      <img src="/assets/images/instagram.svg" alt="Instagram" class="social_logo">
+    </a>
+    <a href="https://github.com/gpudemystified" target="_blank" rel="noopener">
+      <img src="/assets/images/github.svg" alt="GitHub" class="social_logo">
+    </a>
+  </div>
+  <button class="subscribe-btn">Newsletter</button>
+</div>
+</div>
+  </div>
 
-  <footer>
-    <p>&copy; {{ site.time | date: "%Y" }} {{ site.title }}</p>
-  </footer>
+  <nav class="main-nav">
+    <ul>
+      <li><a href="/articles" class="nav-link {% if page.url contains 'articles' or page.url == '/' %}active{% endif %}">Articles</a></li>
+      <li><a href="/notes" class="nav-link {% if page.url contains 'notes' %}active{% endif %}">Notes</a></li>
+    </ul>
+  </nav>
+
+  <hr class="header-divider" />
+</header>
+
+<main>
+  {{ content }}
+</main>
+
 </body>
 </html>
