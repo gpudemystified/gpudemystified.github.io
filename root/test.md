@@ -1,6 +1,7 @@
 ---
-layout: test
-title: test
+layout: notes
+title: Notes
+permalink: /notes/
 ---
 # About page
 
