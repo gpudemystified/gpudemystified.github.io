@@ -159,3 +159,12 @@ body {
   font-weight: normal;
   font-style: normal;
 }
+
+#thankyou-wrapper {
+  display: none;       /* initially hidden */
+  justify-content: center;  /* horizontal center */
+  align-items: center;      /* vertical center */
+  height: 100%;        /* fill modal content height */
+  width: 100%;         /* fill modal content width */
+  flex-direction: column; /* stack children vertically if needed */
+}

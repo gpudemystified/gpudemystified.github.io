@@ -1,9 +1,14 @@
 ---
 layout: article_layout
-title: My First Article 3
-description: This article explains the basics of GPUs.
-image: /assets/images/logo.jpg
+title: "CUDA Thread Hierarchy"
+description: "Understanding threads, blocks, and warps in CUDA programming."
+image: "/assets/images/logo.jpg"
+topics:
+  - CUDA
+  - GPU Programming
+  - Parallel Computing
 ---
+
 
 ```c
 #include <stdio.h>
