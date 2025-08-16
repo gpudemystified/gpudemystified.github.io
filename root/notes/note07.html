@@ -1,0 +1,31 @@
+<p>One of the most widely used techniques in image processing — applied in visual effects, downsampling, smoothing, motion blur, privacy & obfuscation, and more.</p>
+
+<p>There are different types of blur filters such as box blur, gaussian blur, and radial blur — each with its own advantages and trade-offs, and various strategies for GPU implementation like single-pass, hardware downsampling, and 2-tap passes.</p>
+
+<p>👉 <strong>Box Blur</strong><br>
+The idea is simple: <em>for each pixel, given a radius, we read its neighbors, average their color values, and write the result.</em> The larger the radius, the stronger the blur effect.</p>
+
+<p>To apply the blur across the image, we need to launch one thread per pixel.<br>
+Remember, CUDA doesn’t simply launch a flat number of threads—you define a grid of thread blocks and specify how many threads each block contains.</p>
+
+<p>In this example, we use a 2D <strong>blockSize = 16×16</strong> to match the image’s 2D nature.<br>
+Then, we compute how many blocks (2D, again) are needed to cover the image:<br>
+<strong>gridSize = imageSize / blockSize</strong></p>
+
+<p>Inside the kernel, each thread calculates its corresponding pixel position based on the block ID, block dimensions, and thread ID within the block and apply the blur logic.<br>
+That’s all you need for a working blur.</p>
+
+<p>🌟 <strong>But here’s the catch:</strong> each thread reads RADIUS × RADIUS pixels from global memory. This is slow and across thousands of threads, it adds up to significant memory bandwidth usage.<br>
+🔥 <strong>And here’s the opportunity:</strong> neighboring threads within a block read overlapping regions.</p>
+
+<p>Instead of having each thread fetch its own data from global memory, we load a tile of the image (block size + padding) into shared memory. All threads in the block cooperate to read this data, then synchronize, and apply the blur using the shared memory.<br>
+This significantly reduces global memory traffic and can result in up to a ~33% performance boost, depending on the hardware.</p>
+
+<p>As we’ll see, thread block size and blur radius directly affect the performance.<br>
+<strong>Can you guess what would happen if we use 32×32 blocks instead of 16×16?</strong></p>
+
+<p>This is why understanding the GPU architecture matters — small changes, like proper use of shared memory, can lead to major performance gains.</p>
+
+<p>The full source code from this post will be available on GitHub.</p>
+
+<p>In the following posts, we’ll revisit the blur filter and explore how to make it even faster using techniques like intra-warp communication and new hardware features such as distributed shared memory.</p>
