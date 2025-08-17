@@ -1,0 +1,27 @@
+---
+layout: default
+---
+{% include scroll_behaviour.jss %}
+
+<ul class="articles-list">
+  {% for article in site.articles %}
+    <li class="article-item">
+      {% if article.image %}
+        <img src="{{ article.image }}" alt="{{ article.title }}" class="article-image" />
+      {% endif %}
+      <div class="article-text">
+        <h2><a href="{{ article.url }}">{{ article.title }}</a></h2>
+      
+        <p>{{ article.description }}</p>
+
+        {% if article.topics %}
+          <ul class="article-topics">
+            {% for topic in article.topics %}
+              <li class="article-topic">{{ topic }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    </li>
+  {% endfor %}
+</ul>
