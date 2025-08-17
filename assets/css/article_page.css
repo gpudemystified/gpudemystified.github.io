@@ -1,0 +1,90 @@
+html, body {
+  overflow-y: hidden; /* Hide scrollbar */
+}
+body {
+  overscroll-behavior-y: contain;
+}
+
+.articles-list {
+  list-style: none;
+  
+ 
+   gap: 1.2rem;
+  margin: 2rem 0;
+}
+
+.article-item {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  max-width: 900px;
+   margin-left: auto;
+  margin-right: auto;   
+}
+
+.article-image {
+  width: 128px;
+  height: 128px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.article-item h2 {
+  margin: 0 0 0.5rem 0;
+}
+
+.article-item h2 a {
+  text-decoration: none;
+  color: #000;
+  position: relative; /* needed for ::after positioning */
+}
+
+.article-item h2 a::after {
+  content: "";
+  position: absolute;
+  bottom: -2px; /* just below the text */
+  left: 0;
+  width: 110%;
+  height: 2px;
+  background-color: #ff6500;
+
+  transform: scaleX(0);
+  transform-origin: center; /* start animation from the middle */
+  transition: transform 200ms ease-in-out;
+}
+
+.article-item h2 a:hover::after {
+  transform: scaleX(1);
+}
+
+
+.article-item p {
+  margin: 0;
+  color: #555;
+}
+
+.article-text {
+  display: flex;
+  flex-direction: column; /* stack title & description vertically */
+}
+
+.article-topics {
+  list-style: none;
+  padding: 0;
+  margin: 0.5em 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+
+.article-topic {
+  background: #eee;
+  color: #333;
+  padding: 0.2em 0.6em;
+  border-radius: 0.3em;
+  font-size: 0.85em;
+}
