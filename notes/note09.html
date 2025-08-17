@@ -1,0 +1,30 @@
+<p>In CUDA, a <strong>thread block</strong> is the basic building unit of execution.
+You always launch your kernels as a collection of thread blocks.</p>
+
+<p><strong>Remember:</strong><br>
+𝙂𝙧𝙞𝙙 → 𝘽𝙡𝙤𝙘𝙠 → 𝙒𝙖𝙧𝙥 → 𝙏𝙝𝙧𝙚𝙖𝙙</p>
+
+<p>🌟 A thread block is a group of threads that:</p>
+<ul>
+<li>Execute together on the same Streaming Multiprocessor (SM)</li>
+<li>Share fast on-chip shared memory</li>
+<li>Can synchronize with each other during execution</li>
+</ul>
+
+<p>Although it feels like a software concept, it’s deeply tied to the hardware — shared memory lives inside the SM, and its limits define how many blocks can execute on a SM.</p>
+
+<p>👉 When launching a kernel, you choose the block size — how many threads it contains and in what shape: 1D, 2D, or 3D (to easily map your data layout).</p>
+
+<pre><code>𝙙𝙞𝙢3 𝙗𝙡𝙤𝙘𝙠𝘿𝙞𝙢(8, 8, 8);</code></pre>
+
+<p>The total number of threads = x × y × z and cannot exceed 1024 threads per block on modern GPUs.</p>
+
+<p>🔥 But here’s the catch: block size affects SM occupancy — how many warps (groups of 32 threads) can run in parallel.</p>
+<ul>
+<li>Too big (1024 threads) → fewer blocks fit per SM → lower occupancy</li>
+<li>Too small (32 threads) → you hit the SM’s block limit before using all its available warps → lower occupancy</li>
+</ul>
+
+<p>🧩 Finding the sweet spot is like solving a puzzle — you need to balance threads per block, number of blocks per SM, and resource usage per block to get the best performance.</p>
+
+<p>💡 A good starting point: 128–256 threads per block, then fine-tune with profiling.</p>

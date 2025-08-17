@@ -1,0 +1,24 @@
+<p>Let’s look at <strong>how to program GPUs using CUDA</strong>, with a simple example: vector addition.</p>
+<p>CUDA lets you write C code that runs on the GPU, in the form of functions known as <strong>𝙠𝙚𝙧𝙣𝙚𝙡𝙨</strong>. These functions are written in C and can be called from the CPU (host) side just like regular functions, but they execute on the GPU.</p>
+<p>The idea:</p>
+<ol>
+  <li>Define the CUDA kernel — a function where each thread adds a pair of elements from vectors A and B. Use <code>__global__</code> to mark a function as a kernel.</li>
+  <li>Set up the data the kernel needs — input arrays and an output array. CUDA functions like <code>cudaMalloc</code> and <code>cudaMemcpy</code> handle GPU memory allocation and data transfer.</li>
+  <li>Launch the kernel from the CPU using this syntax:
+    <pre><code>myKernel<<<numBlocks, numThreadsPerBlock>>>(args);</code></pre>
+  </li>
+</ol>
+<p>Threads are grouped into blocks. The total number of threads is:</p>
+<pre><code>numBlocks × numThreadsPerBlock</code></pre>
+<p>Other notes:</p>
+<ul>
+  <li>CUDA is one option; alternatives include OpenCL or graphics APIs like DirectX/Vulkan + HLSL/GLSL.</li>
+  <li>Fun fact: NVIDIA invested $10 billion into developing CUDA.</li>
+  <li>Recommended resources:
+    <ul>
+      <li>📚 NVIDIA’s official CUDA documentation: <a href="https://lnkd.in/dXKTWb64">link</a></li>
+      <li>💻 NVIDIA’s CUDA Samples repo: <a href="https://lnkd.in/d3QH3auZ">link</a></li>
+      <li>🌀 NVIDIA Donut Samples (DirectX + HLSL): <a href="https://lnkd.in/dquF36EP">link</a></li>
+    </ul>
+  </li>
+</ul>

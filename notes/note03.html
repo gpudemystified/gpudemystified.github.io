@@ -1,0 +1,9 @@
+<p>The core of NVIDIA's GPU architecture. Introduced in 2006 with Tesla (GeForce 8 series), capable of general-purpose compute. CUDA was launched alongside.</p>
+<p>Goal: Make GPU programming accessible to all developers. The SM has evolved to turn GPUs into powerful general-purpose processors.</p>
+<p>Fermi SM key components:</p>
+<ul>
+  <li>4 execution blocks — warps run here, up to 4 warps simultaneously</li>
+  <li>Dispatching & scheduling units — manage up to 24 warps in flight</li>
+  <li>Register file & on-chip memory — warp scheduling locks required resources until completion</li>
+</ul>
+<p>⚠️ Multiple warps compete for resources → <strong>occupancy problem</strong>. Maximize warps in flight to utilize SM while waiting for memory operations.</p>

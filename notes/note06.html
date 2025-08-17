@@ -1,0 +1,59 @@
+<p>Clearly, one of the most important concepts in GPU programming and architecture.</p>
+
+<p>🧠 <strong>The main idea?</strong><br>
+Pretty straightforward: <em>accessing main memory is extremely slow compared to how fast GPU SIMD units can execute instructions</em> — we're talking about an order of magnitude.<br>
+For example, the NVIDIA A100 can retrieve up to <strong>2 TB/s</strong> of data from memory to cores, while its cores can execute up to <strong>19.5 TFLOPS FP32</strong> or <strong>312 TFLOPS FP16!</strong></p>
+
+<p>👉 To overcome this bottleneck, GPU vendors designed a hierarchy of caches to exploit data reuse:<br>
+L2, L1, and most importantly, a small (48–164 KB), very fast, on-chip memory inside the Streaming Multiprocessor (SM) — called <strong>Shared Memory</strong>.<br>
+🗒️ AMD calls it <strong>LDS (Local Data Share)</strong> - same concept, different name.</p>
+
+<p>🌟 <strong>Why is Shared Memory so important?</strong></p>
+
+<ol>
+  <li><strong>Programmers are allowed to use it in code</strong><br>
+  You can explicitly tell the compiler: “Allocate this chunk in shared memory.” Just use the 
+  <pre><code>__shared__</code></pre> 
+  keyword in front of the variable you want to place in shared memory.</li>
+</ol>
+
+<p>This memory is:</p>
+<ul>
+  <li>Statically allocated</li>
+  <li>The size is known at compile time</li>
+  <li>The size info is packed by the compiler into a metadata block that is sent to the GPU along with the kernel</li>
+  <li>The SM uses this information to decide whether it can schedule a thread block based on its available shared memory</li>
+</ul>
+
+<p>Once a thread block is scheduled on an SM, it occupies the required amount of shared memory until it finishes execution.</p>
+
+<p><strong>Example:</strong></p>
+<pre><code>__shared__ int s_mem[256];
+</code></pre>
+
+<ol start="2">
+  <li><strong>Shared across the thread block</strong><br>
+  Every thread in a thread block has access to the same shared memory space.<br>
+  This allows fast communication and synchronization between threads — something GPU programmers always want.<br>
+  -- that also means that all the threads part of a thread block have to execute on the same SM.</li>
+</ol>
+
+<p>⚠️ Whether it’s 32, 256, or 1024 threads — they all share the same block of shared memory.<br>
+👉 Finding the right balance between threads per block and shared memory usage is crucial for performance.</p>
+
+<ol start="3">
+  <li><strong>You must manually synchronize</strong><br>
+  Access must be explicitly synchronized. Warps might compete for shared memory access, so it’s on the programmer to manage that. CUDA & HLSL provide 
+  <pre><code>__syncthreads()</code></pre> 
+  function for this purpose.</li>
+  <li><strong>Atomic operations</strong><br>
+  Supports fast atomic operations (at a thread block level), leading to the concept of privatization.</li>
+  <li><strong>Huge performance benefits</strong><br>
+  Used correctly, it unlocks powerful optimizations:
+    <ul>
+      <li>Tiling techniques for image filtering or matrix multiplication</li>
+      <li>Histograms</li>
+      <li>Sorting algorithms</li>
+    </ul>
+  </li>
+</ol>

@@ -1,0 +1,14 @@
+<p>GPUs don’t execute threads one by one — they group them into warps. A warp is a set of 32 threads that run the same instruction simultaneously (SIMT model).</p>
+<p>These warps are executed on the GPU’s SIMD units.</p>
+<p>Advantages of warps:</p>
+<ul>
+  <li>Simplifies hardware design — managing groups of 32 threads is easier than thousands individually</li>
+  <li>Makes instruction dispatch and fetch cheaper — one instruction per warp instead of one per thread</li>
+</ul>
+<p>⚠️ As a programmer, you don’t work directly with warps in CUDA — the hardware and driver handle it. Threads you launch are automatically grouped into warps.</p>
+<p>🔥 Understanding warps is crucial for efficiency:
+<ul>
+  <li>Warp divergence — threads in the same warp follow different execution paths, causing performance issues</li>
+  <li>Intra-warp instructions (like shuffle and ballot) allow efficient data sharing within a warp</li>
+</ul>
+</p>

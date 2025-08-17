@@ -1,0 +1,208 @@
+---
+layout: default
+---
+
+<!-- Notes Grid -->
+<div class="notes-grid">
+  {% for note in site.data.notes %}
+    <img
+      src="{{ note.images[0] }}"
+      class="lightbox-trigger"
+      alt="{{ note.title | escape }}"
+      data-title="{{ note.title | escape }}"
+      data-description-url="{{ note.descriptionUrl | escape }}"
+      data-images='{{ note.images | jsonify | escape }}'
+      tabindex="0"
+    />
+  {% endfor %}
+</div>
+
+<!-- Modal (Lightbox) -->
+<div id="lightboxModal" class="lb-modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="lb-overlay" data-close></div>
+  <div class="lb-content" role="document" aria-labelledby="lb-title" aria-describedby="lb-desc">
+    <button class="lb-close" aria-label="Close (Esc)" title="Close">&times;</button>
+    <div class="lb-body">
+      <div class="lb-image-wrap" aria-hidden="false">
+        <button class="lb-img-arrow lb-img-arrow-left" aria-label="Previous Image">&#8592;</button>
+        <img id="lb-image" src="" alt="">
+        <button class="lb-img-arrow lb-img-arrow-right" aria-label="Next Image">&#8594;</button>
+      </div>
+      <div class="lb-text" id="lb-desc">
+        <h2 id="lb-title"></h2>
+        <div class="lb-description" id="lb-desc-inner"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+let modalOpen = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+  const triggers = document.querySelectorAll('.lightbox-trigger');
+  const modal = document.getElementById('lightboxModal');
+  const overlay = modal.querySelector('.lb-overlay');
+  const imgEl = document.getElementById('lb-image');
+  const titleEl = document.getElementById('lb-title');
+  const descInner = document.getElementById('lb-desc-inner');
+  const closeBtn = modal.querySelector('.lb-close');
+  const imgLeftArrow = modal.querySelector('.lb-img-arrow-left');
+  const imgRightArrow = modal.querySelector('.lb-img-arrow-right');
+
+  let lastFocused = null;
+  let currentNoteIndex = 0;
+  let currentImageIndex = 0;
+  let notes = Array.from(triggers).map(t => ({
+    title: t.dataset.title,
+    descriptionUrl: t.dataset.descriptionUrl,
+    images: JSON.parse(t.dataset.images)
+  }));
+
+  function openModal(trigger){
+    console.log('Opening modal for:');
+    lastFocused = document.activeElement;
+    currentNoteIndex = Array.from(triggers).indexOf(trigger);
+    currentImageIndex = 0;
+    showNote(currentNoteIndex, currentImageIndex);
+    modalOpen = true;
+
+    modal.setAttribute('aria-hidden', 'false');
+    modal.classList.add('open');
+    closeBtn.focus();
+    modal.style.display = 'flex'; // show it again
+    document.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(){
+    modal.classList.remove('open');
+    modalOpen = false;
+    modal.setAttribute('aria-hidden', 'true');
+    modal.style.display = 'none'; // ⬅ hides it completely
+    document.removeEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = '';
+    if(lastFocused && typeof lastFocused.focus === 'function') lastFocused.unfocus();
+  }
+
+  function showNote(noteIdx, imgIdx){
+    console.log(`Showing note ${noteIdx}, image ${imgIdx}`);
+    console.log('Note data:', notes[noteIdx]);
+    const note = notes[noteIdx];
+    imgEl.src = note.images[imgIdx];
+    imgEl.alt = note.title;
+    titleEl.textContent = note.title;
+    
+    const descUrl = note.descriptionUrl;
+    fetch(descUrl)
+      .then(res => res.text())
+      .then(html => {
+        descInner.innerHTML = html;
+      })
+      .catch(err => {
+        console.error("Failed to load description:", err);
+        descInner.textContent = "Description not available.";
+      });
+  }
+
+  function prevImage(){
+    const images = notes[currentNoteIndex].images;
+    currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+    showNote(currentNoteIndex, currentImageIndex);
+  }
+  function nextImage(){
+    const images = notes[currentNoteIndex].images;
+    currentImageIndex = (currentImageIndex + 1) % images.length;
+    showNote(currentNoteIndex, currentImageIndex);
+  }
+
+  triggers.forEach(t => {
+    t.addEventListener('click', () => openModal(t));
+    t.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(t); }
+    });
+  });
+
+  overlay.addEventListener('click', closeModal);
+  closeBtn.addEventListener('click', closeModal);
+  imgLeftArrow.addEventListener('click', prevImage);
+  imgRightArrow.addEventListener('click', nextImage);
+
+  // Keyboard navigation
+  function handleKeyDown(e){
+    if(e.key === 'Escape'){ e.preventDefault(); closeModal(); return; }
+    if(e.key === 'ArrowLeft'){ e.preventDefault(); prevImage(); return; }
+    if(e.key === 'ArrowRight'){ e.preventDefault(); nextImage(); return; }
+    if(e.key === 'Tab'){
+      // Trap focus inside modal
+      const focusables = modal.querySelectorAll('button, [tabindex]:not([tabindex="-1"])');
+      if(!focusables.length) return;
+      const first = focusables[0], last = focusables[focusables.length-1];
+      if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    }
+  }
+
+    // Enable scrolling with mouse wheel even when scrollbar is hidden
+  document.addEventListener('wheel', function(e) {
+    if(modalOpen) return;
+    window.scrollBy(0, e.deltaY);
+  }, { passive: false });
+
+  // Enable scrolling with touch input even when scrollbar is hidden
+  let lastTouchY = null;
+  document.addEventListener('touchstart', function(e) {
+    if(modalOpen) return;
+    if (e.touches.length === 1) {
+      lastTouchY = e.touches[0].clientY;
+    }
+  }, { passive: false });
+
+  document.addEventListener('touchmove', function(e) {
+    if(modalOpen) return;
+    if (e.touches.length === 1 && lastTouchY !== null) {
+      const currentY = e.touches[0].clientY;
+      const deltaY = lastTouchY - currentY;
+      window.scrollBy(0, deltaY);
+      lastTouchY = currentY;
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  document.addEventListener('touchend', function(e) {
+    if(modalOpen) return;
+    lastTouchY = null;
+  }, { passive: false });
+
+  let touchStartX = 0;
+let touchEndX = 0;
+
+// Attach to the image container inside the modal
+const imgWrap = document.querySelector('.lb-image-wrap');
+
+imgWrap.addEventListener('touchstart', e => {
+  if (e.touches.length === 1) {
+    touchStartX = e.touches[0].clientX;
+  }
+}, { passive: true });
+
+imgWrap.addEventListener('touchend', e => {
+  if (e.changedTouches.length === 1) {
+    touchEndX = e.changedTouches[0].clientX;
+    handleSwipe();
+  }
+}, { passive: true });
+
+function handleSwipe() {
+  const swipeDistance = touchEndX - touchStartX;
+  if (Math.abs(swipeDistance) > 50) { // minimum swipe distance
+    if (swipeDistance > 0) {
+      prevImage(); // swipe right → previous image
+    } else {
+      nextImage(); // swipe left → next image
+    }
+  }
+}
+});
+</script>

@@ -1,0 +1,21 @@
+<p>Threads are launched in what’s called a <strong>𝙜𝙧𝙞𝙙</strong>—more specifically, a grid of thread blocks. In other words: you can’t simply say, “launch 1 million threads that execute this kernel.” You need to break them into blocks and specify how many blocks to launch. This gives you the grid dimensions.</p>
+<p>👉 A good mental model to visualize the structure is:<br>
+𝙂𝙧𝙞𝙙 → 𝘽𝙡𝙤𝙘𝙠 → 𝙒𝙖𝙧𝙥 → 𝙏𝙝𝙧𝙚𝙖𝙙</p>
+<p>CUDA gives us access to this entire hierarchy directly in code through built-in variables like <strong>𝙗𝙡𝙤𝙘𝙠𝙄𝙙𝙭</strong>, <strong>𝙩𝙝𝙧𝙚𝙖𝙙𝙄𝙙𝙭</strong>, <strong>𝙗𝙡𝙤𝙘𝙠𝘿𝙞𝙢</strong>, and <strong>𝙜𝙧𝙞𝙙𝘿𝙞𝙢</strong>. These let us figure out where each thread sits in the larger structure—across blocks and threads within a block—and write code that maps work accordingly.</p>
+<p>🌟 The concept of a <strong>𝙩𝙝𝙧𝙚𝙖𝙙 𝙗𝙡𝙤𝙘𝙠</strong> isn’t just an artificial abstraction—it’s closely tied to the hardware architecture and software requirements. For instance, one thing that we as programmers might want is to be able to efficiently communicate between threads. To support this, GPU SIMD units include a small, on-chip memory area called <strong>𝙂𝙧𝙤𝙪𝙥 𝙎𝙝𝙖𝙧𝙚𝙙 𝙈𝙚𝙢𝙤𝙧𝙮</strong>.</p>
+<p>This memory lives directly inside the SIMD unit and is exclusive to it, meaning only threads running on the same SIMD unit can access and share this memory efficiently. That’s exactly why thread blocks exist: a block is a group of threads that are scheduled to run on the same SIMD unit, allowing them to take full advantage of this shared memory.</p>
+<p>⚠️ Hardware constraints: SIMD units can only handle a limited number of active warps (Fermi 24, AMD GCN 40, Newer NVIDIA architectures: up to 48). Because of this, the number of threads in a block is limited (typically up to 1024, or 32 warps)—choosing the right size becomes a crucial performance decision.</p>
+<p>Examples:</p>
+<ul>
+  <li>If the thread block is too large, only one block might fit on the SM, leaving execution resources underutilized.</li>
+  <li>If it’s too small, you might hit the SM’s limit on the number of simultaneously active blocks.</li>
+</ul>
+<p>To remember:</p>
+<ul>
+  <li>🧵 Thread block = a group of threads that run on the same SM (Streaming Multiprocessor)</li>
+  <li>💬 Threads in a block can communicate using the SM’s shared memory</li>
+  <li>🌀 All warps of a block are guaranteed to run on the same SM</li>
+  <li>⚡ Block size can drastically influence performance</li>
+  <li>🔧 CUDA exposes the thread hierarchy (grid, block, thread) via built-in variables like: threadIdx, blockIdx, blockDim, and gridDim</li>
+</ul>
+

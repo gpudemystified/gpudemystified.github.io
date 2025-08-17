@@ -1,0 +1,18 @@
+<p>Although it might sound like a long time ago, the Tesla architecture marked a pivotal moment in GPU development, shaping the GPUs we use today.</p>
+
+<p>🔥 The main breakthrough: the introduction of the <strong>𝗚𝗲𝗻𝗲𝗿𝗶𝗰 𝗦𝘁𝗿𝗲𝗮𝗺𝗶𝗻𝗴 𝗠𝘂𝗹𝘁𝗶𝗽𝗿𝗼𝗰𝗲𝘀𝘀𝗼𝗿 (𝗦𝗠)</strong>, capable of performing any type of work — not just graphics commands, like older GPUs. With the help of their new SM design Nvidia GPUs allowed programmers to use the GPU more as a general-purpose processor, moving beyond the traditional graphics concepts.</p>
+
+<p>🌟 At the same time, NVIDIA introduced CUDA, their programming language designed for NVIDIA GPUs. With the release of CUDA & the Streaming Multiprocessor, NVIDIA aimed to make <strong>𝗚𝗣𝗨 𝗽𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗶𝗻𝗴 𝗮𝗰𝗰𝗲𝘀𝘀𝗶𝗯𝗹𝗲 𝘁𝗼 𝗮𝗹𝗹 𝗱𝗲𝘃𝗲𝗹𝗼𝗽𝗲𝗿𝘀</strong>—not just graphics experts.</p>
+
+<p>⚠️ It’s important to understand Tesla because everything that followed has been an evolution in the same direction: making GPUs increasingly powerful general-purpose processors.</p>
+
+<h3>⚙️ NVIDIA Tesla in numbers:</h3>
+<ul>
+<li>TPCs / SMs: 8 TPCs × 2 SMs → 16 SMs</li>
+<li>Warps / Threads: 24 warps/SM → 384 warps, 768 threads/SM → 12,288 threads total</li>
+<li>Execution Units: 8 SPs + 2 SFUs per SM → 128 SPs + 32 SFUs total</li>
+<li>Peak Compute: 36 GFLOPs/SM → ~576 GFLOPs chip-wide</li>
+<li>Shared Memory: 16 KB/SM → 256 KB total</li>
+<li>L2 Cache: small, shared across SMs and ROPs</li>
+<li>Global Memory: 768 MB GDDR3</li>
+</ul>

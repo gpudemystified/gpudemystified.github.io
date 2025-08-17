@@ -1,0 +1,137 @@
+- title: "NVIDIA Tesla"
+  descriptionUrl: "/notes/note10.html"
+  images:
+    - /assets/images/notes/10. NVIDIA Tesla/1.png
+    - /assets/images/notes/10. NVIDIA Tesla/2.png
+    - /assets/images/notes/10. NVIDIA Tesla/3.png
+    - /assets/images/notes/10. NVIDIA Tesla/4.png
+    - /assets/images/notes/10. NVIDIA Tesla/5.png
+    - /assets/images/notes/10. NVIDIA Tesla/6.png
+    - /assets/images/notes/10. NVIDIA Tesla/7.png
+    - /assets/images/notes/10. NVIDIA Tesla/8.png
+    - /assets/images/notes/10. NVIDIA Tesla/9.png
+
+- title: "What is a Thread Block?"
+  descriptionUrl: "/notes/note09.html"
+  images:
+    - /assets/images/notes/09. Thread Blocks Explained/1.png
+    - /assets/images/notes/09. Thread Blocks Explained/2.png
+    - /assets/images/notes/09. Thread Blocks Explained/3.png
+    - /assets/images/notes/09. Thread Blocks Explained/4.png
+    - /assets/images/notes/09. Thread Blocks Explained/5.png
+    - /assets/images/notes/09. Thread Blocks Explained/6.png
+    - /assets/images/notes/09. Thread Blocks Explained/7.png
+    - /assets/images/notes/09. Thread Blocks Explained/8.png
+
+- title: "NVIDIA CUDA Histogram"
+  descriptionUrl: "/notes/note08.html"
+  images:
+   - /assets/images/notes/08. NVIDIA CUDA - Histogram/1.png
+   - /assets/images/notes/08. NVIDIA CUDA - Histogram/2.png
+   - /assets/images/notes/08. NVIDIA CUDA - Histogram/3.png
+   - /assets/images/notes/08. NVIDIA CUDA - Histogram/4.png
+   - /assets/images/notes/08. NVIDIA CUDA - Histogram/5.png
+   - /assets/images/notes/08. NVIDIA CUDA - Histogram/6.png
+   - /assets/images/notes/08. NVIDIA CUDA - Histogram/7.png
+   - /assets/images/notes/08. NVIDIA CUDA - Histogram/8.png
+   - /assets/images/notes/08. NVIDIA CUDA - Histogram/9.png
+   - /assets/images/notes/08. NVIDIA CUDA - Histogram/10.png
+
+
+- title: "NVIDIA CUDA Blur Filter"
+  descriptionUrl: "/notes/note07.html"
+  images:
+   - /assets/images/notes/07. NVIDIA CUDA - Blur Filters/1.png
+   - /assets/images/notes/07. NVIDIA CUDA - Blur Filters/2.png
+   - /assets/images/notes/07. NVIDIA CUDA - Blur Filters/3.png
+   - /assets/images/notes/07. NVIDIA CUDA - Blur Filters/4.png
+   - /assets/images/notes/07. NVIDIA CUDA - Blur Filters/5.png
+   - /assets/images/notes/07. NVIDIA CUDA - Blur Filters/6.png
+   - /assets/images/notes/07. NVIDIA CUDA - Blur Filters/7.png
+   - /assets/images/notes/07. NVIDIA CUDA - Blur Filters/8.png
+   - /assets/images/notes/07. NVIDIA CUDA - Blur Filters/9.png
+   - /assets/images/notes/07. NVIDIA CUDA - Blur Filters/10.png
+  url: "/notes/note1.html"
+
+- text: "NVIDIA Shared Memory"
+  descriptionUrl: "/notes/note06.html"
+  images:
+   - /assets/images/notes/06. NVIDIA Shared Memory/1.png
+   - /assets/images/notes/06. NVIDIA Shared Memory/2.png
+   - /assets/images/notes/06. NVIDIA Shared Memory/3.png
+   - /assets/images/notes/06. NVIDIA Shared Memory/4.png
+   - /assets/images/notes/06. NVIDIA Shared Memory/5.png
+   - /assets/images/notes/06. NVIDIA Shared Memory/6.png
+   - /assets/images/notes/06. NVIDIA Shared Memory/7.png
+   - /assets/images/notes/06. NVIDIA Shared Memory/8.png
+   - /assets/images/notes/06. NVIDIA Shared Memory/9.png
+   - /assets/images/notes/06. NVIDIA Shared Memory/10.png
+   - /assets/images/notes/06. NVIDIA Shared Memory/11.png
+   - /assets/images/notes/06. NVIDIA Shared Memory/12.png
+   - /assets/images/notes/06. NVIDIA Shared Memory/13.png
+   - /assets/images/notes/06. NVIDIA Shared Memory/14.png
+
+- title: "CUDA Thread Hierarchy"
+  descriptionUrl: "/notes/note05.html"
+  images:
+   - /assets/images/notes/05. CUDA Thread Hierarchy/1.png
+   - /assets/images/notes/05. CUDA Thread Hierarchy/2.png
+   - /assets/images/notes/05. CUDA Thread Hierarchy/3.png
+   - /assets/images/notes/05. CUDA Thread Hierarchy/4.png
+   - /assets/images/notes/05. CUDA Thread Hierarchy/5.png
+   - /assets/images/notes/05. CUDA Thread Hierarchy/6.png
+   - /assets/images/notes/05. CUDA Thread Hierarchy/7.png
+   - /assets/images/notes/05. CUDA Thread Hierarchy/8.png
+   - /assets/images/notes/05. CUDA Thread Hierarchy/9.png
+   - /assets/images/notes/05. CUDA Thread Hierarchy/10.png
+
+
+- text: "CUDA Vector Add"
+  descriptionUrl: "/notes/note04.html"
+  images:
+  - /assets/images/notes/04. CUDA - Vector Add/1.png
+  - /assets/images/notes/04. CUDA - Vector Add/2.png
+  - /assets/images/notes/04. CUDA - Vector Add/3.png
+  - /assets/images/notes/04. CUDA - Vector Add/4.png
+  - /assets/images/notes/04. CUDA - Vector Add/5.png
+  - /assets/images/notes/04. CUDA - Vector Add/6.png
+  - /assets/images/notes/04. CUDA - Vector Add/7.png
+  - /assets/images/notes/04. CUDA - Vector Add/8.png
+  - /assets/images/notes/04. CUDA - Vector Add/9.png
+  - /assets/images/notes/04. CUDA - Vector Add/10.png
+
+- title: "NVIDIA Fermi's Streaming Multiprocessor"
+  descriptionUrl: "/notes/note03.html"
+  images:
+   - /assets/images/notes/03. NVIDIA Fermi's Streaming Multiprocessor/1.png
+   - /assets/images/notes/03. NVIDIA Fermi's Streaming Multiprocessor/2.png
+   - /assets/images/notes/03. NVIDIA Fermi's Streaming Multiprocessor/3.png
+   - /assets/images/notes/03. NVIDIA Fermi's Streaming Multiprocessor/4.png
+   - /assets/images/notes/03. NVIDIA Fermi's Streaming Multiprocessor/5.png
+   - /assets/images/notes/03. NVIDIA Fermi's Streaming Multiprocessor/6.png
+   - /assets/images/notes/03. NVIDIA Fermi's Streaming Multiprocessor/7.png
+   - /assets/images/notes/03. NVIDIA Fermi's Streaming Multiprocessor/8.png
+    
+  
+- title: "What is a Warp?"
+  descriptionUrl: "/notes/note02.html"
+  images:
+    - /assets/images/notes/02. Warp/1.png
+    - /assets/images/notes/02. Warp/2.png
+    - /assets/images/notes/02. Warp/3.png
+    - /assets/images/notes/02. Warp/4.png
+    - /assets/images/notes/02. Warp/5.png
+    - /assets/images/notes/02. Warp/6.png
+    - /assets/images/notes/02. Warp/7.png
+    - /assets/images/notes/02. Warp/8.png
+
+- title: "What is a SIMD unit?"
+  descriptionUrl: "/notes/note01.html"
+  images:
+    - /assets/images/notes/01. SIMD Unit/1.png
+    - /assets/images/notes/01. SIMD Unit/2.png
+    - /assets/images/notes/01. SIMD Unit/3.png
+    - /assets/images/notes/01. SIMD Unit/4.png
+    - /assets/images/notes/01. SIMD Unit/5.png
+    - /assets/images/notes/01. SIMD Unit/6.png
+    - /assets/images/notes/01. SIMD Unit/7.png
