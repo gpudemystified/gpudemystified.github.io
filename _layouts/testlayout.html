@@ -4,17 +4,40 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ '/assets/css/default_header.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/article_page.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/markdown_light.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/syntax.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/notes.css' | relative_url }}">
 </head>
 <body>
   <header class="site-header">
   <div class="header-top">
-    <img src="/assets/images/Logo.jpg" alt="Logo" class="logo" />
+    <img src="/assets/images/logo.jpg" alt="Logo" class="logo" />
     <div class="site-title-desc">
       <h1 class="site-name">gpudemystified</h1>
       <p class="site-description">GPU Architectures & Programming.
         CUDA, NVIDIA & AMD Architectures | Algorithms | GPU Optimization — all demystified 🔍</p>
     
 
+    <div class="social-logos-row">
+  <div class="social-logos">
+    <a href="https://www.linkedin.com/in/galazar/" target="_blank" rel="noopener">
+      <img src="/assets/images/linkedin.svg" alt="LinkedIn" class="social_logo">
+    </a>
+    <a href="https://www.instagram.com/gpudemystified/" target="_blank" rel="noopener">
+      <img src="/assets/images/instagram.svg" alt="Instagram" class="social_logo">
+    </a>
+    <a href="https://github.com/gpudemystified" target="_blank" rel="noopener">
+      <img src="/assets/images/github.svg" alt="GitHub" class="social_logo">
+    </a>
+    <a href="mailto:contact@gpudemystified.com" target="_blank" rel="noopener">
+      <img src="/assets/images/gmail.svg" alt="Email" class="social_logo">
+    </a>
+  </div>
+  <button class="subscribe-btn" id="subscribe-btn">Newsletter</button>
+</div>
+</div>
+  </div>
 
   <nav class="main-nav">
     <ul>
@@ -28,9 +51,99 @@
 
 <main>
   {{ content }}
-    test
+
+<!-- Newsletter Modal -->
+<div id="newsletterModal" class="lb-modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="lb-overlay" data-close></div>
+  <div class="lb-content" role="document" aria-labelledby="lb-title" aria-describedby="lb-desc">
+    <button class="lb-close" aria-label="Close (Esc)" title="Close">&times;</button>
+  
+     <div class="lb-text newsletter-content" id="newsletter-desc"> 
+      <h2 id="newsletter-title">Subscribe the newsletter</h2> 
+      <p class="lb-description">Monthly, curated GPU-related stuff</p>
+       <div class="newsletter-form"> 
+        <input type="email" id="newsletter-email" placeholder="Enter your email" /> 
+        <button id="newsletter-submit">Subscribe</button> 
+       <div id="thankyou-wrapper" style="display:none; justify-content:center; margin-top:1rem;">
+          <button id="newsletter-thankyou">Thank you!</button>
+      </div>
+      </div> 
+   
+    </div>
+  </div>
+</div>
 
 </main>
 
 </body>
 </html>
+
+
+<script>
+
+const newsletterBtn = document.getElementById("subscribe-btn"); // your button
+const newsletterModal = document.getElementById("newsletterModal");
+const newsletterClose = newsletterModal.querySelector(".lb-close");
+const newsletterOverlay = newsletterModal.querySelector(".lb-overlay");
+
+// Open
+newsletterBtn.addEventListener("click", () => {
+  console.log('Opening newsletter modal');
+    newsletterModal.setAttribute('aria-hidden', 'false');
+    newsletterModal.classList.add('open');
+    
+    newsletterModal.style.display = 'flex'; // show it again
+    document.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
+});
+
+// Close
+function closeNewsletter() {
+  newsletterModal.setAttribute("aria-hidden", "true");
+  newsletterModal.style.display = "none";
+  document.body.classList.remove("no-scroll");
+}
+
+newsletterClose.addEventListener("click", closeNewsletter);
+newsletterOverlay.addEventListener("click", closeNewsletter);
+
+// Keyboard navigation
+  function handleKeyDown(e){
+    if(e.key === 'Escape'){ closeNewsletter(); return; }
+  }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const thankYouWrapper = document.getElementById('thankyou-wrapper');
+  const emailInput = document.getElementById('newsletter-email');
+  const submitButton = document.getElementById('newsletter-submit');
+
+ submitButton.addEventListener('click', async () => {
+    const email = emailInput.value.trim();
+    if (!email) return alert('Please enter your email');
+
+    const url = 'https://script.google.com/macros/s/AKfycbwQQ7RuWhyfryCVGxZiXIdE8R-Ie6BFSJacBUNHffnIz0Wy2EedBu8n9vCIysZERjgRaQ/exec';
+    const formData = new FormData();
+    formData.append('email', email);
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        emailInput.style.display = 'none';
+        submitButton.style.display = 'none';
+        thankYouWrapper.style.display = 'flex';
+      } else {
+        alert('Something went wrong. Please try again.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error sending request. Please try again.');
+    }
+  });
+});
+
+</script>
