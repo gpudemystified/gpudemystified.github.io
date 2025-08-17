@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+</head>
+<body>
+  <header class="site-header">
+  <div class="header-top">
+    
+    <div class="site-title-desc">
+      <h1 class="site-name">gpudemystified</h1>
+      <p class="site-description">GPU Architectures & Programming.
+        CUDA, NVIDIA & AMD Architectures | Algorithms | GPU Optimization — all demystified 🔍</p>
+    
+
+
+  <nav class="main-nav">
+    <ul>
+      <li><a href="/articles" class="nav-link {% if page.url contains 'articles' or page.url == '/' %}active{% endif %}">Articles</a></li>
+      <li><a href="/notes" class="nav-link {% if page.url contains 'notes' %}active{% endif %}">Notes</a></li>
+    </ul>
+  </nav>
+
+  <hr class="header-divider" />
+</header>
+
+<main>
+  {{ content }}
+    test
+
+</main>
+
+</body>
+</html>
