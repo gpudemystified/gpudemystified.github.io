@@ -6,9 +6,6 @@
   --transition: 200ms ease;
 }
 
-html, body {
-  overflow-y: hidden; /* Hide scrollbar */
-}
 body {
   overscroll-behavior-y: contain;
 }
@@ -28,7 +25,7 @@ body {
 
 @media (max-width: 600px) {
   .notes-grid {
-    grid-template-columns: 1fr;
+   grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -79,7 +76,7 @@ body {
   padding: 0;
   background: var(--lb-bg);
   border-radius: var(--lb-radius);
-  overflow: hidden;
+  overflow-y: auto;
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
   transform: translateY(8px) scale(0.995);
   transition: transform var(--transition) ease;
@@ -102,7 +99,7 @@ body {
   justify-content: center;
   background: #000;
   min-width: 0;
-  overflow: hidden;
+  overflow-y: auto;
   height: auto;
   max-height: 96vh;
   position: relative;
@@ -204,7 +201,7 @@ body {
     height: auto;
     max-height: 96vh;
   }
-  .lb-image-wrap{ flex: none; height: 65vh; width: 100%;}
+  .lb-image-wrap{ flex: none; height: 100%; width: 100%;}
   .lb-image-wrap img{
     max-height: 100%;
     max-width: 100%;
@@ -234,27 +231,31 @@ body {
   background: rgba(0, 0, 0, 0.6);
 }
 
-/* Modal box */
+/* Base modal box */
 #newsletterModal .newsletter-content {
   position: relative;
   background: #fff;
   border-radius: 12px;
-  width: 65vh;
-  height: 30%;
+  width: 100%;          /* relative to viewport width */
+  max-width: 400px;     /* cap width */
   padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;  /* center content horizontally */
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  height: auto;         /* allow height to adjust to content */
+  max-height: 80vh;     /* prevent modal from being taller than viewport */
+  overflow-y: auto;     /* scroll if content exceeds max-height */
 }
-
-
 
 /* Newsletter form layout */
 .newsletter-form {
   display: flex;
   gap: 0.5rem;
   margin-top: 1rem;
+  width: 100%;          /* use full modal width */
+  justify-content: center;
 }
 
 .newsletter-form input {
@@ -263,6 +264,7 @@ body {
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
+  min-width: 0;         /* prevents overflow in flex */
 }
 
 .newsletter-form button {
@@ -280,7 +282,25 @@ body {
   background: #ff6500;
 }
 
-/* Prevent scrolling behind modal */
-body.no-scroll {
-  overflow: hidden;
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  #newsletterModal .newsletter-content {
+    width: 100%;       /* almost full width */
+    padding: 1rem;
+  }
+
+  .newsletter-form {
+    flex-direction: column;  /* stack input + button vertically */
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  .newsletter-form input,
+  .newsletter-form button {
+    width: 100%;    /* full width on mobile */
+  }
+
+  .newsletter-form input{
+    padding: 0.2rem;
+  }
 }

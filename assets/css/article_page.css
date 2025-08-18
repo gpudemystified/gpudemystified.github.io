@@ -1,6 +1,4 @@
-html, body {
-  overflow-y: hidden; /* Hide scrollbar */
-}
+
 body {
   overscroll-behavior-y: contain;
 }
