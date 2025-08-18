@@ -2,7 +2,7 @@
 layout: default
 title: "CUDA First Steps"
 description: "Understanding threads, blocks, and warps in CUDA programming."
-image: "/assets/images/logo.jpg"
+image: "/assets/images/article1.jpg"
 topics:
   - CUDA
   - GPU Programming
@@ -14,11 +14,7 @@ topics:
 #include <stdio.h>
 
 int main() {
-    printf("Hello, World!\n");
+    printf("Coming soon!\n");
     return 0;
 }
 ```
-
-# header
-
-## dddd

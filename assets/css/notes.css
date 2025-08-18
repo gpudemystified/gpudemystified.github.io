@@ -99,7 +99,7 @@ body {
   justify-content: center;
   background: #000;
   min-width: 0;
-  overflow-y: auto;
+  overflow-y: none;
   height: auto;
   max-height: 96vh;
   position: relative;
