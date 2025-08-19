@@ -91,6 +91,15 @@
 
 
 <script>
+  document.getElementById('subscribe-btn').addEventListener('click', function() {
+    gtag('event', 'newsletter_click', {
+      'event_category': 'newsletter',
+      'event_label': 'Newsletter Button Clicked'
+    });
+  });
+</script>
+
+<script>
 
 const newsletterBtn = document.getElementById("subscribe-btn"); // your button
 const newsletterModal = document.getElementById("newsletterModal");
