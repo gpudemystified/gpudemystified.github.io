@@ -1,4 +1,5 @@
 - title: "NVIDIA Tesla"
+  noteId: "note10"
   descriptionUrl: "/notes/note10.html"
   images:
     - /assets/images/notes/10. NVIDIA Tesla/1.png
@@ -12,6 +13,7 @@
     - /assets/images/notes/10. NVIDIA Tesla/9.png
 
 - title: "What is a Thread Block?"
+  noteId: "note09"
   descriptionUrl: "/notes/note09.html"
   images:
     - /assets/images/notes/09. Thread Blocks Explained/1.png
@@ -24,6 +26,7 @@
     - /assets/images/notes/09. Thread Blocks Explained/8.png
 
 - title: "NVIDIA CUDA Histogram"
+  noteId: "note08"
   descriptionUrl: "/notes/note08.html"
   images:
    - /assets/images/notes/08. NVIDIA CUDA - Histogram/1.png
@@ -37,8 +40,8 @@
    - /assets/images/notes/08. NVIDIA CUDA - Histogram/9.png
    - /assets/images/notes/08. NVIDIA CUDA - Histogram/10.png
 
-
 - title: "NVIDIA CUDA Blur Filter"
+  noteId: "note07"
   descriptionUrl: "/notes/note07.html"
   images:
    - /assets/images/notes/07. NVIDIA CUDA - Blur Filters/1.png
@@ -53,7 +56,8 @@
    - /assets/images/notes/07. NVIDIA CUDA - Blur Filters/10.png
   url: "/notes/note1.html"
 
-- text: "NVIDIA Shared Memory"
+- title: "NVIDIA Shared Memory"
+  noteId: "note06"
   descriptionUrl: "/notes/note06.html"
   images:
    - /assets/images/notes/06. NVIDIA Shared Memory/1.png
@@ -72,6 +76,7 @@
    - /assets/images/notes/06. NVIDIA Shared Memory/14.png
 
 - title: "CUDA Thread Hierarchy"
+  noteId: "note05"
   descriptionUrl: "/notes/note05.html"
   images:
    - /assets/images/notes/05. CUDA Thread Hierarchy/1.png
@@ -85,8 +90,8 @@
    - /assets/images/notes/05. CUDA Thread Hierarchy/9.png
    - /assets/images/notes/05. CUDA Thread Hierarchy/10.png
 
-
-- text: "CUDA Vector Add"
+- title: "CUDA Vector Add"
+  noteId: "note04"
   descriptionUrl: "/notes/note04.html"
   images:
   - /assets/images/notes/04. CUDA - Vector Add/1.png
@@ -101,6 +106,7 @@
   - /assets/images/notes/04. CUDA - Vector Add/10.png
 
 - title: "NVIDIA Fermi's Streaming Multiprocessor"
+  noteId: "note03"
   descriptionUrl: "/notes/note03.html"
   images:
    - /assets/images/notes/03. NVIDIA Fermi's Streaming Multiprocessor/1.png
@@ -112,8 +118,8 @@
    - /assets/images/notes/03. NVIDIA Fermi's Streaming Multiprocessor/7.png
    - /assets/images/notes/03. NVIDIA Fermi's Streaming Multiprocessor/8.png
     
-  
 - title: "What is a Warp?"
+  noteId: "note02"
   descriptionUrl: "/notes/note02.html"
   images:
     - /assets/images/notes/02. Warp/1.png
@@ -126,6 +132,7 @@
     - /assets/images/notes/02. Warp/8.png
 
 - title: "What is a SIMD unit?"
+  noteId: "note01"
   descriptionUrl: "/notes/note01.html"
   images:
     - /assets/images/notes/01. SIMD Unit/1.png

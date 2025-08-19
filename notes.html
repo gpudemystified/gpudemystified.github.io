@@ -12,6 +12,7 @@ layout: default
       data-title="{{ note.title | escape }}"
       data-description-url="{{ note.descriptionUrl | escape }}"
       data-images='{{ note.images | jsonify | escape }}'
+      data-note-id="{{ note.noteId }}"
       tabindex="0"
     />
   {% endfor %}
@@ -57,7 +58,8 @@ document.addEventListener('DOMContentLoaded', function() {
   let notes = Array.from(triggers).map(t => ({
     title: t.dataset.title,
     descriptionUrl: t.dataset.descriptionUrl,
-    images: JSON.parse(t.dataset.images)
+    images: JSON.parse(t.dataset.images),
+    noteId: t.dataset.noteId
   }));
 
   function openModal(trigger){
@@ -93,6 +95,11 @@ document.addEventListener('DOMContentLoaded', function() {
     imgEl.src = note.images[imgIdx];
     imgEl.alt = note.title;
     titleEl.textContent = note.title;
+
+    gtag('event', note.noteId, {
+      event_category: 'note',
+      event_label: 'Opened note ' + note.noteId
+    });
     
     const descUrl = note.descriptionUrl;
     fetch(descUrl)

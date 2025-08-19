@@ -52,8 +52,20 @@
 
   <nav class="main-nav">
     <ul>
-      <li><a href="/index" class="nav-link {% if page.url contains 'articles' or page.url == '/' %}active{% endif %}">Articles</a></li>
-      <li><a href="/notes" class="nav-link {% if page.url contains 'notes' %}active{% endif %}">Notes</a></li>
+        <li>
+      <a href="/index"
+         class="nav-link {% if page.url contains 'articles' or page.url == '/' %}active{% endif %}"
+         onclick="gtag('event', 'nav_click_articles', { event_category: 'navigation', event_label: 'Articles' });">
+         Articles
+      </a>
+    </li>
+    <li>
+      <a href="/notes"
+         class="nav-link {% if page.url contains 'notes' %}active{% endif %}"
+         onclick="gtag('event', 'nav_click_notes', { event_category: 'navigation', event_label: 'Notes' });">
+         Notes
+      </a>
+    </li>
     </ul>
   </nav>
 
