@@ -89,16 +89,6 @@
 </body>
 </html>
 
-
-<script>
-  document.getElementById('subscribe-btn').addEventListener('click', function() {
-    gtag('event', 'newsletter_click', {
-      'event_category': 'newsletter',
-      'event_label': 'Newsletter Button Clicked'
-    });
-  });
-</script>
-
 <script>
 
 const newsletterBtn = document.getElementById("subscribe-btn"); // your button
@@ -109,6 +99,12 @@ const newsletterOverlay = newsletterModal.querySelector(".lb-overlay");
 // Open
 newsletterBtn.addEventListener("click", () => {
   console.log('Opening newsletter modal');
+
+   gtag('event', 'newsletter_click', {
+      'event_category': 'newsletter',
+      'event_label': 'Newsletter Button Clicked'
+    });
+
     newsletterModal.setAttribute('aria-hidden', 'false');
     newsletterModal.classList.add('open');
     
