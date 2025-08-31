@@ -1,0 +1,18 @@
+<p>NVIDIA Fermi marks a major milestone in the evolution of the Streaming Multiprocessor (SM), bringing it closer to what we have in today’s GPUs. Manufactured using a 40nm process node, Fermi practically doubled or quadrupled the computational capabilities compared to Tesla.</p>
+
+<p>🌟 The new SM architecture can now keep up to 48 warps in flight and packs ~5× more cores than Tesla: 32 CUDA cores, 16 load/store units, and 4 SFUs. It also features larger shared memory and can schedule 2 warps per cycle for higher throughput.</p>
+
+<p>Another game-changing improvement: atomic operations are now handled in L2 cache, rather than DRAM, giving a 5×–20× performance boost for atomic-heavy workloads.</p>
+
+<h3>⚙️ Fermi in numbers:</h3>
+<ul>
+  <li>TPCs / SMs: 16 SMs</li>
+  <li>Warps / Threads: 48 warps/SM → 1,536 threads/SM → 24,576 threads total</li>
+  <li>Execution Units: 32 CUDA cores + 4 SFUs + 16 load/store units per SM → 512 CUDA cores + 64 SFUs + 256 load/store units total</li>
+  <li>Peak Compute: ~1.35 TFLOPs SP → ~675 GFLOPs DP</li>
+  <li>Shared Memory: 64 KB configurable per SM → 1,024 KB total</li>
+  <li>L2 Cache: 768 KB shared across all SMs</li>
+  <li>Global Memory: 3 GB GDDR5, 384-bit bus, ~177 GB/s</li>
+</ul>
+
+<p>Fermi clearly paved the way for modern GPU architectures. Next up, we’ll explore Kepler — and if you thought Fermi transformed the Streaming Multiprocessor, just wait to see what Kepler brings to the table.</p>

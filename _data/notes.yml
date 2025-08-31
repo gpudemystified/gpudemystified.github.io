@@ -1,3 +1,16 @@
+- title: "NVIDIA Fermi"
+  noteId: "note11"
+  descriptionUrl: "/notes/note11.html"
+  images:
+    - /assets/images/notes/11. NVIDIA Fermi/1.png
+    - /assets/images/notes/11. NVIDIA Fermi/2.png
+    - /assets/images/notes/11. NVIDIA Fermi/3.png
+    - /assets/images/notes/11. NVIDIA Fermi/4.png
+    - /assets/images/notes/11. NVIDIA Fermi/5.png
+    - /assets/images/notes/11. NVIDIA Fermi/6.png
+    - /assets/images/notes/11. NVIDIA Fermi/7.png
+    - /assets/images/notes/11. NVIDIA Fermi/8.png
+
 - title: "NVIDIA Tesla"
   noteId: "note10"
   descriptionUrl: "/notes/note10.html"

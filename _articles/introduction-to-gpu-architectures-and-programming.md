@@ -880,7 +880,7 @@ In practice, real-world SIMD units are far more complex than our simple conceptu
 </div>
 
 Some important characteristics of the Streaming Multiprocessor (SM): 
-- It can keep up to 24 warps in flight. These are warps that have been scheduled to the SM and are ready to execute. The Dispatch Units choose what warps to execute each cycle
+- It can keep up to 48 warps in flight. These are warps that have been scheduled to the SM and are ready to execute. The Dispatch Units choose what warps to execute each cycle
 - Warps execute on one for the 4 Execution Blocks; Each execution block is specialized for certain instruction types. You can think of an execution block as a SIMD unit, where multiple cores execute the same instruction together
 - Having 4 Execution Block means that 4 warps can execute at the same time on a SM
 - Each SM also comes with a Shared Memory block—a small, on-chip memory that enables fast communication between threads in a thread block. This is exactly why we have the software concept of a thread block: an SM can’t keep an infinite number of threads in flight at once, and we want to maximize the use of this very fast memory. For that reason, GPU architectures tie Shared Memory to a thread block (and also impose a maximum size limit).
@@ -888,7 +888,7 @@ Some important characteristics of the Streaming Multiprocessor (SM):
 Of course, things are much more complex than that-I just wanted to give you a feel for what a real SIMD Unit looks like. In future articles we’ll dig into how warps compete over SM resources and how code that ignores hardware capabilities can degrade performance.
 
 One more thing to mention: GPUs don’t have just one SM; they have many. For example, Fermi (2010, so pretty old) had 16 SMs. If we calculate the maximum potential threads in flight at the same time, we get:
-16 SMs × 24 warps × 32 threads = 12,288 threads potentially in flight
+16 SMs × 48 warps × 32 threads = 24,576 threads potentially in flight
 
 That’s a lot. However, on newer architectures (like Hopper, 2022), we have up to 144 SMs, and each SM can hold up to 64 warps in flight:
 144 SMs × 64 warps × 32 threads = 294,912 threads potentially in flight

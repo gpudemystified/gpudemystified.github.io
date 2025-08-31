@@ -97,6 +97,13 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
 
+/* Style for disabled newsletter button */
+#newsletter-submit:disabled {
+  background: #ccc;       /* gray color */
+  cursor: not-allowed;    /* show it's unclickable */
+  color: #666;            /* optional: darker gray text */
+}
+
 .subscribe-btn {
   background: #00bf63;
   color: #fff;

@@ -81,7 +81,7 @@ body {
   align-items: center;
   width: auto;
   max-width: var(--lb-max-width);
-  max-height: 90%;
+  max-height: 95%;
   padding: 0;
   background: var(--lb-bg);
   border-radius: var(--lb-radius);
