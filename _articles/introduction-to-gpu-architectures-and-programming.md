@@ -196,7 +196,7 @@ int main() {
 Build and run the program, and you should see the message “Hello from CPU!” in your console—amazing!
 
 <div align="center">
-<img src="{{ 'assets/images/article1/cpp_cpu_output.png' | relative_url }}" alt="drawing" align="center" style="
+<img src="{{ 'assets/images/article1/vs_output.png' | relative_url }}" alt="drawing" align="center" style="
   border: 1px solid #f08d54;
   border-radius:8px"/>
 <p> CPU output </p>
@@ -839,7 +839,7 @@ Now, in practice, SIMD Units don't have just 4 Cores, as in my drawings— they 
 A warp is a set of 32 threads that run the same instruction at the same time. These warps are executed on the GPU’s SIMD units. 
 
 <div align="center">
-<img src="{{ 'assets/images/article1/warp.gif' | relative_url }}" alt="drawing" align="center" style="
+<img src="{{ 'assets/images/article1/warps_explained.gif' | relative_url }}" alt="drawing" align="center" style="
   width: 100%;
   border: 1px solid #f08d54;
   border-radius:8px"/>
