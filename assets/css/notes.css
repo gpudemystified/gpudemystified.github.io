@@ -44,6 +44,15 @@ body {
   outline: 2px solid #ff6500;
 }
 
+@media (max-width: 600px) {
+  .notes-grid img:hover,
+  .notes-grid img:focus {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07); /* same as default */
+    outline: none;
+  }
+}
+
+
 .lb-modal{
   position: fixed;
   inset: 0;
@@ -72,7 +81,7 @@ body {
   align-items: center;
   width: auto;
   max-width: var(--lb-max-width);
-  max-height: 96vh;
+  max-height: 90%;
   padding: 0;
   background: var(--lb-bg);
   border-radius: var(--lb-radius);

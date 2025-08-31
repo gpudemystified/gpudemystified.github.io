@@ -87,6 +87,12 @@ body {
   font-size: 0.85em;
 }
 
+@media (max-width: 600px) {
+  .article-item h2 a::after {
+    content: none;   /* remove the pseudo-element entirely */
+  }
+}
+
 /* Mobile layout: image + title on row 1, description on row 2, tags on row 3 */
 @media (max-width: 600px) {
   .article-item {
