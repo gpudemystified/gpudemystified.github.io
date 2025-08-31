@@ -63,7 +63,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }));
 
   function openModal(trigger){
-    console.log('Opening modal for:');
     lastFocused = document.activeElement;
     currentNoteIndex = Array.from(triggers).indexOf(trigger);
     currentImageIndex = 0;
@@ -76,16 +75,22 @@ document.addEventListener('DOMContentLoaded', function() {
     modal.style.display = 'flex'; // show it again
     document.addEventListener('keydown', handleKeyDown);
     document.body.style.overflow = 'hidden';
+
+    const modalBody = modal.querySelector('.lb-body');
+    if(modalBody) modalBody.scrollTop = 0;
+
+    const descInner = modal.querySelector('#lb-desc');
+    if(descInner) descInner.scrollTop = 0;
   }
 
   function closeModal(){
     modal.classList.remove('open');
-    modalOpen = false;
-    modal.setAttribute('aria-hidden', 'true');
+    modalOpen = false;    
+    //modal.setAttribute('aria-hidden', 'true');
     modal.style.display = 'none'; // ⬅ hides it completely
     document.removeEventListener('keydown', handleKeyDown);
     document.body.style.overflow = '';
-    if(lastFocused && typeof lastFocused.focus === 'function') lastFocused.unfocus();
+//    if(lastFocused && typeof lastFocused.focus === 'function') lastFocused.unfocus();
   }
 
   function showNote(noteIdx, imgIdx){
@@ -150,66 +155,5 @@ document.addEventListener('DOMContentLoaded', function() {
       else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
     }
   }
-
-    // Enable scrolling with mouse wheel even when scrollbar is hidden
-  document.addEventListener('wheel', function(e) {
-    if(modalOpen) return;
-    window.scrollBy(0, e.deltaY);
-  }, { passive: false });
-
-  // Enable scrolling with touch input even when scrollbar is hidden
-  let lastTouchY = null;
-  document.addEventListener('touchstart', function(e) {
-    if(modalOpen) return;
-    if (e.touches.length === 1) {
-      lastTouchY = e.touches[0].clientY;
-    }
-  }, { passive: false });
-
-  document.addEventListener('touchmove', function(e) {
-    if(modalOpen) return;
-    if (e.touches.length === 1 && lastTouchY !== null) {
-      const currentY = e.touches[0].clientY;
-      const deltaY = lastTouchY - currentY;
-      window.scrollBy(0, deltaY);
-      lastTouchY = currentY;
-      e.preventDefault();
-    }
-  }, { passive: false });
-
-  document.addEventListener('touchend', function(e) {
-    if(modalOpen) return;
-    lastTouchY = null;
-  }, { passive: false });
-
-  let touchStartX = 0;
-let touchEndX = 0;
-
-// Attach to the image container inside the modal
-const imgWrap = document.querySelector('.lb-image-wrap');
-
-imgWrap.addEventListener('touchstart', e => {
-  if (e.touches.length === 1) {
-    touchStartX = e.touches[0].clientX;
-  }
-}, { passive: true });
-
-imgWrap.addEventListener('touchend', e => {
-  if (e.changedTouches.length === 1) {
-    touchEndX = e.changedTouches[0].clientX;
-    handleSwipe();
-  }
-}, { passive: true });
-
-function handleSwipe() {
-  const swipeDistance = touchEndX - touchStartX;
-  if (Math.abs(swipeDistance) > 50) { // minimum swipe distance
-    if (swipeDistance > 0) {
-      prevImage(); // swipe right → previous image
-    } else {
-      nextImage(); // swipe left → next image
-    }
-  }
-}
 });
 </script>
