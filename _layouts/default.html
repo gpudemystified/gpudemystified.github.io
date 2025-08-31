@@ -130,6 +130,7 @@ function closeNewsletter() {
   newsletterModal.setAttribute("aria-hidden", "true");
   newsletterModal.style.display = "none";
   document.body.classList.remove("no-scroll");
+  document.body.style.overflow = ''; // restore scroll
 }
 
 newsletterClose.addEventListener("click", closeNewsletter);
