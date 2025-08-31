@@ -194,12 +194,12 @@ body {
 @media (max-width: 800px){
   .lb-body,
   .lb-image-wrap {
-    max-height: 96vh;
+    max-height: 90%;
   }
   .lb-body{
     flex-direction: column;
     height: auto;
-    max-height: 96vh;
+    max-height: 90%;
   }
   .lb-image-wrap{ flex: none; height: 100%; width: 100%;}
   .lb-image-wrap img{
