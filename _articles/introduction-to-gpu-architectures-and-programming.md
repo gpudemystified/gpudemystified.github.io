@@ -1,6 +1,6 @@
 ---
 layout: article
-title: "An Introduction to GPU Architecture and Programming"
+title: "An Introduction to GPU Architectures and Programming"
 description: "A step-by-step introduction to how GPUs work and how to program them with CUDA."
 image: "/assets/images/article1.jpg"
 topics:
@@ -92,15 +92,15 @@ CUDA is more than just a driver and an API for programming GPUs. It’s a comple
 
 To get started with CUDA, the easiest approach is to follow NVIDIA’s official installation guide [here](https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html). It will walk you through all the necessary steps.
 
-<details>
-  <summary>System Requirements</summary>  
+<details markdown="1">
+<summary>System Requirements</summary>
 
-  | Requirement | Description |
-  |-------------|-------------|
-  | GPU         | CUDA-capable NVIDIA GPU |
-  | OS          | Supported version of Microsoft Windows |
-  | IDE         | Supported version of Microsoft Visual Studio |
-  | Driver      | [NVIDIA driver](http://nvidia.com/drivers) |
+| Requirement | Description |
+|-------------|-------------|
+| GPU         | CUDA-capable NVIDIA GPU |
+| OS          | Supported version of Microsoft Windows |
+| IDE         | Supported version of Microsoft Visual Studio |
+| Driver      | [NVIDIA driver](http://nvidia.com/drivers) |
 
 </details>
 
@@ -158,7 +158,7 @@ int main() {
 You can compile the code by running:
 >nvcc hello.cu -o hello 
 
-<details>
+<details markdown="1">
   <summary>How NVCC works under the hood</summary>
   When you compile a CUDA program with nvcc, it goes through several stages to handle the CPU and GPU parts of your code.  
 
@@ -250,7 +250,7 @@ Believe it or not, that’s it! The `my_gpu_kernel` function runs on the GPU. If
 >Hello from the CPU!  
 >Hello from GPU!
 
-<details>
+<details markdown="1">
   <summary>Printing on the GPU, under the hood.</summary>  
   Of course, the GPU can’t directly print to the console. GPU printf statements are captured and buffered by the CUDA at runtime. The actual output is sent back to the host (CPU) and displayed in the console when the GPU completes its work.
 
@@ -392,8 +392,8 @@ int main() {
 }
 ```
 
-<details>
-  <summary><strong>Freeing the allocated memory</strong></summary>  
+<details markdown="1">
+  <summary>Freeing the allocated memory</summary>  
 
   After you’re done using GPU memory, it’s important to free it to avoid memory leaks. The CUDA counterpart to malloc is `cudaFree`, which releases memory previously allocated with `cudaMalloc`.
 
@@ -515,8 +515,8 @@ The Nsight CUDA Debugger can do much more than that: you can inspect SASS assemb
 
 If you want to find out more about it, check out the official docs: [NVIDIA Nsight Visual Studio Edition – CUDA Debugger](https://docs.nvidia.com/nsight-visual-studio-edition/cuda-debugger/).
 
-<details>
-  <summary><strong>CUDA Error checking</strong></summary>  
+<details markdown="1">
+  <summary>CUDA Error checking</summary>  
   It’s important to check for errors after launching kernels or calling CUDA runtime APIs. Otherwise, your program might silently fail without telling you why. CUDA provides a mechanism to report errors. Here’s a simple pattern you can use for that:  
 
   ``` c
@@ -649,8 +649,8 @@ __global__ void vectorAdd(int* A, int* B, int* C, int N) {
 }
 ```
 
-<details>
-  <summary><strong>Experimenting with the grid size.</strong></summary>  
+<details markdown="1">
+  <summary>Experimenting with the grid size.</summary>  
   I encourage you to experiment with the concept of grid:
 
   - How many threads are launched in total if you set the thread block size to 512 and launch 2 blocks?  
@@ -843,7 +843,7 @@ A warp is a set of 32 threads that run the same instruction at the same time. Th
   width: 100%;
   border: 1px solid #f08d54;
   border-radius:8px"/>
-<p> SIMD Unit </p>
+<p> Warps, explained </p>
 </div>
 
 But, as you may have noticed, as a programmer, you don’t work directly with warps when writing CUDA code—the hardware and driver handle that for you. The work (threads) you launch to the GPU is automatically grouped into warps behind the scenes. However, understanding how warps work is crucial if you want your code to run efficiently. For example:
