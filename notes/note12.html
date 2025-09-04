@@ -1,0 +1,30 @@
+<p>
+Kepler took efficiency to the next level. While keeping roughly the same number of SMs as Fermi, NVIDIA packed way more cores into each SMX, increased shared memory, and boosted throughput — all while consuming much less power — achieved by lowering the clock and unifying the core clock with the card clock.
+</p>
+
+<p>
+🌟 The new generation of the Streaming Multiprocessor, the SMX (Streaming Multiprocessor eXtension), is a beast. It could keep 64 warps in flight, with 192 CUDA cores, 64 Double Precision Cores, 32 SFUs, and 32 load/store units per SMX (GK110). Each SMX has 4 warp schedulers, with 2 dispatch units per scheduler, allowing multiple instructions to be issued per cycle. Deterministic instruction latencies also let the compiler provide scheduling info, reducing hardware complexity and saving power.
+</p>
+
+<p>
+Warp scheduling, shuffle instructions, and dynamic parallelism made the GPU smarter, faster, and more autonomous.
+</p>
+
+<h2>💡 Key Features</h2>
+<ul>
+<li>Dynamic Parallelism: The GPU can generate new work for itself, manage dependencies, and synchronize results, without CPU involvement</li>
+<li>Warp Shuffle (SHFL): Threads within a warp can share data directly without going through shared memory. This reduces latency and saves power. Improvements for algorithms such as FFT/Convolutions</li>
+<li>Advanced Warp Scheduling: Each SMX has 4 warp schedulers with 2 dispatch units per scheduler, allowing multiple instructions from the same warp to be scheduled for execution in the same cycle</li>
+<li>More cores, more memory on the SMX: Huge boost in performance per watt</li>
+</ul>
+
+<h2>⚙️ Kepler in Numbers</h2>
+<ul>
+<li>SMXs: 15 SMXs</li>
+<li>Threads: 64 warps/SMX → 2,048 threads/SMX → ~30,720 threads total</li>
+<li>Execution units: 192 CUDA cores + 64 DP FP + 32 SFUs + 32 LD/ST per SMX</li>
+<li>Peak compute: Up to 4.7 TFLOPs SP</li>
+<li>Shared memory: 128 KB per SMX</li>
+<li>L2 cache: 1.5 MB shared</li>
+<li>Global memory: 6 GB GDDR5, ~288 GB/s</li>
+</ul>
