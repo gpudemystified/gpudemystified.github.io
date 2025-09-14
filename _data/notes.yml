@@ -1,3 +1,17 @@
+- title: "NVIDIA Maxwell"
+  noteId: "note13"
+  descriptionUrl: "/notes/note13.html"
+  images:
+    - /assets/images/notes/13. NVIDIA Maxwell/1.png
+    - /assets/images/notes/13. NVIDIA Maxwell/2.png
+    - /assets/images/notes/13. NVIDIA Maxwell/3.png
+    - /assets/images/notes/13. NVIDIA Maxwell/4.png
+    - /assets/images/notes/13. NVIDIA Maxwell/5.png
+    - /assets/images/notes/13. NVIDIA Maxwell/6.png
+    - /assets/images/notes/13. NVIDIA Maxwell/7.png
+    - /assets/images/notes/13. NVIDIA Maxwell/8.png
+  
+
 - title: "NVIDIA Kepler"
   noteId: "note12"
   descriptionUrl: "/notes/note12.html"
