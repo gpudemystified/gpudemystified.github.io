@@ -1,3 +1,17 @@
+- title: "NVIDIA Pascal"
+  noteId: "note14"
+  descriptionUrl: "/notes/note14.html"
+  images:
+    - /assets/images/notes/14. NVIDIA Pascal/1.png
+    - /assets/images/notes/14. NVIDIA Pascal/2.png
+    - /assets/images/notes/14. NVIDIA Pascal/3.png
+    - /assets/images/notes/14. NVIDIA Pascal/4.png
+    - /assets/images/notes/14. NVIDIA Pascal/5.png
+    - /assets/images/notes/14. NVIDIA Pascal/6.png
+    - /assets/images/notes/14. NVIDIA Pascal/7.png
+    - /assets/images/notes/14. NVIDIA Pascal/8.png
+    - /assets/images/notes/14. NVIDIA Pascal/9.png
+
 - title: "NVIDIA Maxwell"
   noteId: "note13"
   descriptionUrl: "/notes/note13.html"
@@ -10,7 +24,6 @@
     - /assets/images/notes/13. NVIDIA Maxwell/6.png
     - /assets/images/notes/13. NVIDIA Maxwell/7.png
     - /assets/images/notes/13. NVIDIA Maxwell/8.png
-  
 
 - title: "NVIDIA Kepler"
   noteId: "note12"

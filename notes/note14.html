@@ -1,0 +1,16 @@
+<p>
+Built on the 16nm process (vs. 28nm on Maxwell), Pascal could fit more SMs on the same chip area — 54 vs. 26 on Maxwell (for datacenter GPUs) — delivering a massive boost in FLOPs.
+</p>
+
+<h3>⚙️ Key Upgrades</h3>
+<ul>
+<li>FP16 hardware support → 2× faster than FP32 using the same units, perfect for Deep Learning</li>
+<li>Dynamic load balancing → smarter scheduling for async compute tasks</li>
+<li>Specialized hardware for VR rendering</li>
+<li>Tesla P100 was the first GPU to use HBM2 memory</li>
+</ul>
+
+<h3>⚠️ Why FP16 mattered</h3>
+<p>
+Deep learning was exploding at the time. ML has a "simple" two-step flow — training (the network learns from data) and inference (the trained network processes new inputs). Neural nets are tolerant to small numerical errors, so lower precision (FP16) reduces memory use, speeds up math, and lets you train/deploy larger models. Pascal’s FP16 support was the first step toward Tensor Cores, which arrive in the next architecture.
+</p>
