@@ -109,7 +109,7 @@
 }
 
 .challenge-run-button {
-    background: #4CAF50;
+    background: #00bf63;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -118,7 +118,7 @@
 }
 
 .challenge-run-button:hover {
-    background: #45a049;
+    background: #ff6500;
 }
 
 .challenge-modal-close {
