@@ -6,29 +6,31 @@ function openChallenge(challengeId) {
     const challenge = mockChallenges.find(c => c.id === challengeId);
     if (!challenge) return;
 
-    // Update modal content
+    // Update title and points
     document.getElementById('challenge-title').textContent = challenge.title;
-    document.getElementById('challenge-description').textContent = challenge.description;
+    document.getElementById('modal-challenge-points').textContent = `+${challenge.points}`;
+    
+    // Update tags and description
     document.getElementById('challenge-tags').innerHTML = challenge.tags
         .map(tag => `<span class="tag ${tag.toLowerCase()}">${tag}</span>`)
         .join('');
+    document.getElementById('challenge-description').textContent = challenge.description;
 
-    // Update editor content
+    // Update editor content if it exists
     if (editor) {
         editor.setValue(challenge.code);
+        requestAnimationFrame(() => {
+            editor.layout();
+            editor.focus();
+        });
     }
-
-    // Clear output
-    document.getElementById('output').textContent = '';
 
     // Show modal
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 
-    // Trigger editor resize
-    if (editor) {
-        setTimeout(() => editor.layout(), 100);
-    }
+    // Clear output
+    document.getElementById('output').textContent = '';
 }
 
 function closeModal() {

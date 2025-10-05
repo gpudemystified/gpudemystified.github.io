@@ -170,3 +170,33 @@
     color: #ffd700;
     font-size: 1rem;
 }
+
+.modal-challenge-title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Push items to edges */
+    gap: 1rem;
+    width: 100%; /* Ensure full width */
+}
+
+.modal-challenge-title-wrapper h2 {
+    margin: 0;
+    flex: 1; /* Allow title to take remaining space */
+}
+
+.modal-challenge-points {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 16px;
+    background: #e0f7e0;
+    color: #2c662d;
+    font-weight: 500;
+    white-space: nowrap;
+    margin-left: auto; /* Push to the right */
+}
+
+.modal-challenge-points i {
+    color: #ffd700;
+}
