@@ -53,6 +53,16 @@
     padding: 2rem;
     border-right: 1px solid #eee;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 1.5rem;  /* Add space between flex items */
+}
+
+.challenge-description {
+    flex: 1;  /* Allow description to take remaining space */
+    overflow-y: auto;  /* Enable scrolling for long descriptions */
+    margin: 0;  /* Remove default margins */
 }
 
 .challenge-workspace {
@@ -130,4 +140,33 @@
     font-size: 1.5rem;
     cursor: pointer;
     z-index: 1002;
+}
+
+.hint-button {
+    margin-top: auto;  /* Push to bottom */
+    margin-bottom: 4rem;  /* Add some bottom space */
+    display: flex;
+    align-items: center;
+    justify-content: center;  /* Center content */
+    gap: 0.5rem;
+    width: 100%;  /* Take full width */
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    background: #f0f0f0;
+    color: #666;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hint-button:hover {
+    background: #e0e0e0;
+    transform: translateY(-1px);
+}
+
+.hint-button i {
+    color: #ffd700;
+    font-size: 1rem;
 }
