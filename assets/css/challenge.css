@@ -24,6 +24,10 @@
     cursor: pointer;
     height: 200px;
     overflow: hidden;
+    
+    /* Add flexbox for vertical layout */
+    display: flex;
+    flex-direction: column;
 }
 
 .challenge-card:hover {
@@ -32,19 +36,42 @@
     outline: 2px solid #ff6500;
 }
 
+.challenge-card h3 {
+    height: 30%;
+    margin: 0;
+    font-size: 1.35rem;
+    line-height: 1.4;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
+
+.challenge-card p {
+    height: 50%;
+    margin: 0.5rem 0;
+    line-height: 1.5;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    font-size: 1rem;
+}
+
 .challenge-tags {
+    height: 20%;
+    margin-top: auto; /* Push to bottom */
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
-    margin-top: 1rem;
+    align-items: flex-end;
 }
 
 .tag {
-    background: #f0f0f0;
     padding: 0.25rem 0.75rem;
     border-radius: 16px;
     font-size: 0.875rem;
-    color: #666;
+    white-space: nowrap;
+    background: #f0f0f0;  /* Default light gray background */
+    color: #666;         /* Default text color */
 }
 
 .tag.beginner { background: #e0f7e0; color: #2c662d; }
