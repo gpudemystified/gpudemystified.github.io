@@ -1,0 +1,40 @@
+---
+layout: default
+title: Challenge
+---
+
+<link rel="stylesheet" href="{{ '/assets/css/challenge.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/css/modal.css' | relative_url }}">
+
+<main class="challenges-container">
+    <div id="challenges-grid" class="challenges-grid"></div>
+</main>
+
+<div id="challengeModal" class="modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <button class="modal-close">&times;</button>
+        <div class="modal-body">
+            <div class="challenge-details">
+                <h2 id="challenge-title"></h2>
+                <p id="challenge-description"></p>
+                <div id="challenge-tags"></div>
+            </div>
+            <div class="challenge-workspace">
+                <div id="monaco-editor"></div>
+                <div class="output-panel">
+                    <div class="output-header">
+                        <h3>Output</h3>
+                        <button id="runCode" class="run-button">▶ Run</button>
+                    </div>
+                    <pre id="output"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+<script src="{{ '/assets/js/challenges.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/editor.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/modal.js' | relative_url }}"></script>
