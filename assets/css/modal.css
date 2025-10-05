@@ -1,3 +1,9 @@
+:root{
+    --lb-overlay: rgba(0,0,0,0.75);
+    --lb-bg: #fff;
+    --lb-radius: 8px;
+}
+
 .challenge-modal {
     display: none;
     position: fixed;
@@ -20,20 +26,21 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(4px);
+    background: var(--lb-overlay);
+    backdrop-filter: blur(2px);
 }
 
 .challenge-modal-content {
     position: relative;
-    width: 90%;
+    width: 75%;
     height: 90%;
-    background: white;
-    border-radius: 12px;
+    background: var(--lb-bg);
+    border-radius: var(--lb-radius);
     z-index: 1001;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
 .challenge-modal-body {
@@ -42,28 +49,14 @@
 }
 
 .challenge-details {
-    width: 30%;
+    width: 28%;
     padding: 2rem;
     border-right: 1px solid #eee;
     overflow-y: auto;
 }
 
 .challenge-workspace {
-    width: 70%;
-    display: flex;
-    flex-direction: column;
-    padding: 2rem;
-}
-
-.challenge-details {
-    width: 30%;
-    padding: 2rem;
-    border-right: 1px solid #eee;
-    overflow-y: auto;
-}
-
-.challenge-workspace {
-    width: 70%;
+    width: 72%;
     display: flex;
     flex-direction: column;
     padding: 2rem;
@@ -100,24 +93,6 @@
 
 .run-button:hover {
     background: #45a049;
-}
-
-.modal-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    z-index: 1002;
-}
-
-#monaco-editor {
-    height: 70%;
-    border-bottom: 1px solid #eee;
-    border-radius: 4px;
-    margin-bottom: 1rem;
 }
 
 .challenge-output-panel {

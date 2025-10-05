@@ -4,7 +4,7 @@ const mockChallenges = [
         title: "Vector Addition",
         description: "Add two vectors element-wise on the GPU.",
         tags: ["CUDA", "Beginner"],
-        code: "__global__ void vectorAdd(float *A, float *B, float *C, int N) {\n    int i = blockIdx.x * blockDim.x + threadIdx.x;\n    if (i < N) C[i] = A[i] + B[i];\n}"
+        code: "#include <cuda_runtime.h> \n\n__global__ void vectorAdd(float *A, float *B, float *C, int N) {\n    int i = blockIdx.x * blockDim.x + threadIdx.x;\n    if (i < N) C[i] = A[i] + B[i];\n}"
     },
     {
         id: "matrix_multiplication",
