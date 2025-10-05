@@ -1,5 +1,6 @@
 const modal = document.getElementById('challengeModal');
 const closeBtn = document.querySelector('.challenge-modal-close');
+const overlay = modal.querySelector('.challenge-modal-overlay');
 const runBtn = document.getElementById('runCode');
 
 function openChallenge(challengeId) {
@@ -37,6 +38,8 @@ function closeModal() {
     modal.classList.remove('active');
     document.body.style.overflow = '';
 }
+
+overlay.addEventListener('click', closeModal);
 
 closeBtn.addEventListener('click', closeModal);
 modal.addEventListener('click', e => {
