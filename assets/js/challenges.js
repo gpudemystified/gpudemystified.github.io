@@ -25,23 +25,56 @@ const mockChallenges = [
     }
 ];
 
+let cachedChallenges = null;
+
 async function getChallenges() {
+    if (cachedChallenges) {
+        return cachedChallenges;
+    }
+
     try {
         const response = await fetch('http://localhost:8000/challenges');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+        cachedChallenges = data;
         return data;
     } catch (error) {
         console.warn('Failed to fetch challenges, using mock data:', error);
+        cachedChallenges = mockChallenges;
         return mockChallenges;
     }
 }
 
+function sortChallenges(challenges, sortBy) {
+    if (sortBy === 'default') {
+        return challenges; // Return original order
+    }
+
+    return [...challenges].sort((a, b) => {
+        switch (sortBy) {
+            case 'name':
+                return a.title.localeCompare(b.title);
+            case 'points':
+                return b.points - a.points;
+            case 'difficulty':
+                const difficultyOrder = { 'Beginner': 1, 'Intermediate': 2, 'Advanced': 3 };
+                const aDifficulty = a.tags.find(tag => difficultyOrder[tag]) || 'Beginner';
+                const bDifficulty = b.tags.find(tag => difficultyOrder[tag]) || 'Beginner';
+                return difficultyOrder[aDifficulty] - difficultyOrder[bDifficulty];
+            default:
+                return 0;
+        }
+    });
+}
+
 async function renderChallenges() {
     const grid = document.getElementById('challenges-grid');
-    const challenges = await getChallenges();
+    const sortSelect = document.getElementById('sortSelect');
+    
+    // Use cached challenges if available
+    const challenges = sortChallenges(await getChallenges(), sortSelect.value);
 
     grid.innerHTML = challenges.map(challenge => `
         <div class="challenge-card" data-id="${challenge.id}" onclick="openChallenge('${challenge.id}')">
@@ -60,6 +93,15 @@ async function renderChallenges() {
     `).join('');
 }
 
+// Add function to force refresh challenges
+async function refreshChallenges() {
+    cachedChallenges = null;
+    await renderChallenges();
+}
+
+// Add event listener for sort changes
+document.getElementById('sortSelect').addEventListener('change', renderChallenges);
+
 async function getChallengeById(challengeId) {
     try {
         const response = await fetch(`http://localhost:8000/challenges/${challengeId}`);
@@ -76,6 +118,7 @@ async function getChallengeById(challengeId) {
 // Make functions available globally
 window.getChallengeById = getChallengeById;
 window.renderChallenges = renderChallenges;
+window.refreshChallenges = refreshChallenges;
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', renderChallenges);

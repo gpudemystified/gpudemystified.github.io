@@ -100,3 +100,23 @@
 .tag.intermediate { background: #fff3e0; color: #966600; }
 .tag.advanced { background: #ffe0e0; color: #662c2c; }
 .tag.cuda { background: #76b900; color: #1a1a1a; }
+
+.challenges-controls {
+    
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sort-select {
+    
+    border-radius: 8px;
+    border: 1px solid #eee;
+    background: white;
+    font-size: 0.875rem;
+    cursor: pointer;
+    outline: none;
+}
+
+.sort-select:hover {
+    border-color: #ddd;
+}
