@@ -10,11 +10,11 @@ title: Challenge
     <div id="challenges-grid" class="challenges-grid"></div>
 </main>
 
-<div id="challengeModal" class="modal">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-        <button class="modal-close">&times;</button>
-        <div class="modal-body">
+<div id="challengeModal" class="challenge-modal">
+    <div class="challenge-modal-overlay"></div>
+    <div class="challenge-modal-content">
+        <button class="challenge-modal-close">&times;</button>
+        <div class="challenge-modal-body">
             <div class="challenge-details">
                 <h2 id="challenge-title"></h2>
                 <p id="challenge-description"></p>
@@ -22,10 +22,10 @@ title: Challenge
             </div>
             <div class="challenge-workspace">
                 <div id="monaco-editor"></div>
-                <div class="output-panel">
-                    <div class="output-header">
+                <div class="challenge-output-panel">
+                    <div class="challenge-output-header">
                         <h3>Output</h3>
-                        <button id="runCode" class="run-button">▶ Run</button>
+                        <button id="runCode" class="challenge-run-button">▶ Run</button>
                     </div>
                     <pre id="output"></pre>
                 </div>

@@ -98,3 +98,104 @@
     cursor: pointer;
     z-index: 1002;
 }
+
+.challenge-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+.challenge-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.challenge-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+}
+
+.challenge-modal-content {
+    position: relative;
+    width: 90%;
+    height: 90%;
+    background: white;
+    border-radius: 12px;
+    z-index: 1001;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.challenge-modal-body {
+    display: flex;
+    height: 100%;
+}
+
+.challenge-details {
+    width: 30%;
+    padding: 2rem;
+    border-right: 1px solid #eee;
+    overflow-y: auto;
+}
+
+.challenge-workspace {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+}
+
+#monaco-editor {
+    height: 70%;
+    border-bottom: 1px solid #eee;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.challenge-output-panel {
+    height: 30%;
+    background: #f8f8f8;
+    padding: 1rem;
+}
+
+.challenge-output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.challenge-run-button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.challenge-run-button:hover {
+    background: #45a049;
+}
+
+.challenge-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1002;
+}

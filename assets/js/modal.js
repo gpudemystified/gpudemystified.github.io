@@ -1,5 +1,5 @@
 const modal = document.getElementById('challengeModal');
-const closeBtn = document.querySelector('.modal-close');
+const closeBtn = document.querySelector('.challenge-modal-close');
 const runBtn = document.getElementById('runCode');
 
 function openChallenge(challengeId) {
