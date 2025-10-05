@@ -28,12 +28,33 @@
     /* Add flexbox for vertical layout */
     display: flex;
     flex-direction: column;
+    position: relative;  /* For absolute positioning of points */
 }
 
 .challenge-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     outline: 2px solid #ff6500;
+}
+
+.challenge-points {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.25rem 0.5rem;
+    border-radius: 16px;
+    font-weight: 500;
+    color: #2c662d;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.challenge-points i {
+    font-size: 0.875rem;
+    color: #ffd700;  /* Gold color for the star icon */
 }
 
 .challenge-card h3 {
@@ -44,6 +65,7 @@
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
+    padding-right: 4rem;  /* Make space for points display */
 }
 
 .challenge-card p {
