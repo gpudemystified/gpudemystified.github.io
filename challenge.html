@@ -7,6 +7,12 @@ title: Challenge
 <link rel="stylesheet" href="{{ '/assets/css/modal.css' | relative_url }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+<!-- Markdown, Syntax Highlighting, and LaTeX Support -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+
 <main class="challenges-container">
      <div class="challenges-controls">
         <select id="sortSelect" class="sort-select">
@@ -33,7 +39,7 @@ title: Challenge
                     </div>
                 </div>
                 <div id="challenge-tags"></div>
-                <p id="challenge-description"></p>
+                <div id="challenge-description" class="markdown-body"></div>
                 <button class="hint-button">
                     <i class="fas fa-lightbulb"></i>
                     Get hint (-1 point)

@@ -3,23 +3,44 @@ const closeBtn = document.querySelector('.challenge-modal-close');
 const overlay = modal.querySelector('.challenge-modal-overlay');
 const runBtn = document.getElementById('runCode');
 
-let currentChallengeId = null;  // Add this at the top to track current challenge
+let currentChallengeId = null;
+
+function setupMarked() {
+    marked.use({
+        mangle: false,
+        headerIds: false,
+        highlight: function(code, lang) {
+            if (lang && hljs.getLanguage(lang)) {
+                return hljs.highlight(code, {language: lang}).value;
+            }
+            return hljs.highlightAuto(code).value;
+        }
+    });
+}
 
 async function openChallenge(challengeId) {
-    currentChallengeId = challengeId;  // Store the current challenge ID
-    console.log("Opening challenge:", challengeId);
     const challenge = await getChallengeById(challengeId);
     if (!challenge) return;
+
+    currentChallengeId = challengeId;
 
     // Update title and points
     document.getElementById('challenge-title').textContent = challenge.title;
     document.getElementById('modal-challenge-points').textContent = `+${challenge.points}`;
     
-    // Update tags and description
+    // Update tags
     document.getElementById('challenge-tags').innerHTML = challenge.tags
         .map(tag => `<span class="tag ${tag.toLowerCase()}">${tag}</span>`)
         .join('');
-    document.getElementById('challenge-description').textContent = challenge.description || challenge.short_description;
+    
+    // Render markdown description using marked.parse()
+    const descriptionHtml = marked.parse(challenge.description || '');
+    document.getElementById('challenge-description').innerHTML = descriptionHtml;
+
+    // Render math expressions
+    if (window.MathJax) {
+        MathJax.typesetPromise([document.getElementById('challenge-description')]);
+    }
 
     // Update editor content if it exists
     if (editor) {
@@ -87,3 +108,6 @@ document.addEventListener('keydown', e => {
         closeModal();
     }
 });
+
+// Initialize marked when the page loads
+document.addEventListener('DOMContentLoaded', setupMarked);
