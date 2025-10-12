@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="{{ '/assets/css/markdown_light.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/syntax.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/notes.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/auth_modal.css' | relative_url }}">
 </head>
 
 <!-- Google tag (gtag.js) -->
@@ -21,93 +22,164 @@
 </script>
 
 <body>
-  <header class="site-header">
-  <div class="header-top">
-    <img src="/assets/images/Logo.jpg" alt="Logo" class="logo" />
-    <div class="site-title-desc">
-      <h1 class="site-name">gpudemystified</h1>
-      <p class="site-description">GPU Architectures & Programming.
-        CUDA, NVIDIA & AMD Architectures | Algorithms | GPU Optimization — all demystified 🔍</p>
+    <div class="header-container">
+        <button class="login-btn" id="login-btn">Login</button>
+        <header class="site-header">
+        <div class="header-top">
+          <img src="/assets/images/Logo.jpg" alt="Logo" class="logo" />
+          <div class="site-title-desc">
+            <h1 class="site-name">gpudemystified</h1>
+            <p class="site-description">GPU Architectures & Programming.
+              CUDA, NVIDIA & AMD Architectures | Algorithms | GPU Optimization — all demystified 🔍</p>
+          
     
-
-    <div class="social-logos-row">
-  <div class="social-logos">
-    <a href="https://www.linkedin.com/in/galazar/" target="_blank" rel="noopener">
-      <img src="/assets/images/linkedin.svg" alt="LinkedIn" class="social_logo">
-    </a>
-    <a href="https://www.instagram.com/gpudemystified/" target="_blank" rel="noopener">
-      <img src="/assets/images/instagram.svg" alt="Instagram" class="social_logo">
-    </a>
-    <!-- <a href="https://github.com/gpudemystified" target="_blank" rel="noopener">
-      <img src="/assets/images/github.svg" alt="GitHub" class="social_logo">
-    </a> -->
-    <a href="mailto:contact@gpudemystified.com" target="_blank" rel="noopener">
-      <img src="/assets/images/gmail.svg" alt="Email" class="social_logo">
-    </a>
-  </div>
-  <button class="subscribe-btn" id="subscribe-btn">Newsletter</button>
-</div>
-</div>
-  </div>
-
-  <nav class="main-nav">
-    <ul>
-        <li>
-      <a href="/index"
-         class="nav-link {% if page.url contains 'articles' or page.url == '/' %}active{% endif %}"
-         onclick="gtag('event', 'nav_click_articles', { event_category: 'navigation', event_label: 'Articles' });">
-         Articles
-      </a>
-    </li>
-    <li>
-      <a href="/notes"
-         class="nav-link {% if page.url contains 'notes' %}active{% endif %}"
-         onclick="gtag('event', 'nav_click_notes', { event_category: 'navigation', event_label: 'Notes' });">
-         Notes
-      </a>
-    </li>
-    <!-- <li>
-      <a href="/challenge"
-         class="nav-link {% if page.url contains 'challenge' %}active{% endif %}"
-         onclick="gtag('event', 'nav_click_challenges', { event_category: 'navigation', event_label: 'Challenges' });">
-         Challenges
-      </a>
-    </li> -->
-    </ul>
-  </nav>
-
-  <hr class="header-divider" />
-</header>
-
-<main>
-  {{ content }}
-
-<!-- Newsletter Modal -->
-<div id="newsletterModal" class="lb-modal" role="dialog" aria-modal="true" aria-hidden="true">
-  <div class="lb-overlay" data-close></div>
-  <div class="lb-content" role="document" aria-labelledby="lb-title" aria-describedby="lb-desc">
-    <button class="lb-close" aria-label="Close (Esc)" title="Close">&times;</button>
-  
-     <div class="lb-text newsletter-content" id="newsletter-desc"> 
-      <h2 id="newsletter-title">Subscribe the newsletter</h2> 
-      <p class="lb-description">Monthly, curated GPU-related stuff</p>
-       <div class="newsletter-form"> 
-        <input type="email" id="newsletter-email" placeholder="Enter your email" /> 
-        <button id="newsletter-submit" disabled>Coming soon</button> 
-       <div id="thankyou-wrapper" style="display:none; justify-content:center; margin-top:1rem;">
-          <button id="newsletter-thankyou">Thank you!</button>
+          <div class="social-logos-row">
+        <div class="social-logos">
+          <a href="https://www.linkedin.com/in/galazar/" target="_blank" rel="noopener">
+            <img src="/assets/images/linkedin.svg" alt="LinkedIn" class="social_logo">
+          </a>
+          <a href="https://www.instagram.com/gpudemystified/" target="_blank" rel="noopener">
+            <img src="/assets/images/instagram.svg" alt="Instagram" class="social_logo">
+          </a>
+          <!-- <a href="https://github.com/gpudemystified" target="_blank" rel="noopener">
+            <img src="/assets/images/github.svg" alt="GitHub" class="social_logo">
+          </a> -->
+          <a href="mailto:contact@gpudemystified.com" target="_blank" rel="noopener">
+            <img src="/assets/images/gmail.svg" alt="Email" class="social_logo">
+          </a>
+        </div>
+        <button class="subscribe-btn" id="subscribe-btn">Newsletter</button>
       </div>
-      </div> 
-   
+      </div>
+        </div>
+
+        <nav class="main-nav">
+          <ul>
+              <li>
+            <a href="/index"
+               class="nav-link {% if page.url contains 'articles' or page.url == '/' %}active{% endif %}"
+               onclick="gtag('event', 'nav_click_articles', { event_category: 'navigation', event_label: 'Articles' });">
+               Articles
+            </a>
+          </li>
+          <li>
+            <a href="/notes"
+               class="nav-link {% if page.url contains 'notes' %}active{% endif %}"
+               onclick="gtag('event', 'nav_click_notes', { event_category: 'navigation', event_label: 'Notes' });">
+               Notes
+            </a>
+          </li>
+          <!-- <li>
+            <a href="/challenge"
+               class="nav-link {% if page.url contains 'challenge' %}active{% endif %}"
+               onclick="gtag('event', 'nav_click_challenges', { event_category: 'navigation', event_label: 'Challenges' });">
+               Challenges
+            </a>
+          </li> -->
+          </ul>
+        </nav>
+
+        <hr class="header-divider" />
+      </header>
+    </div>
+
+  <main>
+    {{ content }}
+
+  <!-- Newsletter Modal -->
+  <div id="newsletterModal" class="lb-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="lb-overlay" data-close></div>
+    <div class="lb-content" role="document" aria-labelledby="lb-title" aria-describedby="lb-desc">
+      <button class="lb-close" aria-label="Close (Esc)" title="Close">&times;</button>
+    
+       <div class="lb-text newsletter-content" id="newsletter-desc"> 
+        <h2 id="newsletter-title">Subscribe the newsletter</h2> 
+        <p class="lb-description">Monthly, curated GPU-related stuff</p>
+         <div class="newsletter-form"> 
+          <input type="email" id="newsletter-email" placeholder="Enter your email" /> 
+          <button id="newsletter-submit" disabled>Coming soon</button> 
+         <div id="thankyou-wrapper" style="display:none; justify-content:center; margin-top:1rem;">
+            <button id="newsletter-thankyou">Thank you!</button>
+        </div>
+        </div> 
+     
+      </div>
     </div>
   </div>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="auth-modal">
+    <div class="auth-modal-overlay"></div>
+    <div class="auth-modal-content">
+        <button class="auth-modal-close">&times;</button>
+        <div class="auth-tabs">
+            <button class="auth-tab active" data-tab="signin">Sign In</button>
+            <button class="auth-tab" data-tab="register">Register</button>
+        </div>
+        
+        <div class="auth-form-container">
+            <!-- Sign In Form -->
+            <form id="signinForm" class="auth-form active">
+                <div class="auth-social">
+                    <button type="button" class="auth-social-btn github">
+                        <i class="fab fa-github"></i>
+                        Continue with GitHub
+                    </button>
+                    <button type="button" class="auth-social-btn google">
+                        <i class="fab fa-google"></i>
+                        Continue with Google
+                    </button>
+                </div>
+                
+                <div class="auth-divider">
+                    <span>or</span>
+                </div>
+                
+                <div class="auth-input-group">
+                    <input type="email" placeholder="Email" required>
+                </div>
+                <div class="auth-input-group">
+                    <input type="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="auth-submit">Sign In</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form">
+                <div class="auth-social">
+                    <button type="button" class="auth-social-btn github">
+                        <i class="fab fa-github"></i>
+                        Sign up with GitHub
+                    </button>
+                    <button type="button" class="auth-social-btn google">
+                        <i class="fab fa-google"></i>
+                        Sign up with Google
+                    </button>
+                </div>
+                
+                <div class="auth-divider">
+                    <span>or</span>
+                </div>
+                
+                <div class="auth-input-group">
+                    <input type="email" placeholder="Email" required>
+                </div>
+                <div class="auth-input-group">
+                    <input type="password" placeholder="Password" required>
+                </div>
+                <div class="auth-input-group">
+                    <input type="password" placeholder="Confirm Password" required>
+                </div>
+                <button type="submit" class="auth-submit">Create Account</button>
+            </form>
+        </div>
+    </div>
 </div>
 
 </main>
 
 </body>
-</html>
-
+<script src="{{ '/assets/js/auth_modal.js' | relative_url }}"></script>
 <script>
 
 const newsletterBtn = document.getElementById("subscribe-btn"); // your button
