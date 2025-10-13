@@ -141,16 +141,14 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Updating UI for user:', user);
 
         try {
-            // First try to fetch existing profile
-             const { data: profile, error } = await window.supabaseClient
-            .from('profiles')
-            .select('hints_count, is_pro, submissions_count')
-            .eq('id', user.id)
-            .single();
+            const { data: profile, error } = await window.supabaseClient
+                .from('profiles')
+                .select('is_pro, submissions_count, hints_count, points')
+                .eq('id', user.id)
+                .single();
 
             if (error) throw error;
 
-           
             console.log('Using profile:', profile);
 
             // Update UI
@@ -162,13 +160,13 @@ document.addEventListener('DOMContentLoaded', () => {
             accountBadge.textContent = profile.is_pro ? 'Pro' : 'Basic';
             accountBadge.className = `account-badge ${profile.is_pro ? 'pro' : 'basic'}`;
 
-            // Update stats with nullish coalescing
+            // Update stats
             document.getElementById('submissions-count').textContent = profile.submissions_count ?? 0;
             document.getElementById('hints-count').textContent = profile.hints_count ?? 50;
+            document.getElementById('points-count').textContent = profile.points ?? 0;
 
         } catch (error) {
             console.error('Profile management error:', error);
-            // Keep the login button visible in case of error
             loginBtn.style.display = 'block';
             userStats.style.display = 'none';
         }

@@ -216,6 +216,7 @@ body {
     gap: 0.5rem;
     color: #666;
     font-size: 0.9rem;
+    padding: 0.25rem 0.5rem;
 }
 
 .stat-item i.fa-lightbulb {
@@ -224,6 +225,10 @@ body {
 
 .stat-item i.fa-code {
     color: #00bf63;
+}
+
+.stat-item i.fa-star {
+    color: #FFD700;  /* Gold color for the star */
 }
 
 .logout-btn {
