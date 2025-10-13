@@ -137,16 +137,29 @@
 }
 
 .challenge-run-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+   
     background: #00bf63;
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1.5rem;
     border-radius: 4px;
     cursor: pointer;
 }
 
 .challenge-run-button:hover {
     background: #ff6500;
+}
+
+.challenge-run-button i {
+    font-size: 1rem;
+    color: inherit;
+}
+
+.challenge-run-button.disabled i {
+    opacity: 0.5;
 }
 
 .challenge-modal-close {
