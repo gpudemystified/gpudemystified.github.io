@@ -354,60 +354,50 @@ require(['vs/editor/editor.main'], function() {
         document.body.style.overflow = '';
     });
 
-    // Replace the compile button click handler with this updated version
+    // Update the compile button click handler
     compileBtn.addEventListener('click', async () => {
         const output = document.getElementById('output');
         const code = sourceEditor.getValue();
-
-        // Sample assembly and mapping for testing
-        const sampleAssembly = `
-.visible .entry example(float*)
-{
-    .reg .f32   %f<3>;
-    .reg .b32   %r<5>;
-    
-    ld.param.u64    %rd1, [example_param_0];
-    mov.u32         %r1, %ctaid.x;
-    mov.u32         %r2, %ntid.x;
-    mov.u32         %r3, %tid.x;
-    mad.lo.s32      %r4, %r1, %r2, %r3;
-    mul.wide.u32    %rd2, %r4, 4;
-    add.u64         %rd3, %rd1, %rd2;
-    ld.global.f32   %f1, [%rd3];
-    mul.f32         %f2, %f1, 2f;
-    st.global.f32   [%rd3], %f2;
-    ret;
-}`;
-
-        // Sample mapping of source lines to assembly lines
-        const sampleMapping = {
-            2: [7, 8, 9, 10],  // idx calculation maps to register moves
-            3: [11, 12, 13, 14] // data modification maps to memory operations
-        };
 
         try {
             const response = await fetch('http://localhost:8000/compile', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code })
+                body: JSON.stringify({ 
+                    code: code,
+                    generate_sass: false,
+                    debug: true  // Enable debug info
+                })
             });
 
             if (response.ok) {
                 const data = await response.json();
-                output.textContent = data.message || 'Compilation successful';
-                assemblyEditor.setValue(data.assembly || sampleAssembly);
-                setupHighlighting(data.mapping || sampleMapping);
+                console.log('PTX output:', data.ptx);
+                console.log('Line mapping:', data.line_mapping);
+                console.log('Line info available:', data.line_info);
+
+                if (data.success) {
+                    assemblyEditor.setValue(data.ptx);
+                    
+                    if (data.line_mapping && data.line_info) {
+                        // Log each source line and its corresponding PTX lines
+                        Object.entries(data.line_mapping).forEach(([sourceLine, ptxLines]) => {
+                            console.log(`Source line ${sourceLine} maps to PTX lines:`, ptxLines);
+                        });
+                        setupHighlighting(data.line_mapping);
+                    }
+                    
+                    output.textContent = 'Compilation successful';
+                } else {
+                    output.textContent = data.error || 'Compilation failed';
+                }
             } else {
-                console.log('Server unavailable, using sample data');
-                output.textContent = 'Server offline - using sample assembly';
-                assemblyEditor.setValue(sampleAssembly);
-                setupHighlighting(sampleMapping);
+                const errorData = await response.json();
+                output.textContent = `Compilation failed: ${errorData.detail || 'Unknown error'}`;
             }
         } catch (error) {
-            console.log('Server unreachable, using sample data:', error);
-            output.textContent = 'Server offline - using sample assembly';
-            assemblyEditor.setValue(sampleAssembly);
-            setupHighlighting(sampleMapping);
+            console.error('Error during compilation:', error);
+            output.textContent = `Error: ${error.message}`;
         }
     });
 
@@ -421,27 +411,47 @@ require(['vs/editor/editor.main'], function() {
         let currentSourceDecorations = [];
         let currentAssemblyDecorations = [];
 
+        // Create a reverse mapping from PTX lines to source lines
+        const ptxToSourceMap = new Map();
+        let currentSourceLine = null;
+        
+        // Parse the PTX to find .loc directives
+        const ptxLines = assemblyEditor.getValue().split('\n');
+        ptxLines.forEach((line, index) => {
+            const locMatch = line.match(/\.loc\s+1\s+(\d+)\s+\d+/);
+            if (locMatch) {
+                currentSourceLine = parseInt(locMatch[1]);
+            }
+            if (currentSourceLine) {
+                ptxToSourceMap.set(index + 1, currentSourceLine);
+            }
+        });
+
         // Add mouse move handler for source editor
         sourceEditor.onMouseMove(e => {
             if (!e.target.position) return;
 
-            const lineNumber = e.target.position.lineNumber;
-            const assemblyLines = mapping[lineNumber];
+            const sourceLine = e.target.position.lineNumber;
+            
+            // Find all PTX lines that correspond to this source line
+            const ptxLines = Array.from(ptxToSourceMap.entries())
+                .filter(([_, sLine]) => sLine === sourceLine)
+                .map(([pLine, _]) => pLine);
 
-            if (assemblyLines) {
-                // Remove previous decorations
+            if (ptxLines.length > 0) {
+                // Highlight source line
                 currentSourceDecorations = sourceEditor.deltaDecorations(currentSourceDecorations, [{
-                    range: new monaco.Range(lineNumber, 1, lineNumber, 1),
+                    range: new monaco.Range(sourceLine, 1, sourceLine, 1),
                     options: {
                         isWholeLine: true,
                         className: 'highlighted-line'
                     }
                 }]);
 
-                // Highlight assembly lines
+                // Highlight all corresponding PTX lines
                 currentAssemblyDecorations = assemblyEditor.deltaDecorations(
                     currentAssemblyDecorations,
-                    assemblyLines.map(line => ({
+                    ptxLines.map(line => ({
                         range: new monaco.Range(line, 1, line, 1),
                         options: {
                             isWholeLine: true,
