@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="{{ '/assets/css/syntax.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/notes.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/auth_modal.css' | relative_url }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="{{ '/assets/js/auth_modal.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/supabase-config.js' | relative_url }}"></script>
@@ -27,6 +28,21 @@
 <body>
     <div class="header-container">
         <button class="login-btn" id="login-btn">Login</button>
+        <div class="user-stats" id="user-stats" style="display: none;">
+            <span class="account-badge" id="account-badge">Basic</span>
+            <div class="stat-item">
+                <span id="submissions-count">0</span>
+                <i class="fas fa-code"></i>
+            </div>
+            <div class="stat-item">
+                <span id="hints-count">0</span>
+                <i class="fas fa-lightbulb"></i>
+            </div>
+            <button class="logout-btn" id="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </button>
+        </div>
         <header class="site-header">
         <div class="header-top">
           <img src="/assets/images/Logo.jpg" alt="Logo" class="logo" />

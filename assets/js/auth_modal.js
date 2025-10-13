@@ -135,28 +135,72 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Update UI when user is authenticated
-    function updateUIForAuthenticatedUser(user) {
+    async function updateUIForAuthenticatedUser(user) {
         const loginBtn = document.getElementById('login-btn');
-        loginBtn.textContent = 'Logout';
-        loginBtn.removeEventListener('click', openAuthModal);
-        loginBtn.addEventListener('click', handleLogout);
+        const userStats = document.getElementById('user-stats');
+        console.log('Updating UI for user:', user);
+
+        try {
+            // First try to fetch existing profile
+             const { data: profile, error } = await window.supabaseClient
+            .from('profiles')
+            .select('hints_count, is_pro, submissions_count')
+            .eq('id', user.id)
+            .single();
+
+            if (error) throw error;
+
+           
+            console.log('Using profile:', profile);
+
+            // Update UI
+            loginBtn.style.display = 'none';
+            userStats.style.display = 'flex';
+
+            // Update account badge
+            const accountBadge = document.getElementById('account-badge');
+            accountBadge.textContent = profile.is_pro ? 'Pro' : 'Basic';
+            accountBadge.className = `account-badge ${profile.is_pro ? 'pro' : 'basic'}`;
+
+            // Update stats with nullish coalescing
+            document.getElementById('submissions-count').textContent = profile.submissions_count ?? 0;
+            document.getElementById('hints-count').textContent = profile.hints_count ?? 50;
+
+        } catch (error) {
+            console.error('Profile management error:', error);
+            // Keep the login button visible in case of error
+            loginBtn.style.display = 'block';
+            userStats.style.display = 'none';
+        }
     }
 
-    // Handle logout
+    // Add logout button handler
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout);
+    }
+
     async function handleLogout() {
         try {
             const { error } = await window.supabaseClient.auth.signOut();
             if (error) throw error;
             
-            // Reset UI
-            const loginBtn = document.getElementById('login-btn');
-            loginBtn.textContent = 'Login';
-            loginBtn.removeEventListener('click', handleLogout);
-            loginBtn.addEventListener('click', openAuthModal);
+            resetUIForLogout();
+            window.location.reload(); // Refresh the page to reset all states
             
         } catch (error) {
+            console.error('Logout error:', error);
             alert('Error signing out: ' + error.message);
+        }
+    }
+
+    function resetUIForLogout() {
+        const loginBtn = document.getElementById('login-btn');
+        const userStats = document.getElementById('user-stats');
+        
+        if (loginBtn && userStats) {
+            loginBtn.style.display = 'block';
+            userStats.style.display = 'none';
         }
     }
 
