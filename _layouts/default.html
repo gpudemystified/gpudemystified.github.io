@@ -9,6 +9,9 @@
   <link rel="stylesheet" href="{{ '/assets/css/syntax.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/notes.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/auth_modal.css' | relative_url }}">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="{{ '/assets/js/auth_modal.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/supabase-config.js' | relative_url }}"></script>
 </head>
 
 <!-- Google tag (gtag.js) -->
@@ -179,7 +182,6 @@
 </main>
 
 </body>
-<script src="{{ '/assets/js/auth_modal.js' | relative_url }}"></script>
 <script>
 
 const newsletterBtn = document.getElementById("subscribe-btn"); // your button

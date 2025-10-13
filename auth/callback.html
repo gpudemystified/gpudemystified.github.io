@@ -1,0 +1,49 @@
+---
+layout: default
+---
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Callback page loaded');
+    console.log('Current URL:', window.location.href);
+    
+    // Log hash parameters
+    const hashParams = new URLSearchParams(window.location.hash.substr(1));
+    console.log('Hash parameters:', Object.fromEntries(hashParams));
+
+    try {
+        // Check for error parameters
+        const queryParams = new URLSearchParams(window.location.search);
+        if (queryParams.has('error')) {
+            console.error('OAuth Error:', {
+                error: queryParams.get('error'),
+                errorDescription: queryParams.get('error_description')
+            });
+            throw new Error(queryParams.get('error_description'));
+        }
+
+        // Handle successful authentication
+        if (hashParams.has('access_token')) {
+            console.log('Access token found, establishing session...');
+            
+            // Get the current session
+            const { data: { session }, error } = await window.supabaseClient.auth.getSession();
+            
+            if (error) {
+                console.error('Session error:', error);
+                throw error;
+            }
+
+            console.log('Session established:', session);
+            
+            // Redirect back to the main page
+            window.location.href = '/';
+        } else {
+            console.warn('No access token found in URL');
+        }
+    } catch (error) {
+        console.error('Callback error:', error);
+        // Optionally redirect to an error page
+        // window.location.href = '/auth-error';
+    }
+});
+</script>
