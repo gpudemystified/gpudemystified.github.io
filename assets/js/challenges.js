@@ -33,15 +33,17 @@ async function getChallenges() {
     }
 
     try {
-        const response = await fetch('http://localhost:8000/challenges');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
+        const { data, error } = await window.supabaseClient
+            .from('challenges')
+            .select('*');
+
+        if (error) throw error;
+
+        console.log('Fetched challenges from Supabase:', data);
         cachedChallenges = data;
         return data;
     } catch (error) {
-        console.warn('Failed to fetch challenges, using mock data:', error);
+        console.warn('Failed to fetch challenges from Supabase, using mock data:', error);
         cachedChallenges = mockChallenges;
         return mockChallenges;
     }
@@ -49,22 +51,26 @@ async function getChallenges() {
 
 function sortChallenges(challenges, sortBy) {
     if (sortBy === 'default') {
-        return challenges; // Return original order
+        return [...challenges].sort((a, b) => {
+            // Handle numeric IDs
+            return (a.id || 0) - (b.id || 0);
+        });
     }
 
     return [...challenges].sort((a, b) => {
         switch (sortBy) {
             case 'name':
-                return a.title.localeCompare(b.title);
+                return String(a.title || '').localeCompare(String(b.title || ''));
             case 'points':
-                return b.points - a.points;
+                return (b.points || 0) - (a.points || 0);
             case 'difficulty':
                 const difficultyOrder = { 'Beginner': 1, 'Intermediate': 2, 'Advanced': 3 };
-                const aDifficulty = a.tags.find(tag => difficultyOrder[tag]) || 'Beginner';
-                const bDifficulty = b.tags.find(tag => difficultyOrder[tag]) || 'Beginner';
+                const aDifficulty = (a.tags || []).find(tag => difficultyOrder[tag]) || 'Beginner';
+                const bDifficulty = (b.tags || []).find(tag => difficultyOrder[tag]) || 'Beginner';
                 return difficultyOrder[aDifficulty] - difficultyOrder[bDifficulty];
             default:
-                return 0;
+                // Use numeric comparison for IDs
+                return (a.id || 0) - (b.id || 0);
         }
     });
 }
@@ -104,13 +110,16 @@ document.getElementById('sortSelect').addEventListener('change', renderChallenge
 
 async function getChallengeById(challengeId) {
     try {
-        const response = await fetch(`http://localhost:8000/challenges/${challengeId}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return await response.json();
+        const { data, error } = await window.supabaseClient
+            .from('challenges')
+            .select('*')
+            .eq('id', challengeId)
+            .single();
+
+        if (error) throw error;
+        return data;
     } catch (error) {
-        console.warn('Failed to fetch challenge, using mock data:', error);
+        console.warn('Failed to fetch challenge from Supabase, using mock data:', error);
         return mockChallenges.find(c => c.id === challengeId);
     }
 }

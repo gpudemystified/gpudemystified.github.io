@@ -75,28 +75,49 @@ async function runCode() {
     const output = document.getElementById('output');
     const code = editor.getValue();
 
+    // Format challenge ID
+    const formattedId = `challenge_${currentChallengeId}`;
+
+    // Create request payload
+    const payload = {
+        id: formattedId,
+        code: code,
+        debug: false
+    };
+
+    // Log the request details
+    console.log('Sending request to /run:', {
+        originalId: currentChallengeId,
+        formattedId: formattedId,
+        codeLength: code.length,
+        fullPayload: payload
+    });
+
     try {
         const response = await fetch("http://localhost:8000/run", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                id: currentChallengeId,
-                code: code,
-                debug: false  // You can add a debug toggle in the UI if needed
-            })
+            body: JSON.stringify(payload)
         });
 
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Server response:', {
+                status: response.status,
+                statusText: response.statusText,
+                body: errorText
+            });
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const result = await response.json();
+        console.log('Server response:', result);
         output.innerText = JSON.stringify(result, null, 2);
     } catch (error) {
-        output.innerText = "Error: " + error.message;
         console.error('Run code error:', error);
+        output.innerText = "Error: " + error.message;
     }
 }
 
