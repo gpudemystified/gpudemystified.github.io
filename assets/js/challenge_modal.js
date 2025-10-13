@@ -57,6 +57,9 @@ async function openChallenge(challengeId) {
 
     // Clear output
     document.getElementById('output').textContent = '';
+
+    // Update hint button state
+    await updateHintButtonState();
 }
 
 function closeModal() {
@@ -83,6 +86,49 @@ async function updateRunButtonState() {
         runBtn.disabled = false;
         runBtn.classList.remove('disabled');
         runBtn.title = 'Run code (Ctrl + Enter)';
+    }
+}
+
+// Add this function to check hint availability
+async function updateHintButtonState() {
+    const hintButton = document.querySelector('.hint-button');
+    if (!hintButton) return;
+
+    try {
+        const { data: { session }, error: authError } = await window.supabaseClient.auth.getSession();
+        
+        if (!session) {
+            hintButton.disabled = true;
+            hintButton.classList.add('disabled');
+            hintButton.title = 'Please login to use hints';
+            return;
+        }
+
+        // Fetch user profile to check pro status and hints count
+        const { data: profile, error } = await window.supabaseClient
+            .from('profiles')
+            .select('is_pro, hints_count')
+            .eq('id', session.user.id)
+            .single();
+
+        if (error) throw error;
+
+        // Disable button if user is not pro and has no hints left
+        if (!profile.is_pro && profile.hints_count <= 0) {
+            hintButton.disabled = true;
+            hintButton.classList.add('disabled');
+            hintButton.title = 'No hints available. Upgrade to Pro for unlimited hints!';
+        } else {
+            hintButton.disabled = false;
+            hintButton.classList.remove('disabled');
+            hintButton.title = profile.is_pro ? 'Get hint (Pro)' : `Get hint (${profile.hints_count} left)`;
+        }
+
+    } catch (error) {
+        console.error('Error updating hint button state:', error);
+        hintButton.disabled = true;
+        hintButton.classList.add('disabled');
+        hintButton.title = 'Error checking hint availability';
     }
 }
 
@@ -145,6 +191,51 @@ async function runCode() {
     }
 }
 
+async function handleHintRequest() {
+    const hintButton = document.querySelector('.hint-button');
+    
+    try {
+        // Get current user session
+        const { data: { session }, error: authError } = await window.supabaseClient.auth.getSession();
+        
+        if (!session) {
+            alert('Please login to get hints');
+            return;
+        }
+
+        // Construct the hint request URL
+        const url = `http://localhost:8000/hints/challenge_${currentChallengeId}?user_id=${session.user.id}`;
+        console.log('Requesting hint:', url);
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to get hint');
+        }
+
+        // Update the challenge description with the hint
+        const descriptionEl = document.getElementById('challenge-description');
+        const currentDescription = descriptionEl.innerHTML;
+        
+        // Add hint directly from data.hints
+        const hintHtml = marked.parse(data.hints);
+        descriptionEl.innerHTML = currentDescription + hintHtml;
+
+        // Disable the hint button
+        hintButton.disabled = true;
+        hintButton.classList.add('disabled');
+        hintButton.title = 'Hint already used';
+
+        // After successful hint request, update the button state
+        await updateHintButtonState();
+
+    } catch (error) {
+        console.error('Error getting hint:', error);
+        alert('Failed to get hint: ' + error.message);
+    }
+}
+
 // Add CSS for disabled button
 const style = document.createElement('style');
 style.textContent = `
@@ -156,6 +247,17 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+// Add CSS for disabled hint button
+const style2 = document.createElement('style');
+style2.textContent = `
+    .hint-button.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background-color: #cccccc;
+    }
+`;
+document.head.appendChild(style2);
+
 // Update event listeners
 document.addEventListener('DOMContentLoaded', () => {
     setupMarked();
@@ -165,6 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Listen for auth state changes
 window.supabaseClient.auth.onAuthStateChange((event, session) => {
     updateRunButtonState();
+    updateHintButtonState();
 });
 
 document.addEventListener('keydown', e => {
@@ -186,5 +289,13 @@ document.addEventListener('keydown', async (e) => {
         if (!runBtn.disabled) {
             await runCode();
         }
+    }
+});
+
+// Add click handler to hint button
+document.addEventListener('DOMContentLoaded', () => {
+    const hintButton = document.querySelector('.hint-button');
+    if (hintButton) {
+        hintButton.addEventListener('click', handleHintRequest);
     }
 });
