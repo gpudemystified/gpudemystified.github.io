@@ -1,0 +1,190 @@
+.playground-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 2fr 1fr;
+    gap: 1rem;
+    padding: 1rem;
+    height: calc(100vh - 100px);
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.playground-editor {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    gap: 1rem;  /* Add spacing between elements */
+}
+
+.editor-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.compile-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #00bf63;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.compile-button:hover {
+    background: #ff6500;
+}
+
+.editor-container {
+    flex: 1;
+    min-height: 300px;
+}
+
+.assembly-container {
+    grid-column: 2;
+    grid-row: 1;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.assembly-header {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.assembly-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.assembly-editor {
+    height: calc(100% - 40px);  /* Account for header */
+    width: 100%;
+    overflow: hidden;
+}
+
+
+/* Adjust modal content to use full height */
+#playgroundModal .challenge-modal-content {
+    height: 90vh;
+    max-height: 90vh;
+}
+
+#playgroundModal .challenge-modal-body {
+    display: flex;
+    height: calc(100% - 40px);  /* Account for close button */
+    overflow: hidden;
+}
+
+#playgroundModal .challenge-details,
+#playgroundModal .challenge-workspace {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#playgroundModal .assembly-header {
+    padding: 8px;
+    background: #2d2d2d;
+    border-bottom: 1px solid #3d3d3d;
+}
+
+#playgroundModal .assembly-header h2 {
+    margin: 0;
+    color: #cccccc;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .playground-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        height: auto;
+    }
+
+    .playground-editor,
+    .assembly-container,
+    .output-container {
+        grid-column: 1;
+        min-height: 300px;
+    }
+}
+
+#playgroundModal .challenge-details {
+    flex: 1;
+    overflow-y: auto;
+}
+
+#playgroundModal .challenge-workspace {
+    flex: 2;  /* Takes twice as much space as the assembly section */
+}
+
+#playgroundModal #monaco-editor {
+    height: 100%;  /* Ensure editor takes full height of its container */
+}
+
+#playgroundModal #assembly-output {
+    height: calc(100% - 40px);  /* Account for the header */
+}
+
+#playgroundModal.active {
+    display: flex;
+}
+
+.highlighted-line {
+    background-color: rgba(255, 227, 176, 0.2);
+}
+
+.compiler-options {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;  /* Take available space between title and compile button */
+}
+
+.compiler-options label {
+    font-size: 0.9rem;
+    color: #666;
+    white-space: nowrap;
+}
+
+.compiler-options input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'Menlo', 'Monaco', monospace;
+    font-size: 0.9rem;
+    background-color: #f8f8f8;
+}
+
+.compiler-options input:focus {
+    outline: none;
+    border-color: #00bf63;
+    background-color: #fff;
+}
+
+.compiler-options datalist {
+    display: none;  /* Hide but keep functionality */
+}
