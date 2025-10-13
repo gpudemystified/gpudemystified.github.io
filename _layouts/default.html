@@ -92,13 +92,18 @@
                Notes
             </a>
           </li>
-          <!-- <li>
+          <li>
             <a href="/challenge"
                class="nav-link {% if page.url contains 'challenge' %}active{% endif %}"
                onclick="gtag('event', 'nav_click_challenges', { event_category: 'navigation', event_label: 'Challenges' });">
                Challenges
             </a>
-          </li> -->
+          </li>
+            <a href="/leaderboard"
+                class="nav-link {% if page.url contains 'leaderboard' %}active{% endif %}"
+                onclick="gtag('event', 'nav_click_leaderboard', { event_category: 'navigation', event_label: 'Leaderboard' });">
+                Leaderboard
+              </a>
           </ul>
         </nav>
 
