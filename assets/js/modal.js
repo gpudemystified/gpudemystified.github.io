@@ -71,24 +71,48 @@ modal.addEventListener('click', e => {
     if (e.target === modal) closeModal();
 });
 
+async function updateRunButtonState() {
+    const runBtn = document.getElementById('runCode');
+    const { data: { session }, error } = await window.supabaseClient.auth.getSession();
+    console.log ('Update run button state Auth session:', session);
+    if (!session) {
+        runBtn.disabled = true;
+        runBtn.classList.add('disabled');
+        runBtn.title = 'Please login to run code';
+    } else {
+        runBtn.disabled = false;
+        runBtn.classList.remove('disabled');
+        runBtn.title = 'Run code (Ctrl + Enter)';
+    }
+}
+
 async function runCode() {
     const output = document.getElementById('output');
     const code = editor.getValue();
 
+    // Check if user is logged in
+    const { data: { session }, error } = await window.supabaseClient.auth.getSession();
+    if (!session) {
+        output.innerText = "Error: Please login to run code";
+        return;
+    }
+
     // Format challenge ID
     const formattedId = `challenge_${currentChallengeId}`;
 
-    // Create request payload
+    // Create request payload with userId
     const payload = {
         id: formattedId,
         code: code,
-        debug: false
+        debug: false,
+        user_id: session.user.id
     };
 
     // Log the request details
     console.log('Sending request to /run:', {
         originalId: currentChallengeId,
         formattedId: formattedId,
+        userId: session.user.id,
         codeLength: code.length,
         fullPayload: payload
     });
@@ -121,8 +145,27 @@ async function runCode() {
     }
 }
 
-// Update the run button event listener
-runBtn.addEventListener('click', runCode);
+// Add CSS for disabled button
+const style = document.createElement('style');
+style.textContent = `
+    #runCode.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background-color: #cccccc;
+    }
+`;
+document.head.appendChild(style);
+
+// Update event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    setupMarked();
+    updateRunButtonState();
+});
+
+// Listen for auth state changes
+window.supabaseClient.auth.onAuthStateChange((event, session) => {
+    updateRunButtonState();
+});
 
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && modal.classList.contains('active')) {
@@ -132,3 +175,16 @@ document.addEventListener('keydown', e => {
 
 // Initialize marked when the page loads
 document.addEventListener('DOMContentLoaded', setupMarked);
+
+// Add this after other event listeners
+runBtn.addEventListener('click', runCode);
+
+// Add keyboard shortcut for running code
+document.addEventListener('keydown', async (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && modal.classList.contains('active')) {
+        const runBtn = document.getElementById('runCode');
+        if (!runBtn.disabled) {
+            await runCode();
+        }
+    }
+});
