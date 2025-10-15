@@ -13,6 +13,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="{{ '/assets/js/auth_modal.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/supabase-config.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/profile_utils.js' | relative_url }}"></script>
 </head>
 
 <!-- Google tag (gtag.js) -->
@@ -30,15 +31,15 @@
         <button class="login-btn" id="login-btn">Login</button>
         <div class="user-stats" id="user-stats" style="display: none;">
             <span class="account-badge" id="account-badge">Basic</span>
-            <div class="stat-item">
+            <div class="stat-item" title="Submissions left">
                 <span id="submissions-count">0</span>
                 <i class="fas fa-code"></i>
             </div>
-            <div class="stat-item">
+            <div class="stat-item" title="Hints left">
                 <span id="hints-count">0</span>
                 <i class="fas fa-lightbulb"></i>
             </div>
-            <div class="stat-item">
+            <div class="stat-item" title="Points earned">
                 <span id="points-count">0</span>
                 <i class="fas fa-star"></i>
             </div>

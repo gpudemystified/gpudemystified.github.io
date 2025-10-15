@@ -185,6 +185,9 @@ async function runCode() {
         const result = await response.json();
         console.log('Server response:', result);
         output.innerText = JSON.stringify(result, null, 2);
+
+         // Update profile after using hint
+        await window.updateUserProfile();
     } catch (error) {
         console.error('Run code error:', error);
         output.innerText = "Error: " + error.message;
@@ -229,6 +232,9 @@ async function handleHintRequest() {
 
         // After successful hint request, update the button state
         await updateHintButtonState();
+
+        // Update profile after using hint
+        await window.updateUserProfile();
 
     } catch (error) {
         console.error('Error getting hint:', error);

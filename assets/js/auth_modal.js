@@ -141,29 +141,16 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Updating UI for user:', user);
 
         try {
-            const { data: profile, error } = await window.supabaseClient
-                .from('profiles')
-                .select('is_pro, submissions_count, hints_count, points')
-                .eq('id', user.id)
-                .single();
+            // Use the shared profile update function
+            const profile = await window.updateUserProfile();
 
-            if (error) throw error;
+            if (!profile) {
+                throw new Error('Failed to update profile');
+            }
 
-            console.log('Using profile:', profile);
-
-            // Update UI
+            // Update basic UI visibility
             loginBtn.style.display = 'none';
             userStats.style.display = 'flex';
-
-            // Update account badge
-            const accountBadge = document.getElementById('account-badge');
-            accountBadge.textContent = profile.is_pro ? 'Pro' : 'Basic';
-            accountBadge.className = `account-badge ${profile.is_pro ? 'pro' : 'basic'}`;
-
-            // Update stats
-            document.getElementById('submissions-count').textContent = profile.submissions_count ?? 0;
-            document.getElementById('hints-count').textContent = profile.hints_count ?? 50;
-            document.getElementById('points-count').textContent = profile.points ?? 0;
 
         } catch (error) {
             console.error('Profile management error:', error);

@@ -388,6 +388,9 @@ require(['vs/editor/editor.main'], function() {
                     }
                     
                     output.textContent = 'Compilation successful';
+                    
+                    // Update profile after successful compilation
+                    await window.updateUserProfile();
                 } else {
                     output.textContent = data.error || 'Compilation failed';
                 }
