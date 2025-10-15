@@ -360,13 +360,22 @@ require(['vs/editor/editor.main'], function() {
         const code = sourceEditor.getValue();
 
         try {
+            // Get current user session
+            const { data: { session }, error: authError } = await window.supabaseClient.auth.getSession();
+            
+            if (!session) {
+                output.textContent = "Please login to compile code";
+                return;
+            }
+
             const response = await fetch('http://localhost:8000/compile', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     code: code,
                     generate_sass: false,
-                    debug: true  // Enable debug info
+                    debug: true,
+                    user_id: session.user.id  // Add user ID to the request
                 })
             });
 
@@ -388,9 +397,6 @@ require(['vs/editor/editor.main'], function() {
                     }
                     
                     output.textContent = 'Compilation successful';
-                    
-                    // Update profile after successful compilation
-                    await window.updateUserProfile();
                 } else {
                     output.textContent = data.error || 'Compilation failed';
                 }
@@ -398,6 +404,8 @@ require(['vs/editor/editor.main'], function() {
                 const errorData = await response.json();
                 output.textContent = `Compilation failed: ${errorData.detail || 'Unknown error'}`;
             }
+
+            await window.updateUserProfile();
         } catch (error) {
             console.error('Error during compilation:', error);
             output.textContent = `Error: ${error.message}`;
