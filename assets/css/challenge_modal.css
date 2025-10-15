@@ -224,3 +224,33 @@
 .modal-challenge-points i {
     color: #ffd700;
 }
+
+.upgrade-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.upgrade-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.upgrade-button i {
+    color: #000;
+    font-size: 1.1em;
+}
+
+/* Show upgrade button only for non-pro users */
+.pro .upgrade-button {
+    display: none;
+}

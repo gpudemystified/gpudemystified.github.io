@@ -194,20 +194,32 @@ body {
 }
 
 .account-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 12px;
-    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
     font-size: 0.9rem;
+    font-weight: 500;
 }
 
 .account-badge.pro {
     background: #00bf63;
     color: white;
+    cursor: default;
 }
 
 .account-badge.basic {
-    background: #f0f0f0;
-    color: #666;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.account-badge.basic:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
 }
 
 .stat-item {

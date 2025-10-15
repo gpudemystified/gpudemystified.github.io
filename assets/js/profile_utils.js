@@ -14,8 +14,16 @@ async function updateUserProfile() {
         if (error) throw error;
 
         const accountBadge = document.getElementById('account-badge');
-        accountBadge.textContent = profile.is_pro ? 'Pro' : 'Basic';
-        accountBadge.className = `account-badge ${profile.is_pro ? 'pro' : 'basic'}`;
+        
+        if (profile.is_pro) {
+            accountBadge.innerHTML = `<i class="fas fa-crown"></i> Pro`;
+            accountBadge.className = 'account-badge pro';
+            accountBadge.onclick = null;
+        } else {
+            accountBadge.innerHTML = `<i class="fas fa-crown"></i> Upgrade to Pro`;
+            accountBadge.className = 'account-badge basic';
+            accountBadge.onclick = handleUpgrade;
+        }
 
         // Update UI elements with styled icons for pro accounts
         const submissionsEl = document.getElementById('submissions-count');
@@ -37,6 +45,35 @@ async function updateUserProfile() {
     } catch (error) {
         console.error('Error updating profile:', error);
         return null;
+    }
+}
+
+async function handleUpgrade() {
+    try {
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
+        
+        if (!session) {
+            alert('Please login first');
+            return;
+        }
+
+        const response = await fetch('http://localhost:8000/create-checkout-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user_id: session.user.id,
+                price_id: 'your_stripe_price_id'
+            })
+        });
+
+        const { url } = await response.json();
+        window.location.href = url;
+
+    } catch (error) {
+        console.error('Error initiating upgrade:', error);
+        alert('Failed to start upgrade process. Please try again.');
     }
 }
 
