@@ -17,6 +17,8 @@ require.config({
 
 require(['vs/editor/editor.main'], async function() {
     try {
+        // TODO: Might not be necessary if profile is already loaded
+        await window.updateUserProfile();
         // Get profile info from window.userProfile
         const profile = window.userProfile;
         console.log('User profile in playground:', profile);
@@ -50,18 +52,21 @@ require(['vs/editor/editor.main'], async function() {
                 existingIcon.remove();
             }
 
-            // Add crown icon at the start of the button
-            const proIcon = document.createElement('i');
-            proIcon.className = 'fas fa-crown pro-icon';
-            saveBtn.insertBefore(proIcon, saveBtn.firstChild);
-
             // Get profile info from window.userProfile
+            // TODO: Might not be necessary if profile is already loaded
+            await window.updateUserProfile();
+
             const profile = window.userProfile;
             console.log('User profile in playground:', profile);
 
             if (!profile?.is_pro) {
                 saveBtn.classList.add('disabled');
                 saveBtn.title = 'Upgrade to Pro to save your code';
+
+                // Add crown icon at the start of the button
+                const proIcon = document.createElement('i');
+                proIcon.className = 'fas fa-crown pro-icon';
+                saveBtn.insertBefore(proIcon, saveBtn.firstChild);
                 
                 // Add tooltip functionality
                 saveBtn.addEventListener('mouseover', () => {
