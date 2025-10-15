@@ -1,19 +1,100 @@
 let sourceEditor, assemblyEditor;
 
+// Add default code at the top level
+const defaultCode = `__global__ void example(float* data) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    data[idx] = data[idx] * 2.0f;
+}`;
+
+// Change the playground ID to be a string
+const PLAYGROUND_ID = 'playground_999999999';
+
 require.config({ 
     paths: { 
         vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' 
     }
 });
 
-require(['vs/editor/editor.main'], function() {
-    // Initialize source code editor
+
+
+async function savePlaygroundProgress(code) {
+    try {
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
+        if (!session) {
+            console.log('No active session');
+            return;
+        }
+
+        console.log('Saving progress with challenge_id:', PLAYGROUND_ID);
+        const { data, error } = await window.supabaseClient
+            .from('challenge_progress')
+            .upsert({
+                user_id: session.user.id,
+                challenge_id: PLAYGROUND_ID,
+                code: code
+            }, {
+                onConflict: 'user_id,challenge_id',
+                returning: true
+            });
+
+        if (error) {
+            console.error('Save error:', error);
+            throw error;
+        }
+
+        // Show visual feedback
+        const saveBtn = document.getElementById('saveProgress');
+        saveBtn.classList.add('saved');
+        saveBtn.querySelector('.save-text').textContent = 'Saved!';
+        
+        setTimeout(() => {
+            saveBtn.classList.remove('saved');
+            saveBtn.querySelector('.save-text').textContent = 'Save';
+        }, 2000);
+
+        return data;
+    } catch (error) {
+        console.error('Error saving playground progress:', error);
+        alert('Failed to save progress. Please try again.');
+    }
+}
+
+async function loadPlaygroundProgress() {
+    try {
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
+        if (!session) {
+            console.log('No active session');
+            return defaultCode;  // Return default code if no session
+        }
+
+        console.log('Loading progress with challenge_id:', PLAYGROUND_ID);
+        const { data, error } = await window.supabaseClient
+            .from('challenge_progress')
+            .select('code')
+            .eq('user_id', session.user.id)
+            .eq('challenge_id', PLAYGROUND_ID)
+            .maybeSingle();  // Use maybeSingle() instead of single()
+
+        if (error) {
+            console.error('Load error:', error);
+            return defaultCode;
+        }
+
+        return data?.code || defaultCode;
+    } catch (error) {
+        console.error('Error loading playground progress:', error);
+        return defaultCode;
+    }
+}
+
+// Update your initialization code
+require(['vs/editor/editor.main'], async function() {
+    // Load saved code or use default
+    const savedCode = await loadPlaygroundProgress();
+    
     sourceEditor = monaco.editor.create(document.getElementById('monaco-editor'), {
-        value: `__global__ void example(float* data) {
-    int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    data[idx] = data[idx] * 2.0f;
-}`,
-        language: 'cuda',
+        value: savedCode,
+        language: 'cpp',
         theme: 'vs-light',
         minimap: { enabled: false },
         fontSize: 13,
@@ -484,9 +565,47 @@ require(['vs/editor/editor.main'], function() {
         });
     }
 
+    // Add save button event listener
+    const saveBtn = document.getElementById('saveProgress');
+    saveBtn.addEventListener('click', () => {
+        savePlaygroundProgress(sourceEditor.getValue());
+    });
+
     // Handle window resize
     window.addEventListener('resize', () => {
         if (sourceEditor) sourceEditor.layout();
         if (assemblyEditor) assemblyEditor.layout();
     });
 });
+
+// Add CSS for the save button
+const style = document.createElement('style');
+style.textContent = `
+    .editor-controls {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .challenge-save-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: #666;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .challenge-save-button:hover {
+        background: #777;
+    }
+
+    .challenge-save-button.saved {
+        background: #00bf63;
+    }
+`;
+document.head.appendChild(style);

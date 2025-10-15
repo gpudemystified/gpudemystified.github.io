@@ -42,13 +42,38 @@ async function openChallenge(challengeId) {
         MathJax.typesetPromise([document.getElementById('challenge-description')]);
     }
 
-    // Update editor content if it exists
-    if (editor) {
-        editor.setValue(challenge.initial_code || '// No code available');
-        requestAnimationFrame(() => {
-            editor.layout();
-            editor.focus();
-        });
+    // First try to load saved progress
+    const { data: { session } } = await window.supabaseClient.auth.getSession();
+    if (session) {
+        const { data, error } = await window.supabaseClient
+            .from('challenge_progress')
+            .select('code')
+            .eq('user_id', session.user.id)
+            .eq('challenge_id', challengeId)
+            .single();
+
+        // Update editor with saved progress or initial code
+        if (editor) {
+            if (data?.code) {
+                editor.setValue(data.code);
+            } else {
+                editor.setValue(challenge.initial_code || '// No code available');
+            }
+            
+            requestAnimationFrame(() => {
+                editor.layout();
+                editor.focus();
+            });
+        }
+    } else {
+        // No session, use initial code
+        if (editor) {
+            editor.setValue(challenge.initial_code || '// No code available');
+            requestAnimationFrame(() => {
+                editor.layout();
+                editor.focus();
+            });
+        }
     }
 
     // Show modal
@@ -60,6 +85,11 @@ async function openChallenge(challengeId) {
 
     // Update hint button state
     await updateHintButtonState();
+    
+    const saveBtn = document.getElementById('saveProgress');
+    saveBtn.addEventListener('click', () => {
+        saveProgress(challengeId, editor.getValue());
+    });
 }
 
 function closeModal() {
@@ -305,3 +335,73 @@ document.addEventListener('DOMContentLoaded', () => {
         hintButton.addEventListener('click', handleHintRequest);
     }
 });
+
+async function saveProgress(challengeId, code) {
+    try {
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
+        if (!session) return;
+
+        const { data, error } = await window.supabaseClient
+            .from('challenge_progress')
+            .upsert({
+                user_id: session.user.id,
+                challenge_id: challengeId,
+                code: code
+            }, {
+                onConflict: 'user_id,challenge_id',
+                returning: true
+            });
+
+        if (error) throw error;
+
+        // Show visual feedback
+        const saveBtn = document.getElementById('saveProgress');
+        saveBtn.classList.add('saved');
+        saveBtn.querySelector('.save-text').textContent = 'Saved!';
+        
+        setTimeout(() => {
+            saveBtn.classList.remove('saved');
+            saveBtn.querySelector('.save-text').textContent = 'Save';
+        }, 2000);
+
+        return data;
+    } catch (error) {
+        console.error('Error saving progress:', error);
+        alert('Failed to save progress. Please try again.');
+    }
+}
+
+// Load saved progress for a challenge
+async function loadSavedProgress(challengeId) {
+    try {
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
+        if (!session) return;
+
+        const { data, error } = await window.supabaseClient
+            .from('challenge_progress')
+            .select('code')
+            .eq('user_id', session.user.id)
+            .eq('challenge_id', challengeId)
+            .single();
+
+        if (error) {
+            if (error.code === 'PGRST116') {
+                // No previous progress found, do nothing
+                return;
+            }
+            throw error;
+        }
+
+        // Load the saved code into the editor
+        if (editor && data && data.code) {
+            editor.setValue(data.code);
+            requestAnimationFrame(() => {
+                editor.layout();
+                editor.focus();
+            });
+        }
+
+    } catch (error) {
+        console.error('Error loading saved progress:', error);
+    }
+}
