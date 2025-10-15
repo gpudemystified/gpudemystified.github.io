@@ -358,17 +358,17 @@ body {
     align-items: center;
     width: 70%;
     padding: 1rem 2rem;
-    margin: 0 auto;  /* Center the button */
+    margin: 0 auto;
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border: none;
     border-radius: 8px;
     color: #000;
-    font-weight: 600;
+    font-weight: 800;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;  /* Center the text */
+    text-align: center;      /* Center the text if it wraps */
 }
 
 .confirm-upgrade-button:hover {
@@ -390,6 +390,26 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;  /* Center children horizontally */
+}
+
+.pricing-info {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.price-amount {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.cancel-text {
+    color: #666;
+    font-size: 0.9rem;
 }
 
 /* RESPONSIVE */
