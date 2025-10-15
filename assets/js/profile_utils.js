@@ -49,32 +49,53 @@ async function updateUserProfile() {
 }
 
 async function handleUpgrade() {
-    try {
-        const { data: { session } } = await window.supabaseClient.auth.getSession();
-        
-        if (!session) {
-            alert('Please login first');
-            return;
+    const proModal = document.getElementById('proModal');
+    const closeBtn = proModal.querySelector('.pro-modal-close');
+    const confirmBtn = document.getElementById('confirmUpgrade');
+    const overlay = proModal.querySelector('.pro-modal-overlay');
+
+    // Show modal
+    proModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    // Handle close actions
+    const closeModal = () => {
+        proModal.classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    closeBtn.onclick = closeModal;
+    overlay.onclick = closeModal;
+
+    // Handle upgrade confirmation
+    confirmBtn.onclick = async () => {
+        try {
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            
+            if (!session) {
+                alert('Please login first');
+                return;
+            }
+
+            const response = await fetch('http://localhost:8000/create-checkout-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: session.user.id,
+                    price_id: 'your_stripe_price_id'
+                })
+            });
+
+            const { url } = await response.json();
+            window.location.href = url;
+
+        } catch (error) {
+            console.error('Error initiating upgrade:', error);
+            alert('Failed to start upgrade process. Please try again.');
         }
-
-        const response = await fetch('http://localhost:8000/create-checkout-session', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                user_id: session.user.id,
-                price_id: 'your_stripe_price_id'
-            })
-        });
-
-        const { url } = await response.json();
-        window.location.href = url;
-
-    } catch (error) {
-        console.error('Error initiating upgrade:', error);
-        alert('Failed to start upgrade process. Please try again.');
-    }
+    };
 }
 
 // Make it globally available
