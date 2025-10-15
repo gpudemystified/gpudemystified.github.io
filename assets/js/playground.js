@@ -17,11 +17,22 @@ require.config({
 
 require(['vs/editor/editor.main'], async function() {
     try {
-        // Try to load saved playground progress
-        const progress = await window.loadProgress(PLAYGROUND_ID);
+        // Get profile info from window.userProfile
+        const profile = window.userProfile;
+        console.log('User profile in playground:', profile);
+        
+        let codeToUse = defaultCode;
+
+        // Only load saved progress if user is pro
+        if (profile?.is_pro) {
+            const progress = await window.loadProgress(PLAYGROUND_ID);
+            if (progress.exists) {
+                codeToUse = progress.code;
+            }
+        }
         
         sourceEditor = monaco.editor.create(document.getElementById('monaco-editor'), {
-            value: progress.exists ? progress.code : defaultCode,
+            value: codeToUse,
             language: 'cpp',
             theme: 'vs-light',
             minimap: { enabled: false },
@@ -30,25 +41,62 @@ require(['vs/editor/editor.main'], async function() {
             automaticLayout: true
         });
 
-        // Add save button event listener
+        // Setup save button with pro-only functionality
         const saveBtn = document.getElementById('saveProgress');
         if (saveBtn) {
-            saveBtn.addEventListener('click', async () => {
-                try {
-                    await window.saveProgress(PLAYGROUND_ID, sourceEditor.getValue());
+            // Remove any existing crown icon
+            const existingIcon = saveBtn.querySelector('.pro-icon');
+            if (existingIcon) {
+                existingIcon.remove();
+            }
+
+            // Add crown icon at the start of the button
+            const proIcon = document.createElement('i');
+            proIcon.className = 'fas fa-crown pro-icon';
+            saveBtn.insertBefore(proIcon, saveBtn.firstChild);
+
+            // Get profile info from window.userProfile
+            const profile = window.userProfile;
+            console.log('User profile in playground:', profile);
+
+            if (!profile?.is_pro) {
+                saveBtn.classList.add('disabled');
+                saveBtn.title = 'Upgrade to Pro to save your code';
+                
+                // Add tooltip functionality
+                saveBtn.addEventListener('mouseover', () => {
+                    const rect = saveBtn.getBoundingClientRect();
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'pro-tooltip';
+                    tooltip.textContent = 'Upgrade to Pro to save your code';
+                    document.body.appendChild(tooltip);
                     
-                    // Show success feedback
-                    saveBtn.classList.add('saved');
-                    saveBtn.querySelector('.save-text').textContent = 'Saved!';
+                    tooltip.style.left = `${rect.left}px`;
+                    tooltip.style.top = `${rect.bottom + 5}px`;
                     
-                    setTimeout(() => {
-                        saveBtn.classList.remove('saved');
-                        saveBtn.querySelector('.save-text').textContent = 'Save';
-                    }, 2000);
-                } catch (error) {
-                    alert('Failed to save progress. Please try again.');
-                }
-            });
+                    saveBtn.addEventListener('mouseleave', () => {
+                        tooltip.remove();
+                    });
+                });
+            } else {
+                // Only add click handler if user is pro
+                saveBtn.addEventListener('click', async () => {
+                    try {
+                        await window.saveProgress(PLAYGROUND_ID, sourceEditor.getValue());
+                        
+                        // Show success feedback
+                        saveBtn.classList.add('saved');
+                        saveBtn.querySelector('.save-text').textContent = 'Saved!';
+                        
+                        setTimeout(() => {
+                            saveBtn.classList.remove('saved');
+                            saveBtn.querySelector('.save-text').textContent = 'Save';
+                        }, 2000);
+                    } catch (error) {
+                        alert('Failed to save progress. Please try again.');
+                    }
+                });
+            }
         }
 
         // Initialize assembly view editor

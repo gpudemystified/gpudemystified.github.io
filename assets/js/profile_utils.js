@@ -2,7 +2,10 @@ async function updateUserProfile() {
     try {
         // Get current user session
         const { data: { session }, error: authError } = await window.supabaseClient.auth.getSession();
-        if (!session) return;
+        if (!session) {
+            window.userProfile = null;
+            return;
+        }
 
         // Fetch updated profile
         const { data: profile, error } = await window.supabaseClient
@@ -12,6 +15,10 @@ async function updateUserProfile() {
             .single();
 
         if (error) throw error;
+
+        // Store profile globally
+        window.userProfile = profile;
+        console.log('Profile stored globally:', window.userProfile);
 
         const accountBadge = document.getElementById('account-badge');
         
@@ -44,6 +51,7 @@ async function updateUserProfile() {
 
     } catch (error) {
         console.error('Error updating profile:', error);
+        window.userProfile = null;
         return null;
     }
 }

@@ -33,7 +33,7 @@ async function openChallenge(challengeId) {
         .map(tag => `<span class="tag ${tag.toLowerCase()}">${tag}</span>`)
         .join('');
     
-    // Render markdown description using marked.parse()
+    // Render markdown description
     const descriptionHtml = marked.parse(challenge.description || '');
     document.getElementById('challenge-description').innerHTML = descriptionHtml;
 
@@ -42,11 +42,25 @@ async function openChallenge(challengeId) {
         MathJax.typesetPromise([document.getElementById('challenge-description')]);
     }
 
+    // Show modal first
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
     try {
-        // Try to load saved progress
-        const savedCode = await window.loadProgress(challengeId);
+        // Get profile info from window.userProfile
+        const profile = window.userProfile;
+        console.log('User profile in modal:', profile);
+        let codeToUse = challenge.initial_code;
+
+        // Only load saved progress if user is pro
+        if (profile?.is_pro) {
+            const savedCode = await window.loadProgress(challengeId);
+            if (savedCode.exists) {
+                codeToUse = savedCode.code;
+            }
+        }
+
         if (editor) {
-            const codeToUse = savedCode.exists ? savedCode.code : challenge.initial_code;
             editor.setValue(codeToUse || '// No code available');
             requestAnimationFrame(() => {
                 editor.layout();
@@ -54,42 +68,76 @@ async function openChallenge(challengeId) {
             });
         }
 
-        // Setup save button
+        // Setup save button with pro-only functionality
         const saveBtn = document.getElementById('saveProgress');
         if (saveBtn) {
-            saveBtn.addEventListener('click', async () => {
-                try {
-                    await window.saveProgress(challengeId, editor.getValue());
+            // Remove existing crown icon if any
+            const existingIcon = saveBtn.querySelector('.pro-icon');
+            if (existingIcon) {
+                existingIcon.remove();
+            }
+
+            if (!profile?.is_pro) {
+                saveBtn.classList.add('disabled');
+                saveBtn.title = 'Upgrade to Pro to save your code';
+
+                // Add crown icon at the start of the button
+                const proIcon = document.createElement('i');
+                proIcon.className = 'fas fa-crown pro-icon';
+                saveBtn.insertBefore(proIcon, saveBtn.firstChild);
+                
+                // Add tooltip functionality
+                saveBtn.addEventListener('mouseover', () => {
+                    const rect = saveBtn.getBoundingClientRect();
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'pro-tooltip';
+                    tooltip.textContent = 'Upgrade to Pro to save your code';
+                    document.body.appendChild(tooltip);
                     
-                    // Show success feedback
-                    saveBtn.classList.add('saved');
-                    saveBtn.querySelector('.save-text').textContent = 'Saved!';
+                    tooltip.style.left = `${rect.left}px`;
+                    tooltip.style.top = `${rect.bottom + 5}px`;
                     
-                    setTimeout(() => {
-                        saveBtn.classList.remove('saved');
-                        saveBtn.querySelector('.save-text').textContent = 'Save';
-                    }, 2000);
-                } catch (error) {
-                    alert('Failed to save progress. Please try again.');
-                }
-            });
+                    saveBtn.addEventListener('mouseleave', () => {
+                        tooltip.remove();
+                    });
+                });
+            } else {
+                console.log ("I'm here");
+                saveBtn.classList.remove('disabled');
+                saveBtn.title = 'Save your code';
+                
+                // Only add click handler if user is pro
+                saveBtn.addEventListener('click', async () => {
+                    try {
+                        await window.saveProgress(challengeId, editor.getValue());
+                        
+                        // Show success feedback
+                        saveBtn.classList.add('saved');
+                        saveBtn.querySelector('.save-text').textContent = 'Saved!';
+                        
+                        setTimeout(() => {
+                            saveBtn.classList.remove('saved');
+                            saveBtn.querySelector('.save-text').textContent = 'Save';
+                        }, 2000);
+                    } catch (error) {
+                        alert('Failed to save progress. Please try again.');
+                    }
+                });
+            }
         }
+
+        // Clear output
+        document.getElementById('output').textContent = '';
+
+        // Update hint button state
+        await updateHintButtonState();
+
     } catch (error) {
-        console.error('Error loading challenge progress:', error);
+        console.error('Error loading challenge:', error);
         if (editor) {
             editor.setValue(challenge.initial_code || '// No code available');
         }
     }
-
-    // Show modal
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-
-    // Clear output
-    document.getElementById('output').textContent = '';
-
-    // Update hint button state
-    await updateHintButtonState();
 }
 
 function closeModal() {
