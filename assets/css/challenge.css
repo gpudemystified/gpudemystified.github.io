@@ -37,10 +37,37 @@
     outline: 2px solid #ff6500;
 }
 
+.challenge-card.completed {
+    border-left: 4px solid #00bf63;
+    background: linear-gradient(to right, rgba(0, 191, 99, 0.1), transparent);
+}
+
+.challenge-complete {
+    position: absolute;
+    bottom: 1rem;  /* Changed from top to bottom */
+    right: 1rem;   /* Changed from left to right */
+    color: #00bf63;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 2;
+}
+
+.challenge-complete i {
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+}
+
+.challenge-card.completed:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 191, 99, 0.2);
+}
+
 .challenge-points {
     position: absolute;
     top: 1rem;
     right: 1rem;
+    z-index: 1;  /* Ensure points are above other elements */
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -80,11 +107,12 @@
 
 .challenge-tags {
     height: 20%;
-    margin-top: auto; /* Push to bottom */
+    margin-top: auto;
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
     align-items: flex-end;
+    padding-right: 2.5rem;  /* Add padding to prevent overlap with checkmark */
 }
 
 .tag {

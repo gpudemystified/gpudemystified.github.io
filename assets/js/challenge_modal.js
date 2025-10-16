@@ -143,13 +143,26 @@ async function openChallenge(challengeId) {
 function closeModal() {
     modal.classList.remove('active');
     document.body.style.overflow = '';
+    
+    // Reset editor content
+    if (editor) {
+        editor.setValue('');
+    }
+
+    // Clear output
+    document.getElementById('output').textContent = '';
+
+    // Update challenges grid to reflect any completions
+    renderChallenges();
 }
 
-overlay.addEventListener('click', closeModal);
-
-closeBtn.addEventListener('click', closeModal);
-modal.addEventListener('click', e => {
-    if (e.target === modal) closeModal();
+// Update event listeners
+closeBtn.onclick = closeModal;
+modal.querySelector('.challenge-modal-overlay').onclick = closeModal;
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+    }
 });
 
 async function updateRunButtonState() {
@@ -264,12 +277,39 @@ async function runCode() {
         console.log('Server response:', result);
         output.innerText = JSON.stringify(result, null, 2);
 
-         // Update profile after using hint
+        // Show completion popup if it's the first completion
+        if (result.first_completion) {
+            console.log('First completion achieved!');
+            const points = document.getElementById('modal-challenge-points').textContent;
+            showCompletionPopup(points);
+        }
+
+        // Update profile after running code
         await window.updateUserProfile();
     } catch (error) {
         console.error('Run code error:', error);
         output.innerText = "Error: " + error.message;
     }
+}
+
+function showCompletionPopup(points) {
+    const existingPopup = document.querySelector('.completion-popup');
+    if (existingPopup) {
+        existingPopup.remove();
+    }
+
+    const popup = document.createElement('div');
+    popup.className = 'completion-popup';
+    popup.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>Challenge completed ${points} <i class="fas fa-star points-star"></i></span>
+    `;
+
+    document.body.appendChild(popup);
+
+    popup.addEventListener('animationend', () => {
+        popup.remove();
+    });
 }
 
 async function handleHintRequest() {

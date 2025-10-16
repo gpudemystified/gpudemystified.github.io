@@ -327,3 +327,37 @@
 .pro .upgrade-button {
     display: none;
 }
+
+.completion-popup {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 191, 99, 0.95);
+    color: white;
+    padding: 1.5rem 2.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1100;
+    opacity: 0;
+    animation: fadeInOut 2.5s ease-in-out forwards;
+}
+
+.completion-popup i {
+    font-size: 1.5rem;
+}
+
+.completion-popup .points-star {
+    color: #FFD700;
+    margin-left: 0.25rem;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, -40%); }
+    20% { opacity: 1; transform: translate(-50%, -50%); }
+    80% { opacity: 1; transform: translate(-50%, -50%); }
+    100% { opacity: 0; transform: translate(-50%, -60%); }
+}

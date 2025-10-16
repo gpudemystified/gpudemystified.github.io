@@ -26,6 +26,7 @@ const mockChallenges = [
 ];
 
 let cachedChallenges = null;
+let completedChallenges = new Set();
 
 async function getChallenges() {
     if (cachedChallenges) {
@@ -79,34 +80,62 @@ async function renderChallenges() {
     const grid = document.getElementById('challenges-grid');
     const sortSelect = document.getElementById('sortSelect');
     
-    // Use cached challenges if available
-    const challenges = sortChallenges(await getChallenges(), sortSelect.value);
+    try {
+        // Load both challenges and completion status in parallel
+        const [challenges, completedStatus] = await Promise.all([
+            getChallenges(),
+            loadCompletedChallengesData()  // New function to get just the data
+        ]);
 
-    grid.innerHTML = challenges.map(challenge => `
-        <div class="challenge-card" data-id="${challenge.id}" onclick="openChallenge('${challenge.id}')">
-            <div class="challenge-points">
-                <i class="fas fa-star"></i>
-                +${challenge.points}
-            </div>
-            <h3>${challenge.title}</h3>
-            <p>${challenge.short_description}</p>
-            <div class="challenge-tags">
-                ${challenge.tags.map(tag => `
-                    <span class="tag ${tag.toLowerCase()}">${tag}</span>
-                `).join('')}
-            </div>
-        </div>
-    `).join('');
+        const sortedChallenges = sortChallenges(challenges, sortSelect.value);
+        
+        grid.innerHTML = sortedChallenges.map(challenge => {
+            const isCompleted = completedChallenges.has(`challenge_${challenge.id}`);
+            return `
+                <div class="challenge-card ${isCompleted ? 'completed' : ''}" data-id="${challenge.id}" 
+                     onclick="openChallenge('${challenge.id}')">
+                    <div class="challenge-complete">
+                        ${isCompleted ? '<i class="fas fa-check-circle"></i>' : ''}
+                    </div>
+                    <div class="challenge-points">
+                        <i class="fas fa-star"></i>
+                        +${challenge.points}
+                    </div>
+                    <h3 class="challenge-title">${challenge.title}</h3>
+                    <p>${challenge.short_description}</p>
+                    <div class="challenge-tags">
+                        ${challenge.tags.map(tag => `
+                            <span class="tag ${tag.toLowerCase()}">${tag}</span>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+    } catch (error) {
+        console.error('Error rendering challenges:', error);
+        grid.innerHTML = '<p>Error loading challenges</p>';
+    }
 }
 
-// Add function to force refresh challenges
-async function refreshChallenges() {
-    cachedChallenges = null;
-    await renderChallenges();
-}
+// New function to fetch completed challenges data
+async function loadCompletedChallengesData() {
+    try {
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
+        if (!session) return new Set();
 
-// Add event listener for sort changes
-document.getElementById('sortSelect').addEventListener('change', renderChallenges);
+        const response = await fetch(`http://localhost:8000/challenges/completed/${session.user.id}`);
+        if (!response.ok) throw new Error('Failed to fetch completed challenges');
+
+        const completed = await response.json();
+        completedChallenges = new Set(completed);
+        return completedChallenges;
+
+    } catch (error) {
+        console.error('Error loading completed challenges:', error);
+        return new Set();
+    }
+}
 
 async function getChallengeById(challengeId) {
     try {
@@ -127,7 +156,8 @@ async function getChallengeById(challengeId) {
 // Make functions available globally
 window.getChallengeById = getChallengeById;
 window.renderChallenges = renderChallenges;
-window.refreshChallenges = refreshChallenges;
 
 // Initialize on page load
-document.addEventListener('DOMContentLoaded', renderChallenges);
+document.addEventListener('DOMContentLoaded', () => {
+    renderChallenges();
+});
