@@ -9,16 +9,12 @@ async function fetchLeaderboard() {
     }
 }
 
-function createLeaderboardEntry(entry, rank) {
+function createLeaderboardEntry(rank, user, points) {
     return `
-        <div class="leaderboard-entry" data-rank="${rank}">
-            <div class="rank">#${rank}</div>
-            <div class="user">${entry.email}</div>
-            <div class="points">
-                <i class="fas fa-star"></i>
-                ${entry.points}
-            </div>
-            <div class="challenges">${entry.submissions_count}</div>
+        <div class="leaderboard-entry">
+            <div class="rank">${rank}</div>
+            <div class="user">${user}</div>
+            <div class="points">${points} <i class="fas fa-star"></i></div>
         </div>
     `;
 }
@@ -34,7 +30,7 @@ async function updateLeaderboard() {
     
     container.innerHTML = entries
         .slice(0, 50)
-        .map((entry, index) => createLeaderboardEntry(entry, index + 1))
+        .map((entry, index) => createLeaderboardEntry(index + 1, entry.email, entry.points))
         .join('');
 }
 
