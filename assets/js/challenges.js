@@ -51,6 +51,7 @@ async function getChallenges() {
 }
 
 function sortChallenges(challenges, sortBy) {
+    console.log(`Sorting challenges by: ${sortBy}`);
     if (sortBy === 'default') {
         return [...challenges].sort((a, b) => {
             // Handle numeric IDs
@@ -160,4 +161,27 @@ window.renderChallenges = renderChallenges;
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     renderChallenges();
+
+    const sortSelect = document.getElementById('sortSelect');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', () => {
+            renderChallenges();
+        });
+    }
+
+    document.getElementById('leaderboard-btn').onclick = function() {
+        console.log('Opening leaderboard modal');
+        document.getElementById('leaderboardModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
+
+    document.querySelector('.leaderboard-modal-close').onclick = function() {
+        document.getElementById('leaderboardModal').classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    document.querySelector('.leaderboard-modal-overlay').onclick = function() {
+        document.getElementById('leaderboardModal').classList.remove('active');
+        document.body.style.overflow = '';
+    };
 });

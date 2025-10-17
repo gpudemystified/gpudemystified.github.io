@@ -102,32 +102,6 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
 
-/* Style for disabled newsletter button */
-#newsletter-submit:disabled {
-  background: #ccc;       /* gray color */
-  cursor: not-allowed;    /* show it's unclickable */
-  color: #666;            /* optional: darker gray text */
-}
-
-.subscribe-btn {
-  background: #00bf63;
-  color: #fff;
-  border: none;
-  border-radius: 18px;
-  height: 34px;
-  padding: 0 40px;           /* 0 for vertical, 40px for horizontal */
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 200ms ease;
-  font-family: var(--font-body);
-  box-shadow: 0 2px 8px rgba(255, 0, 0, 0.07);
-}
-
-.subscribe-btn:hover {
-  background: #ff6500;
-}
-
 .main-nav li {
   position: relative;
 }

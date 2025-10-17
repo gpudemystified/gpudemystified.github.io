@@ -1,0 +1,73 @@
+<link rel="stylesheet" href="{{ '/assets/css/challenge.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/css/challenge_modal.css' | relative_url }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<!-- Markdown, Syntax Highlighting, and LaTeX Support -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+
+<main class="challenges-container">
+     <div class="challenges-controls">
+        <select id="sortSelect" class="sort-select">
+            <option value="default">Default</option>
+            <option value="name">Sort by Name</option>
+            <option value="points">Sort by Points</option>
+            <option value="difficulty">Sort by Difficulty</option>
+        </select>
+    </div>
+     <div id="challenges-grid" class="challenges-grid"></div>
+</main>
+
+<div id="challengeModal" class="challenge-modal">
+    <div class="challenge-modal-overlay"></div>
+    <div class="challenge-modal-content">
+        <button class="challenge-modal-close">&times;</button>
+        <div class="challenge-modal-body">
+            <div class="challenge-details">
+                <div class="modal-challenge-title-wrapper">
+                    <h2 id="challenge-title"></h2>
+                    <div class="modal-challenge-points">
+                        <i class="fas fa-star"></i>
+                        <span id="modal-challenge-points"></span>
+                    </div>
+                </div>
+                <div id="challenge-tags"></div>
+                <div id="challenge-description" class="markdown-body"></div>
+                <button class="hint-button">
+                    <i class="fas fa-lightbulb"></i>
+                    Get hint (-1 point)
+                </button>
+            </div>
+            <div class="challenge-workspace">
+                <div id="monaco-editor"></div>
+                <div class="challenge-output-panel">
+                    <div class="challenge-output-header">
+                        <h3>Output</h3>
+                        <div class="challenge-controls">
+                            <button id="saveProgress" class="challenge-save-button">
+                                <i class="fas fa-save"></i>
+                                <span class="save-text">Save</span>
+                            </button>
+                            <button id="runCode" class="challenge-run-button">
+                                ▶ Run
+                                <i class="fas fa-code"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <pre id="output"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button id="leaderboard-btn" class="leaderboard-float-btn">
+    <i class="fas fa-ranking-star"></i>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+<script src="{{ '/assets/js/challenges.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/editor.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/challenge_modal.js' | relative_url }}"></script>

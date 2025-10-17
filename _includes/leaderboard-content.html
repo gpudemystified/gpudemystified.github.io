@@ -1,0 +1,20 @@
+<link rel="stylesheet" href="{{ '/assets/css/leaderboard.css' | relative_url }}">
+
+<div class="leaderboard-container">
+    <h1 class="leaderboard-title">
+        <i class="fas fa-trophy"></i>
+        Leaderboard
+    </h1>
+    <div class="leaderboard-table">
+        <div class="leaderboard-header">
+            <div class="rank">#</div>
+            <div class="user">User</div>
+            <div class="points">Points</div>
+        </div>
+        <div id="leaderboard-entries" class="leaderboard-entries">
+            <!-- Entries will be populated here -->
+        </div>
+    </div>
+</div>
+
+<script src="{{ '/assets/js/leaderboard.js' | relative_url }}"></script>

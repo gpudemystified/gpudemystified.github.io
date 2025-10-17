@@ -1,0 +1,57 @@
+<link rel="stylesheet" href="{{ '/assets/css/challenge_modal.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/css/playground.css' | relative_url }}">
+
+<div id="playgroundModal" class="challenge-modal active">
+    <div class="challenge-modal-overlay"></div>
+    <div class="challenge-modal-content">
+        <button class="challenge-modal-close">&times;</button>
+        <div class="challenge-modal-body">
+            <div class="challenge-details">
+                <h2>Assembly Output</h2>
+                <div id="assembly-output" class="assembly-editor"></div>
+            </div>
+            <div class="challenge-workspace">
+                <div id="monaco-editor"></div>
+                <div class="challenge-output-panel">
+                    <div class="challenge-output-header">
+                        <div class="editor-header">
+                            <div class="compiler-options">
+                                <label for="compilerFlags">Compiler flags:</label>
+                                <input 
+                                    type="text" 
+                                    id="compilerFlags" 
+                                    list="flagSuggestions"
+                                    placeholder="-O3 -arch=sm_75"
+                                    value="-O3"
+                                >
+                                <datalist id="flagSuggestions">
+                                    <option value="-O0">No optimization</option>
+                                    <option value="-O1">Basic optimization</option>
+                                    <option value="-O2">Medium optimization</option>
+                                    <option value="-O3">Full optimization</option>
+                                    <option value="-arch=sm_75">Compute capability 7.5</option>
+                                    <option value="-arch=sm_80">Compute capability 8.0</option>
+                                    <option value="-arch=sm_86">Compute capability 8.6</option>
+                                    <option value="-maxrregcount=32">Max 32 registers per thread</option>
+                                    <option value="-Xptxas -v">Verbose PTX assembly</option>
+                                </datalist>
+                            </div>
+                            <button id="compileBtn" class="compile-button">
+                                <i class="fas fa-code"></i>
+                                Compile
+                            </button>
+                              <button id="saveProgress" class="challenge-save-button">
+                                <i class="fas fa-save"></i>
+                                <span class="save-text">Save</span>
+                            </button>
+                        </div>
+                    </div>
+                    <pre id="output"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+<script src="{{ '/assets/js/playground.js' | relative_url }}"></script>
