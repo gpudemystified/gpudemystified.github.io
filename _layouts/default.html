@@ -81,20 +81,20 @@
 
         <nav class="main-nav">
           <ul>
-              <li>
+              <!-- <li>
             <a href="/index"
                class="nav-link {% if page.url contains 'articles' or page.url == '/' %}active{% endif %}"
                onclick="gtag('event', 'nav_click_articles', { event_category: 'navigation', event_label: 'Articles' });">
                Articles
             </a>
-          </li>
-          <li>
+          </li> -->
+          <!-- <li>
             <a href="/notes"
                class="nav-link {% if page.url contains 'notes' %}active{% endif %}"
                onclick="gtag('event', 'nav_click_notes', { event_category: 'navigation', event_label: 'Notes' });">
                Notes
             </a>
-          </li>
+          </li> -->
           <li>
             <a href="/challenge"
                class="nav-link {% if page.url contains 'challenge' %}active{% endif %}"
@@ -102,11 +102,12 @@
                Challenges
             </a>
           </li>
-            <a href="/leaderboard"
-                class="nav-link {% if page.url contains 'leaderboard' %}active{% endif %}"
-                onclick="gtag('event', 'nav_click_leaderboard', { event_category: 'navigation', event_label: 'Leaderboard' });">
-                Leaderboard
-              </a>
+           <li>
+            <a href="/learn"
+               class="nav-link {% if page.url contains 'learn' %}active{% endif %}"
+               onclick="gtag('event', 'nav_click_learn', { event_category: 'navigation', event_label: 'Learn' });">
+               Learn
+           </a>
           </ul>
         </nav>
 
