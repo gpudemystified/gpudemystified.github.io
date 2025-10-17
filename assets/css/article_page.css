@@ -5,9 +5,9 @@ body {
 
 .articles-list {
   list-style: none;
-  
- 
-   gap: 1.2rem;
+  width: 100%;
+
+  gap: 1.2rem;
   margin: 2rem 0;
 }
 
@@ -18,8 +18,8 @@ body {
   display: flex;
   gap: 1rem;
   align-items: flex-start;
-  max-width: 900px;
-   margin-left: auto;
+  width: 100%;
+  margin-left: auto;
   margin-right: auto;   
 }
 
