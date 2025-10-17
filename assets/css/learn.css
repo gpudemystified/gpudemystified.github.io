@@ -51,11 +51,6 @@
     padding: 0;
 }
 
-/* Notes styles - copy from your notes.css */
-.notes-grid {
-    /* Your existing notes grid styles */
-}
-
 @media (max-width: 768px) {
     .learn-tabs {
         flex-direction: column;
