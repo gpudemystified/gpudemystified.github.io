@@ -20,6 +20,7 @@ function createLeaderboardEntry(rank, user, points) {
 }
 
 async function updateLeaderboard() {
+    console.log("Updating leaderboard...");
     const entries = await fetchLeaderboard();
     const container = document.getElementById('leaderboard-entries');
     
@@ -29,13 +30,7 @@ async function updateLeaderboard() {
     }
     
     container.innerHTML = entries
-        .slice(0, 50)
-        .map((entry, index) => createLeaderboardEntry(index + 1, entry.email, entry.points))
-        .join('');
+            .slice(0, 50)
+            .map((entry, index) => createLeaderboardEntry(index + 1, entry.email, entry.points))
+            .join('');
 }
-
-// Initial load
-document.addEventListener('DOMContentLoaded', updateLeaderboard);
-
-// Refresh every 5 minutes
-setInterval(updateLeaderboard, 5 * 60 * 1000);

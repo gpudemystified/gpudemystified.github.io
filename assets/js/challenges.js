@@ -173,6 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Opening leaderboard modal');
         document.getElementById('leaderboardModal').classList.add('active');
         document.body.style.overflow = 'hidden';
+        updateLeaderboard(); 
     };
 
     document.querySelector('.leaderboard-modal-close').onclick = function() {

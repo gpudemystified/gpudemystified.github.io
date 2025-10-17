@@ -28,26 +28,40 @@ layout: default
 
     <!-- Playground Section -->
     <div class="main-section" id="playground-section">
-        {% include playground-content.html %}
+        <!-- {% include playground-content.html %} -->
     </div>
 
     <!-- Learn Section -->
     <div class="main-section" id="learn-section">
         {% include learn-content.html %}
     </div>
-
-    <!-- Leaderboard Section -->
-    <div class="main-section" id="leaderboard-section">
-        {% include leaderboard-content.html %}
-    </div>
 </div>
+
+<!-- Leaderboard Section -->
+  <div class="main-section" id="leaderboard-section">
+      
+  </div>
 
 <div id="leaderboardModal" class="leaderboard-modal">
     <div class="leaderboard-modal-overlay"></div>
     <div class="leaderboard-modal-content">
         <button class="leaderboard-modal-close">&times;</button>
-        <!-- Leaderboard content goes here -->
-        {% include leaderboard-content.html %}
+        <div class="leaderboard-container">
+        <h1 class="leaderboard-title">
+            <i class="fas fa-trophy"></i>
+            Leaderboard
+        </h1>
+        <div class="leaderboard-table">
+            <div class="leaderboard-header">
+                <div class="rank">#</div>
+                <div class="user">User</div>
+                <div class="points">Points</div>
+            </div>
+            <div id="leaderboard-entries" class="leaderboard-entries">
+                <!-- Entries will be populated here -->
+            </div>
+        </div>
+    </div>
     </div>
 </div>
 
