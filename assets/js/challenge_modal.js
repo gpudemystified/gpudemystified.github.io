@@ -5,6 +5,9 @@ const runBtn = document.getElementById('runCode');
 
 let currentChallengeId = null;
 
+// Add this variable at the top with other globals
+let hintUsedForChallenge = false;
+
 function setupMarked() {
     marked.use({
         mangle: false,
@@ -45,6 +48,8 @@ async function openChallenge(challengeId) {
     // Show modal first
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
+
+    hintUsedForChallenge = false;
 
     try {
         // Get profile info from window.userProfile
@@ -328,12 +333,25 @@ function showCompletionPopup(points) {
 async function handleHintRequest() {
     const hintButton = document.querySelector('.hint-button');
     
+    // Check if hint was already used for this challenge
+    if (hintUsedForChallenge) {
+        return;
+    }
+    
+    // Disable button immediately to prevent multiple clicks
+    if (hintButton.disabled) return;
+    hintButton.disabled = true;
+    hintButton.classList.add('disabled');
+    
     try {
         // Get current user session
         const { data: { session }, error: authError } = await window.supabaseClient.auth.getSession();
         
         if (!session) {
             alert('Please login to get hints');
+            // Re-enable button if login is required
+            hintButton.disabled = false;
+            hintButton.classList.remove('disabled');
             return;
         }
 
@@ -348,6 +366,9 @@ async function handleHintRequest() {
             throw new Error(data.message || 'Failed to get hint');
         }
 
+        // Mark hint as used for this challenge
+        hintUsedForChallenge = true;
+
         // Update the challenge description with the hint
         const descriptionEl = document.getElementById('challenge-description');
         const currentDescription = descriptionEl.innerHTML;
@@ -356,13 +377,8 @@ async function handleHintRequest() {
         const hintHtml = marked.parse(data.hints);
         descriptionEl.innerHTML = currentDescription + hintHtml;
 
-        // Disable the hint button
-        hintButton.disabled = true;
-        hintButton.classList.add('disabled');
-        hintButton.title = 'Hint already used';
-
-        // After successful hint request, update the button state
-        await updateHintButtonState();
+        // Update hint button title and keep it disabled
+        hintButton.title = 'Hint already used for this challenge';
 
         // Update profile after using hint
         await window.updateUserProfile();
@@ -374,6 +390,9 @@ async function handleHintRequest() {
     } catch (error) {
         console.error('Error getting hint:', error);
         alert('Failed to get hint: ' + error.message);
+        // Re-enable button on error
+        hintButton.disabled = false;
+        hintButton.classList.remove('disabled');
     }
 }
 
