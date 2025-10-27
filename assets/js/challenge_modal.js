@@ -50,6 +50,11 @@ async function openChallenge(challengeId) {
         // Get profile info from window.userProfile
         const profile = window.userProfile;
         console.log('User profile in modal:', profile);
+        
+        // Update submissions and hints counters in the meta tab
+        document.getElementById('modal-submissions-count').textContent = profile?.submissions_count ?? '0';
+        document.getElementById('modal-hints-count').textContent = profile?.hints_count ?? '0';
+        
         let codeToUse = challenge.initial_code;
 
         // Only load saved progress if user is pro
@@ -237,12 +242,16 @@ async function runCode() {
     // Format challenge ID
     const formattedId = `challenge_${currentChallengeId}`;
 
-    // Create request payload with userId
+    // Get selected GPU
+    const selectedGpu = document.getElementById('gpu-select').value;
+
+    // Create request payload with userId and GPU
     const payload = {
         id: formattedId,
         code: code,
         debug: false,
         user_id: session.user.id
+        //gpu: selectedGpu  // TODO: Add selected GPU to payload
     };
 
     // Log the request details
@@ -286,6 +295,10 @@ async function runCode() {
 
         // Update profile after running code
         await window.updateUserProfile();
+        
+        // Update the meta tab counters
+        const profile = window.userProfile;
+        document.getElementById('modal-submissions-count').textContent = profile?.submissions_count ?? '0';
     } catch (error) {
         console.error('Run code error:', error);
         output.innerText = "Error: " + error.message;
@@ -353,6 +366,10 @@ async function handleHintRequest() {
 
         // Update profile after using hint
         await window.updateUserProfile();
+        
+        // Update the meta tab counters
+        const profile = window.userProfile;
+        document.getElementById('modal-hints-count').textContent = profile?.hints_count ?? '0';
 
     } catch (error) {
         console.error('Error getting hint:', error);

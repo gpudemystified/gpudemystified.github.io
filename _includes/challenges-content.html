@@ -41,6 +41,26 @@
                 </button>
             </div>
             <div class="challenge-workspace">
+                <div class="challenge-meta-tab">
+                    <div class="meta-left">
+                        <span class="meta-label">GPU:</span>
+                        <select id="gpu-select">
+                            <option value="nvidia-rtx-4090">NVIDIA RTX 4090</option>
+                            <option value="nvidia-a100">NVIDIA A100</option>
+                            <option value="amd-mi250">AMD MI250</option>
+                        </select>
+                    </div>
+                    <div class="meta-right">
+                        <div class="stat-item" title="Submissions left">
+                            <span id="modal-submissions-count">0</span>
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="stat-item" title="Hints left">
+                            <span id="modal-hints-count">0</span>
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                    </div>
+                </div>
                 <div id="monaco-editor"></div>
                 <div class="challenge-output-panel">
                     <div class="challenge-output-header">
