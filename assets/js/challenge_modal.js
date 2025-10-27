@@ -112,7 +112,6 @@ async function openChallenge(challengeId) {
                     });
                 });
             } else {
-                console.log ("I'm here");
                 saveBtn.classList.remove('disabled');
                 saveBtn.title = 'Save your code';
                 
@@ -236,39 +235,46 @@ async function updateHintButtonState() {
 async function runCode() {
     const output = document.getElementById('output');
     const code = editor.getValue();
+    const runBtn = document.getElementById('runCode');
 
-    // Check if user is logged in
-    const { data: { session }, error } = await window.supabaseClient.auth.getSession();
-    if (!session) {
-        output.innerText = "Error: Please login to run code";
-        return;
-    }
-
-    // Format challenge ID
-    const formattedId = `challenge_${currentChallengeId}`;
-
-    // Get selected GPU
-    const selectedGpu = document.getElementById('gpu-select').value;
-
-    // Create request payload with userId and GPU
-    const payload = {
-        id: formattedId,
-        code: code,
-        debug: false,
-        user_id: session.user.id
-        //gpu: selectedGpu  // TODO: Add selected GPU to payload
-    };
-
-    // Log the request details
-    console.log('Sending request to /run:', {
-        originalId: currentChallengeId,
-        formattedId: formattedId,
-        userId: session.user.id,
-        codeLength: code.length,
-        fullPayload: payload
-    });
+    // Disable button immediately
+    runBtn.disabled = true;
+    runBtn.classList.add('disabled');
+    const originalHTML = runBtn.innerHTML;
+    runBtn.innerHTML = 'Running... <i class="fas fa-spinner fa-spin"></i>';
 
     try {
+        // Check if user is logged in
+        const { data: { session }, error } = await window.supabaseClient.auth.getSession();
+        if (!session) {
+            output.innerText = "Error: Please login to run code";
+            return;
+        }
+
+        // Format challenge ID
+        const formattedId = `challenge_${currentChallengeId}`;
+
+        // Get selected GPU
+        const selectedGpu = document.getElementById('gpu-select').value;
+
+        // Create request payload with userId and GPU
+        const payload = {
+            id: formattedId,
+            code: code,
+            debug: false,
+            user_id: session.user.id
+            //gpu: selectedGpu  // TODO: Add selected GPU to payload
+        };
+
+        // Log the request details
+        console.log('Sending request to /run:', {
+            originalId: currentChallengeId,
+            formattedId: formattedId,
+            userId: session.user.id,
+            codeLength: code.length,
+            fullPayload: payload
+        });
+
         const response = await fetch("http://localhost:8000/run", {
             method: "POST",
             headers: {
@@ -304,9 +310,15 @@ async function runCode() {
         // Update the meta tab counters
         const profile = window.userProfile;
         document.getElementById('modal-submissions-count').textContent = profile?.submissions_count ?? '0';
+
     } catch (error) {
         console.error('Run code error:', error);
         output.innerText = "Error: " + error.message;
+    } finally {
+        // Re-enable button after response (success or error)
+        runBtn.disabled = false;
+        runBtn.classList.remove('disabled');
+        runBtn.innerHTML = originalHTML;
     }
 }
 
