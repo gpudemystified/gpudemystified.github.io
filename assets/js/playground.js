@@ -33,15 +33,7 @@ require(['vs/editor/editor.main'], async function() {
             }
         }
         
-        sourceEditor = monaco.editor.create(document.getElementById('monaco-editor'), {
-            value: codeToUse,
-            language: 'cpp',
-            theme: 'vs-light',
-            minimap: { enabled: false },
-            fontSize: 13,
-            scrollBeyondLastLine: false,
-            automaticLayout: true
-        });
+        sourceEditor = window.editor; 
 
         // Setup save button with pro-only functionality
         const saveBtn = document.getElementById('saveProgress');

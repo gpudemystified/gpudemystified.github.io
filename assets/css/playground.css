@@ -26,14 +26,14 @@
 }
 
 .playground-item:hover {
-    border-color: #00bf63;
-    box-shadow: 0 4px 12px rgba(0, 191, 99, 0.1);
+    border-color: #ff8c00;
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.1);
     transform: translateY(-2px);
 }
 
 .playground-icon {
     font-size: 3rem;
-    color: #00bf63;
+    color: #ff8c00;
     flex-shrink: 0;
 }
 
