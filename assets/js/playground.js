@@ -498,3 +498,57 @@ require(['vs/editor/editor.main'], async function() {
         console.error('Error initializing playground:', error);
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Get playground items
+    const playgroundItems = document.querySelectorAll('.playground-item');
+    
+    // Add click listeners
+    playgroundItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const playgroundType = item.dataset.playground;
+            
+            if (playgroundType === 'compiler-explorer') {
+                openCompilerExplorer();
+            } else if (playgroundType === 'run-profile') {
+                openRunProfile();
+            }
+        });
+    });
+    
+    // Close button listeners
+    document.querySelectorAll('.challenge-modal-close').forEach(closeBtn => {
+        closeBtn.addEventListener('click', (e) => {
+            const modal = e.target.closest('.challenge-modal');
+            closeModal(modal);
+        });
+    });
+    
+    // Overlay click listeners
+    document.querySelectorAll('.challenge-modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            const modal = e.target.closest('.challenge-modal');
+            closeModal(modal);
+        });
+    });
+});
+
+// Open Compiler Explorer modal
+function openCompilerExplorer() {
+    const modal = document.getElementById('compilerExplorerModal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Open Run & Profile modal
+function openRunProfile() {
+    const modal = document.getElementById('runProfileModal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Close modal
+function closeModal(modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}

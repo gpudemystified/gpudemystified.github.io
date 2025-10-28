@@ -1,7 +1,32 @@
 <link rel="stylesheet" href="{{ '/assets/css/challenge_modal.css' | relative_url }}">
 <link rel="stylesheet" href="{{ '/assets/css/playground.css' | relative_url }}">
 
-<div id="playgroundModal" class="challenge-modal active">
+<div class="playground-container">
+    <ul class="playground-list">
+        <li class="playground-item" data-playground="run-profile">
+            <div class="playground-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="playground-text">
+                <h2>Run & Profile</h2>
+                <p>Execute your CUDA code and analyze performance metrics</p>
+            </div>
+        </li>
+        
+        <li class="playground-item" data-playground="compiler-explorer">
+            <div class="playground-icon">
+                <i class="fas fa-wrench"></i>
+            </div>
+            <div class="playground-text">
+                <h2>Compiler Explorer</h2>
+                <p>Write CUDA code and see the compiled assembly output side-by-side</p>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<!-- Compiler Explorer Modal -->
+<div id="compilerExplorerModal" class="challenge-modal">
     <div class="challenge-modal-overlay"></div>
     <div class="challenge-modal-content">
         <button class="challenge-modal-close">&times;</button>
@@ -10,11 +35,31 @@
                 <h2>Assembly Output</h2>
                 <div id="assembly-output" class="assembly-editor"></div>
             </div>
+          
             <div class="challenge-workspace">
+                <div class="challenge-meta-tab">
+                    <div class="meta-left">
+                        <span class="meta-label">GPU:</span>
+                        <select id="gpu-select">
+                            <option value="nvidia-rtx-4090">NVIDIA RTX 4090</option>
+                            <option value="nvidia-a100">NVIDIA A100</option>
+                            <option value="amd-mi250">AMD MI250</option>
+                        </select>
+                    </div>
+                    <div class="meta-right">
+                        <div class="stat-item" title="Submissions left">
+                            <span id="modal-submissions-count">0</span>
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="stat-item" title="Hints left">
+                            <span id="modal-hints-count">0</span>
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                    </div>
+                </div>
                 <div id="monaco-editor"></div>
                 <div class="challenge-output-panel">
                     <div class="challenge-output-header">
-                        <div class="editor-header">
                             <div class="compiler-options">
                                 <label for="compilerFlags">Compiler flags:</label>
                                 <input 
@@ -36,22 +81,74 @@
                                     <option value="-Xptxas -v">Verbose PTX assembly</option>
                                 </datalist>
                             </div>
-                            <button id="compileBtn" class="compile-button">
-                                <i class="fas fa-code"></i>
-                                Compile
-                            </button>
-                              <button id="saveProgress" class="challenge-save-button">
-                                <i class="fas fa-save"></i>
-                                <span class="save-text">Save</span>
-                            </button>
-                        </div>
+
+                              <div class="challenge-controls">
+                                <button id="saveProgress" class="challenge-save-button">
+                                    <i class="fas fa-save"></i>
+                                    <span class="save-text">Save</span>
+                                </button>
+                                <button id="runCode" class="challenge-run-button">
+                                    ▶ Run
+                                    <i class="fas fa-code"></i>
+                                </button>
+                                </div>
+                            </div>
                     </div>
-                    <pre id="output"></pre>
+                    <pre id="compiler-output"></pre>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+<!-- Run & Profile Modal -->
+<div id="runProfileModal" class="challenge-modal">
+    <div class="challenge-modal-overlay"></div>
+    <div class="challenge-modal-content">
+        <button class="challenge-modal-close">&times;</button>
+        <div class="challenge-modal-body">
+            <!-- Meta tab -->
+            <div class="challenge-meta-tab">
+                <div class="meta-left">
+                    <span class="meta-label">GPU:</span>
+                    <select id="profile-gpu-select">
+                        <option value="nvidia-rtx-4090">NVIDIA RTX 4090</option>
+                        <option value="nvidia-a100">NVIDIA A100</option>
+                        <option value="amd-mi250">AMD MI250</option>
+                    </select>
+                </div>
+                <div class="meta-right">
+                    <div class="stat-item" title="Submissions left">
+                        <span id="profile-submissions-count">0</span>
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="stat-item" title="Hints left">
+                        <span id="profile-hints-count">0</span>
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="challenge-workspace">
+                <div id="profile-monaco-editor"></div>
+                <div class="challenge-output-panel">
+                    <div class="challenge-output-header">
+                        <h3>Output & Performance Metrics</h3>
+                        <div class="challenge-controls">
+                            <button id="profileRunBtn" class="run-button">
+                                Run & Profile <i class="fas fa-play"></i>
+                            </button>
+                            <button id="profileSaveProgress" class="challenge-save-button">
+                                <i class="fas fa-save"></i>
+                                <span class="save-text">Save</span>
+                            </button>
+                        </div>
+                    </div>
+                    <pre id="profile-output"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="{{ '/assets/js/playground.js' | relative_url }}"></script>

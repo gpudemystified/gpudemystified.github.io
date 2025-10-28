@@ -1,5 +1,8 @@
 .learn-container {
     width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1rem;
 }
 
 /* Tab Navigation */
@@ -44,11 +47,86 @@
     display: block;
 }
 
-/* Import existing styles from index.css and notes.css */
-/* Articles styles - copy from your index.css */
+/* Articles styles */
 .articles-list {
     list-style: none;
     padding: 0;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.article-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    background: white;
+    border: 2px solid #eaeaea;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.article-item:hover {
+    border-color: #00bf63;
+    box-shadow: 0 4px 12px rgba(0, 191, 99, 0.1);
+    transform: translateY(-2px);
+}
+
+.article-icon {
+    font-size: 3rem;
+    color: #00bf63;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+}
+
+.article-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.article-text {
+    flex: 1;
+}
+
+.article-text h2 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.article-text p {
+    margin: 0 0 0.75rem 0;
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.article-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.topic-tag {
+    background: #f0f0f0;
+    color: #555;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 
 @media (max-width: 768px) {
@@ -65,5 +143,29 @@
     .learn-tab.active {
         border-left-color: #00bf63;
         border-bottom-color: #eaeaea;
+    }
+    
+    .article-item {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+    }
+    
+    .article-icon {
+        font-size: 2.5rem;
+        width: 60px;
+        height: 60px;
+    }
+    
+    .article-text h2 {
+        font-size: 1.25rem;
+    }
+    
+    .article-text p {
+        font-size: 0.9rem;
+    }
+    
+    .article-topics {
+        justify-content: center;
     }
 }

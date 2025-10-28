@@ -2,7 +2,6 @@
 
 <div class="learn-container">
     
-    
     <!-- Tab Navigation -->
     <div class="learn-tabs">
         <button class="learn-tab active" data-tab="articles">
@@ -19,28 +18,23 @@
     <div class="learn-section active" id="articles-section">
         <ul class="articles-list">
             {% for article in site.articles %}
-                <li class="article-item">
-                    {% if article.image %}
-                        <img src="{{ article.image }}" alt="{{ article.title }}" class="article-image" />
-                    {% endif %}
+                <li class="article-item" onclick="window.location.href='{{ article.url | relative_url }}'">
+                    <div class="article-icon">
+                        {% if article.image %}
+                            <img src="{{ article.image }}" alt="{{ article.title }} image">
+                        {% else %}
+                            <i class="fas fa-book"></i>
+                        {% endif %}
+                    </div>
                     <div class="article-text">
-                        <h2>
-                            <a 
-                                href="{{ article.url }}" 
-                                onclick="gtag('event', '{{ article.articleId }}', { event_category: 'Articles', event_label: '{{ article.title }}' });"
-                            >
-                                {{ article.title }}
-                            </a>
-                        </h2>
-                        
+                        <h2>{{ article.title }}</h2>
                         <p>{{ article.description }}</p>
-
                         {% if article.topics %}
-                            <ul class="article-topics">
+                            <div class="article-topics">
                                 {% for topic in article.topics %}
-                                    <li class="article-topic">{{ topic }}</li>
+                                    <span class="topic-tag">{{ topic }}</span>
                                 {% endfor %}
-                            </ul>
+                            </div>
                         {% endif %}
                     </div>
                 </li>
