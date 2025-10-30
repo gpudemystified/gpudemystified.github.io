@@ -1,495 +1,547 @@
-let sourceEditor, assemblyEditor;
+let compilerEditor, assemblyEditor, profileEditor;
+let currentDecorations = []; // Store decorations
+let currentLineMapping = null; // Store line mapping from compilation
 
-// Add playground ID constant
-const PLAYGROUND_ID = 'playground_999999999';
+// Add playground ID constants
+const COMPILER_EXPLORER_ID = 'playground_999999999';
+const RUN_PROFILE_ID = '99999999998';
 
-// Add default code at the top level
-const defaultCode = `__global__ void example(float* data) {
+// Add default code
+const defaultCompilerCode = `__global__ void example(float* data) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     data[idx] = data[idx] * 2.0f;
 }`;
 
-require.config({ 
-    paths: { 
-        vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' 
+const defaultProfileCode = `#include <cuda_runtime.h>
+#include <stdio.h>
+
+__global__ void kernel(float* data, int n) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx < n) {
+        data[idx] = data[idx] * 2.0f;
     }
-});
+}
 
-require(['vs/editor/editor.main'], async function() {
-    try {
-        // TODO: Might not be necessary if profile is already loaded
-        await window.updateUserProfile();
-        // Get profile info from window.userProfile
-        const profile = window.userProfile;
-        console.log('User profile in playground:', profile);
+int main() {
+    // Your code here
+    return 0;
+}`;
+
+function disableButton(button, loadingText) {
+    button.disabled = true;
+    button.classList.add('disabled');
+    const originalHTML = button.innerHTML;
+    button.innerHTML = loadingText;
+    return originalHTML;
+}
+
+// Re-enable button and restore original content
+function enableButton(button, originalHTML) {
+    button.disabled = false;
+    button.classList.remove('disabled');
+    button.innerHTML = originalHTML;
+}
+
+// Update modal counts with infinity for Pro users
+function updateModalCounts(submissionsElementId, hintsElementId) {
+    const profile = window.userProfile;
+    
+    const submissionsEl = document.getElementById(submissionsElementId);
+    const hintsEl = document.getElementById(hintsElementId);
+    
+    if (!submissionsEl || !hintsEl) {
+        console.error('Count elements not found:', submissionsElementId, hintsElementId);
+        return;
+    }
+    
+    if (profile?.is_pro) {
+        submissionsEl.innerHTML = '<i class="fas fa-infinity"></i>';
+        hintsEl.innerHTML = '<i class="fas fa-infinity"></i>';
+    } else {
+        submissionsEl.textContent = profile?.submissions_count ?? '0';
+        hintsEl.textContent = profile?.hints_count ?? '0';
+    }
+}
+
+async function setupSaveButton(saveButtonId, editorGetter, storageKey) {
+    const saveBtn = document.getElementById(saveButtonId);
+    if (!saveBtn) {
+        console.error(`Save button not found: ${saveButtonId}`);
+        return;
+    }
+    
+    const profile = window.userProfile;
+    
+    // Remove existing crown icon if any
+    const existingIcon = saveBtn.querySelector('.pro-icon');
+    if (existingIcon) {
+        existingIcon.remove();
+    }
+
+    // Remove all existing event listeners by cloning
+    const newBtn = saveBtn.cloneNode(true);
+    saveBtn.parentNode.replaceChild(newBtn, saveBtn);
+    const freshBtn = document.getElementById(saveButtonId);
+
+    if (!profile?.is_pro) {
+        freshBtn.classList.add('disabled');
+        freshBtn.title = 'Upgrade to Pro to save your code';
+
+        // Add crown icon at the start of the button
+        const proIcon = document.createElement('i');
+        proIcon.className = 'fas fa-crown pro-icon';
+        freshBtn.insertBefore(proIcon, freshBtn.firstChild);
         
-        let codeToUse = defaultCode;
-
-        // Only load saved progress if user is pro
-        if (profile?.is_pro) {
-            const progress = await window.loadProgress(PLAYGROUND_ID);
-            if (progress.exists) {
-                codeToUse = progress.code;
-            }
-        }
-        
-        sourceEditor = window.editor; 
-
-        // Setup save button with pro-only functionality
-        const saveBtn = document.getElementById('saveProgress');
-        if (saveBtn) {
-            // Remove any existing crown icon
-            const existingIcon = saveBtn.querySelector('.pro-icon');
-            if (existingIcon) {
-                existingIcon.remove();
-            }
-
-            // Get profile info from window.userProfile
-            // TODO: Might not be necessary if profile is already loaded
-            await window.updateUserProfile();
-
-            const profile = window.userProfile;
-            console.log('User profile in playground:', profile);
-
-            if (!profile?.is_pro) {
-                saveBtn.classList.add('disabled');
-                saveBtn.title = 'Upgrade to Pro to save your code';
-
-                // Add crown icon at the start of the button
-                const proIcon = document.createElement('i');
-                proIcon.className = 'fas fa-crown pro-icon';
-                saveBtn.insertBefore(proIcon, saveBtn.firstChild);
-                
-                // Add tooltip functionality
-                saveBtn.addEventListener('mouseover', () => {
-                    const rect = saveBtn.getBoundingClientRect();
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'pro-tooltip';
-                    tooltip.textContent = 'Upgrade to Pro to save your code';
-                    document.body.appendChild(tooltip);
-                    
-                    tooltip.style.left = `${rect.left}px`;
-                    tooltip.style.top = `${rect.bottom + 5}px`;
-                    
-                    saveBtn.addEventListener('mouseleave', () => {
-                        tooltip.remove();
-                    });
-                });
-            } else {
-                // Only add click handler if user is pro
-                saveBtn.addEventListener('click', async () => {
-                    try {
-                        await window.saveProgress(PLAYGROUND_ID, sourceEditor.getValue());
-                        
-                        // Show success feedback
-                        saveBtn.classList.add('saved');
-                        saveBtn.querySelector('.save-text').textContent = 'Saved!';
-                        
-                        setTimeout(() => {
-                            saveBtn.classList.remove('saved');
-                            saveBtn.querySelector('.save-text').textContent = 'Save';
-                        }, 2000);
-                    } catch (error) {
-                        alert('Failed to save progress. Please try again.');
-                    }
-                });
-            }
-        }
-
-        // Initialize assembly view editor
-        assemblyEditor = monaco.editor.create(document.getElementById('assembly-output'), {
-            value: '',
-            language: 'plaintext',
-            theme: 'vs-light',
-            readOnly: true,
-            minimap: { enabled: false },
-            fontSize: 13,
-            scrollBeyondLastLine: false,
-            lineNumbers: 'on',
-            renderLineHighlight: 'all',
-            automaticLayout: true,
-            wordWrap: 'off'
-        });
-
-        const modal = document.getElementById('playgroundModal');
-        const closeBtn = modal.querySelector('.challenge-modal-close');
-        const compileBtn = document.getElementById('compileBtn');
-
-        // Register CUDA language
-        monaco.languages.register({ id: 'cuda' });
-        
-        // Add CUDA completion items
-        monaco.languages.registerCompletionItemProvider('cuda', {
-            provideCompletionItems: () => {
-                const suggestions = [
-                    {
-                        label: '__global__',
-                        kind: monaco.languages.CompletionItemKind.Keyword,
-                        insertText: '__global__',
-                        detail: 'CUDA global function decorator',
-                        documentation: 'Declares a function that runs on the GPU and is callable from the CPU'
-                    },
-                    {
-                        label: 'threadIdx',
-                        kind: monaco.languages.CompletionItemKind.Variable,
-                        insertText: 'threadIdx.${1:x}',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Thread index within a block',
-                        documentation: 'Access the current thread index (x, y, or z component)'
-                    },
-                    {
-                        label: 'blockIdx',
-                        kind: monaco.languages.CompletionItemKind.Variable,
-                        insertText: 'blockIdx.${1:x}',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Block index within the grid',
-                        documentation: 'Access the current block index (x, y, or z component)'
-                    },
-                    {
-                        label: 'cudaMalloc',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'cudaMalloc((void**)&${1:ptr}, ${2:size});',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Allocate memory on the GPU',
-                        documentation: 'Allocates size bytes of linear memory on the device'
-                    },
-                    {
-                        label: '__shared__',
-                        kind: monaco.languages.CompletionItemKind.Keyword,
-                        insertText: '__shared__ ${1:type} ${2:variable}[${3:size}];',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'CUDA shared memory decorator',
-                        documentation: 'Declares a variable in shared memory, accessible by all threads within the same block'
-                    },
-                    {
-                        label: 'cudaMemcpy',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'cudaMemcpy(${1:dst}, ${2:src}, ${3:size}, ${4:cudaMemcpyHostToDevice});',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Copy memory between host and device',
-                        documentation: {
-                            value: [
-                                '```cuda',
-                                'cudaError_t cudaMemcpy(void* dst, const void* src, size_t size, cudaMemcpyKind kind)',
-                                '```',
-                                'Copies data between host and device memory.',
-                                '\n\nMemcpy kinds:',
-                                '- cudaMemcpyHostToDevice: Host -> Device',
-                                '- cudaMemcpyDeviceToHost: Device -> Host',
-                                '- cudaMemcpyDeviceToDevice: Device -> Device'
-                            ].join('\n')
-                        }
-                    },
-                    {
-                        label: 'blockDim',
-                        kind: monaco.languages.CompletionItemKind.Variable,
-                        insertText: 'blockDim.${1:x}',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Block dimensions',
-                        documentation: 'Number of threads in each dimension of a block'
-                    },
-                    {
-                        label: 'gridDim',
-                        kind: monaco.languages.CompletionItemKind.Variable,
-                        insertText: 'gridDim.${1:x}',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Grid dimensions',
-                        documentation: 'Number of blocks in each dimension of the grid'
-                    },
-                    {
-                        label: '__syncthreads',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: '__syncthreads();',
-                        detail: 'Synchronize threads in a block',
-                        documentation: 'Creates a barrier where all threads in a block must wait before proceeding'
-                    },
-                    {
-                        label: '__syncwarp',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: '__syncwarp();',
-                        detail: 'Synchronize threads in a warp',
-                        documentation: 'Creates a barrier where all threads in a warp must wait before proceeding'
-                    },
-                    {
-                        label: 'atomicAdd',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'atomicAdd(${1:address}, ${2:value})',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Atomic addition',
-                        documentation: 'Atomically adds value to the variable at address'
-                    },
-                    {
-                        label: 'atomicSub',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'atomicSub(${1:address}, ${2:value})',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Atomic subtraction',
-                        documentation: 'Atomically subtracts value from the variable at address'
-                    },
-                    {
-                        label: 'atomicExch',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'atomicExch(${1:address}, ${2:value})',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Atomic exchange',
-                        documentation: 'Atomically exchanges value with the value at address'
-                    },
-                    {
-                        label: 'atomicMin',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'atomicMin(${1:address}, ${2:value})',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Atomic minimum',
-                        documentation: 'Atomically computes minimum of value and the value at address'
-                    },
-                    {
-                        label: 'atomicAnd',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'atomicAnd(${1:address}, ${2:value})',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Atomic AND',
-                        documentation: 'Atomically performs bitwise AND of value and the value at address'
-                    },
-                    {
-                        label: 'atomicCAS',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'atomicCAS(${1:address}, ${2:compare}, ${3:value})',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Atomic Compare-and-Swap',
-                        documentation: 'Atomically performs compare-and-swap operation'
-                    },
-                    {
-                        label: 'cudaFree',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'cudaFree(${1:ptr});',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Free device memory',
-                        documentation: 'Frees memory previously allocated by cudaMalloc'
-                    },
-                    {
-                        label: 'cudaMemset',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'cudaMemset(${1:ptr}, ${2:value}, ${3:size});',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Set device memory',
-                        documentation: 'Sets device memory to a value'
-                    },
-                    {
-                        label: 'cudaMallocManaged',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'cudaMallocManaged((void**)&${1:ptr}, ${2:size});',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Allocate managed memory',
-                        documentation: 'Allocates managed memory accessible by both CPU and GPU'
-                    },
-                    {
-                        label: 'cudaStreamCreate',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'cudaStreamCreate(&${1:stream});',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Create CUDA stream',
-                        documentation: 'Creates a new asynchronous stream'
-                    },
-                    {
-                        label: 'cudaStreamDestroy',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'cudaStreamDestroy(${1:stream});',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Destroy CUDA stream',
-                        documentation: 'Destroys and cleans up an asynchronous stream'
-                    },
-                    {
-                        label: 'cudaStreamSynchronize',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'cudaStreamSynchronize(${1:stream});',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Synchronize CUDA stream',
-                        documentation: 'Waits for all operations in the stream to complete'
-                    },
-                    {
-                        label: 'cudaEventCreate',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'cudaEventCreate(&${1:event});',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Create CUDA event',
-                        documentation: 'Creates a new event'
-                    },
-                    {
-                        label: 'cudaEventRecord',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'cudaEventRecord(${1:event}, ${2:stream});',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Record CUDA event',
-                        documentation: 'Records an event in a stream'
-                    },
-                    {
-                        label: 'cudaEventSynchronize',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'cudaEventSynchronize(${1:event});',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Synchronize CUDA event',
-                        documentation: 'Waits for an event to complete'
-                    },
-                    {
-                        label: 'cudaEventElapsedTime',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'cudaEventElapsedTime(&${1:ms}, ${2:start}, ${3:stop});',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Calculate elapsed time',
-                        documentation: 'Computes the elapsed time between two events in milliseconds'
-                    },
-                    {
-                        label: 'cudaGetDevice',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'cudaGetDevice(&${1:device});',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: 'Get current device',
-                        documentation: 'Gets the current CUDA device'
-                    },
-                    {
-                        label: 'cudaDeviceSynchronize',
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: 'cudaDeviceSynchronize();',
-                        detail: 'Synchronize device',
-                        documentation: 'Waits for all operations on the device to complete'
-                    }
-                ];
-                return { suggestions };
-            }
-        });
-
-        // Configure CUDA syntax highlighting
-        monaco.languages.setMonarchTokensProvider('cuda', {
-            keywords: [
-                '__global__', '__device__', '__host__', '__shared__',
-                'threadIdx', 'blockIdx', 'blockDim', 'gridDim',
-                'if', 'else', 'for', 'while', 'do', 'return'
-            ],
+        // Add tooltip functionality
+        freshBtn.addEventListener('mouseover', () => {
+            const rect = freshBtn.getBoundingClientRect();
+            const tooltip = document.createElement('div');
+            tooltip.className = 'pro-tooltip';
+            tooltip.textContent = 'Upgrade to Pro to save your code';
+            document.body.appendChild(tooltip);
             
-            tokenizer: {
-                root: [
-                    [/[a-zA-Z_]\w*/, {
-                        cases: {
-                            '@keywords': 'keyword',
-                            '@default': 'variable'
-                        }
-                    }],
-                    [/[{}()]/, 'delimiter'],
-                    [/\/\/.*$/, 'comment'],
-                    [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
-                    [/\d+/, 'number'],
-                    [/"([^"\\]|\\.)*$/, 'string.invalid'],
-                    [/"/, { token: 'string.quote', next: '@string' }]
-                ],
-                
-                string: [
-                    [/[^\\"]+/, 'string'],
-                    [/"/, { token: 'string.quote', next: '@pop' }]
-                ]
-            }
+            tooltip.style.left = `${rect.left}px`;
+            tooltip.style.top = `${rect.bottom + 5}px`;
+            
+            freshBtn.addEventListener('mouseleave', () => {
+                tooltip.remove();
+            }, { once: true });
         });
-
-        // Add after Monaco initialization but before event listeners
-        function createAssemblyMapping(assembly, sourceMap) {
-            const assemblyOutput = document.getElementById('assembly-output');
-            assemblyOutput.innerHTML = assembly.split('\n').map((line, index) => {
-                const lineNum = index + 1;
-                return `<div class="assembly-line" data-line="${lineNum}">
-                    <span class="line-number">${lineNum}</span>
-                    <span class="assembly-code">${line}</span>
-                </div>`;
-            }).join('\n');
-
-            // Add source code to assembly line mapping
-            editor.onMouseMove(e => {
-                const position = e.target.position;
-                if (!position) return;
-
-                const sourceLine = position.lineNumber;
-                clearHighlights();
-                
-                if (sourceMap[sourceLine]) {
-                    sourceMap[sourceLine].forEach(assemblyLine => {
-                        const line = document.querySelector(`.assembly-line[data-line="${assemblyLine}"]`);
-                        if (line) line.classList.add('highlighted');
-                    });
-                }
-            });
-        }
-
-        function clearHighlights() {
-            document.querySelectorAll('.assembly-line').forEach(line => {
-                line.classList.remove('highlighted');
-            });
-        }
-
-        // Setup event listeners
-        closeBtn.addEventListener('click', () => {
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-        });
-
-        // Update the compile button click handler
-        compileBtn.addEventListener('click', async () => {
-            const output = document.getElementById('output');
-            const code = sourceEditor.getValue();
-
+    } else {
+        freshBtn.classList.remove('disabled');
+        freshBtn.title = 'Save your code';
+        
+        // Only add click handler if user is pro
+        freshBtn.addEventListener('click', async () => {
             try {
-                // Get current user session
-                const { data: { session }, error: authError } = await window.supabaseClient.auth.getSession();
+                await window.saveProgress(storageKey, editorGetter());
                 
-                if (!session) {
-                    output.textContent = "Please login to compile code";
-                    return;
+                // Show success feedback
+                freshBtn.classList.add('saved');
+                const saveText = freshBtn.querySelector('.save-text');
+                if (saveText) {
+                    saveText.textContent = 'Saved!';
                 }
-
-                const response = await fetch('http://localhost:8000/compile', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        code: code,
-                        generate_sass: false,
-                        debug: true,
-                        user_id: session.user.id  // Add user ID to the request
-                    })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('PTX output:', data.ptx);
-                    console.log('Line mapping:', data.line_mapping);
-                    console.log('Line info available:', data.line_info);
-
-                    if (data.success) {
-                        assemblyEditor.setValue(data.ptx);
-                        
-                        if (data.line_mapping && data.line_info) {
-                            // Log each source line and its corresponding PTX lines
-                            Object.entries(data.line_mapping).forEach(([sourceLine, ptxLines]) => {
-                                console.log(`Source line ${sourceLine} maps to PTX lines:`, ptxLines);
-                            });
-                            setupHighlighting(data.line_mapping);
-                        }
-                        
-                        output.textContent = 'Compilation successful';
-                        await window.updateUserProfile();
-                    } else {
-                        output.textContent = data.error || 'Compilation failed';
+                
+                setTimeout(() => {
+                    freshBtn.classList.remove('saved');
+                    if (saveText) {
+                        saveText.textContent = 'Save';
                     }
-                } else {
-                    const errorData = await response.json();
-                    output.textContent = `Compilation failed: ${errorData.detail || 'Unknown error'}`;
-                }
+                }, 2000);
             } catch (error) {
-                console.error('Error during compilation:', error);
-                output.textContent = `Error: ${error.message}`;
+                console.error('Save error:', error);
+                alert('Failed to save progress. Please try again.');
             }
         });
-
-    } catch (error) {
-        console.error('Error initializing playground:', error);
     }
-});
+}
+
+// Load saved code for Pro users
+async function loadSavedCode(storageKey, defaultCode) {
+    const profile = window.userProfile;
+    
+    if (profile?.is_pro) {
+        const progress = await window.loadProgress(storageKey);
+        if (progress.exists) {
+            return progress.code;
+        }
+    }
+    
+    return defaultCode;
+}
+
+// Parse PTX output to build line mapping
+function parsePTXLineMapping(ptxOutput) {
+    const lines = ptxOutput.split('\n');
+    const lineMap = {};
+    const reverseLineMap = {}; // PTX line -> Source line
+    let currentSourceLine = null;
+    
+    lines.forEach((line, index) => {
+        const ptxLineNumber = index + 1;
+        
+        // Check if this line contains a .loc directive
+        if (line.includes('.loc')) {
+            // Parse .loc directive: .loc FileID LineNum Column
+            const parts = line.trim().split(/\s+/);
+            if (parts.length >= 3) {
+                // parts[0] = '.loc', parts[1] = FileID, parts[2] = LineNum
+                currentSourceLine = parts[2];
+            }
+        }
+        
+        // If we have an active source line, map this PTX line to it
+        if (currentSourceLine) {
+            // Forward mapping: source -> PTX lines
+            if (!lineMap[currentSourceLine]) {
+                lineMap[currentSourceLine] = [];
+            }
+            lineMap[currentSourceLine].push(ptxLineNumber);
+            
+            // Reverse mapping: PTX line -> source line
+            reverseLineMap[ptxLineNumber.toString()] = currentSourceLine;
+        }
+    });
+    
+    console.log('Parsed line mapping from PTX:', lineMap);
+    console.log('Reverse line mapping (PTX -> Source):', reverseLineMap);
+    return { forward: lineMap, reverse: reverseLineMap };
+}
+
+// Setup highlighting based on line mapping
+function setupHighlighting(ptxOutput) {
+    if (!compilerEditor || !assemblyEditor) {
+        console.error('Editors not initialized');
+        return;
+    }
+    
+    // Parse the PTX output directly to build the line mapping
+    const { forward, reverse } = parsePTXLineMapping(ptxOutput);
+    
+    currentLineMapping = forward;
+    const reverseLineMapping = reverse;
+    
+    console.log('Source -> PTX mapping:', forward);
+    console.log('PTX -> Source mapping:', reverse);
+    console.log('Source lines available:', Object.keys(forward));
+    
+    let sourceDecorations = []; // Track source editor decorations
+    
+    // Source editor mouse move - highlight PTX lines
+    compilerEditor.onMouseMove((e) => {
+        const position = e.target.position;
+        
+        // Clear source highlights when hovering over source editor
+        sourceDecorations = compilerEditor.deltaDecorations(sourceDecorations, []);
+        
+        if (!position) {
+            // Clear PTX highlights when not hovering over code
+            currentDecorations = assemblyEditor.deltaDecorations(currentDecorations, []);
+            return;
+        }
+        
+        const sourceLine = position.lineNumber.toString();
+        
+        // Check if this source line has a mapping
+        if (currentLineMapping[sourceLine]) {
+            const linesToHighlight = currentLineMapping[sourceLine];
+            console.log(`Hovering source line ${sourceLine}, highlighting PTX lines:`, linesToHighlight);
+            
+            // Create decorations for each assembly line
+            const decorations = linesToHighlight.map(lineNum => ({
+                range: new monaco.Range(lineNum, 1, lineNum, 1),
+                options: {
+                    isWholeLine: true,
+                    className: 'assembly-line-highlight',
+                    glyphMarginClassName: 'assembly-line-glyph'
+                }
+            }));
+            
+            // Apply decorations
+            currentDecorations = assemblyEditor.deltaDecorations(currentDecorations, decorations);
+            
+            // Scroll to first highlighted line
+            if (linesToHighlight.length > 0) {
+                assemblyEditor.revealLineInCenter(linesToHighlight[0]);
+            }
+        } else {
+            // Clear highlights if no mapping for this line
+            currentDecorations = assemblyEditor.deltaDecorations(currentDecorations, []);
+        }
+    });
+    
+    // Assembly editor mouse move - highlight source lines
+    assemblyEditor.onMouseMove((e) => {
+        const position = e.target.position;
+        
+        // Clear PTX highlights when hovering over assembly editor
+        currentDecorations = assemblyEditor.deltaDecorations(currentDecorations, []);
+        
+        if (!position) {
+            // Clear source highlights when not hovering over code
+            sourceDecorations = compilerEditor.deltaDecorations(sourceDecorations, []);
+            return;
+        }
+        
+        const ptxLine = position.lineNumber.toString();
+        
+        // Check if this PTX line has a mapping to a source line
+        if (reverseLineMapping[ptxLine]) {
+            const sourceLineToHighlight = reverseLineMapping[ptxLine];
+            console.log(`Hovering PTX line ${ptxLine}, highlighting source line:`, sourceLineToHighlight);
+            
+            // Create decoration for the source line
+            const decorations = [{
+                range: new monaco.Range(parseInt(sourceLineToHighlight, 10), 1, parseInt(sourceLineToHighlight, 10), 1),
+                options: {
+                    isWholeLine: true,
+                    className: 'source-line-highlight',
+                    glyphMarginClassName: 'source-line-glyph'
+                }
+            }];
+            
+            // Apply decorations to source editor
+            sourceDecorations = compilerEditor.deltaDecorations(sourceDecorations, decorations);
+            
+            // Scroll to highlighted source line
+            compilerEditor.revealLineInCenter(parseInt(sourceLineToHighlight, 10));
+        } else {
+            // Clear highlights if no mapping for this PTX line
+            sourceDecorations = compilerEditor.deltaDecorations(sourceDecorations, []);
+        }
+    });
+    
+    console.log('Bidirectional highlighting setup complete');
+}
+
+// Initialize Compiler Explorer modal
+async function initializeCompilerExplorer() {
+    if (!window.monaco) {
+        console.error('Monaco not loaded');
+        return;
+    }
+    
+    try {
+        // Update user profile
+        await window.updateUserProfile();
+        
+        // Clear outputs
+        document.getElementById('compiler-output').textContent = '';
+        currentDecorations = [];
+        currentLineMapping = null;
+        
+        if (assemblyEditor) {
+            assemblyEditor.setValue('// Assembly output will appear here');
+        }
+        
+        // Load saved code or use default
+        const codeToUse = await loadSavedCode(COMPILER_EXPLORER_ID, defaultCompilerCode);
+        
+        // Initialize source editor if not already initialized
+        if (!compilerEditor && document.getElementById('compiler-monaco-editor')) {
+            compilerEditor = monaco.editor.create(document.getElementById('compiler-monaco-editor'), {
+                value: codeToUse,
+                language: 'cuda',
+                theme: 'vs-dark',
+                minimap: { enabled: false },
+                automaticLayout: true
+            });
+
+            console.log('Initialized compiler editor');
+        } else if (compilerEditor) {
+            compilerEditor.setValue(codeToUse);
+        }
+
+        // Initialize assembly editor if not already initialized
+        if (!assemblyEditor && document.getElementById('assembly-output')) {
+            assemblyEditor = monaco.editor.create(document.getElementById('assembly-output'), {
+                value: '// Assembly output will appear here',
+                language: 'cuda',
+                theme: 'vs-light',
+                readOnly: true,
+                minimap: { enabled: false },
+                fontSize: 11,
+                scrollBeyondLastLine: false,
+                lineNumbers: 'on',
+                renderLineHighlight: 'all',
+                automaticLayout: true,
+                wordWrap: 'off'
+            });
+            
+            console.log('Initialized assembly editor');
+        }
+
+        // Setup save button
+        await setupSaveButton('compiler-saveProgress', () => compilerEditor.getValue(), COMPILER_EXPLORER_ID);
+
+        // Update modal counts
+        updateModalCounts('compiler-submissions-count', 'compiler-hints-count');
+        
+    } catch (error) {
+        console.error('Error initializing compiler explorer:', error);
+    }
+}
+
+// Initialize Run & Profile modal
+async function initializeRunProfile() {
+    if (!window.monaco) {
+        console.error('Monaco not loaded');
+        return;
+    }
+    
+    try {
+        // Update user profile
+        await window.updateUserProfile();
+        
+        // Clear output
+        document.getElementById('profile-output').textContent = '';
+        
+        // Load saved code or use default
+        const codeToUse = await loadSavedCode(RUN_PROFILE_ID, defaultProfileCode);
+        
+        // Initialize profile editor if not already initialized
+        if (!profileEditor && document.getElementById('profile-monaco-editor')) {
+            profileEditor = monaco.editor.create(document.getElementById('profile-monaco-editor'), {
+               value: codeToUse,
+                language: 'cpp',
+                theme: 'vs-dark',
+                minimap: { enabled: false },
+                automaticLayout: true
+            });
+        } else if (profileEditor) {
+            profileEditor.setValue(codeToUse);
+        }
+
+        // Setup save button
+        await setupSaveButton('profileSaveProgress', () => profileEditor.getValue(), RUN_PROFILE_ID);
+        
+        // Update modal counts
+        updateModalCounts('profile-submissions-count', 'profile-hints-count');
+        
+    } catch (error) {
+        console.error('Error initializing run & profile:', error);
+    }
+}
+
+// Open Compiler Explorer modal
+async function openCompilerExplorer() {
+    const modal = document.getElementById('compilerExplorerModal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Initialize editors and setup
+    await initializeCompilerExplorer();
+    
+    // Layout editors after modal is visible
+    setTimeout(() => {
+        if (compilerEditor) compilerEditor.layout();
+        if (assemblyEditor) assemblyEditor.layout();
+    }, 100);
+}
+
+// Open Run & Profile modal
+async function openRunProfile() {
+    const modal = document.getElementById('runProfileModal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Initialize editor and setup
+    await initializeRunProfile();
+    
+    // Layout editor after modal is visible
+    setTimeout(() => {
+        if (profileEditor) profileEditor.layout();
+    }, 100);
+}
+
+// Close modal
+function closeModal(modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Compile code (Compiler Explorer)
+async function compileCode() {
+    const output = document.getElementById('compiler-output');
+    const code = compilerEditor.getValue();
+    const compileBtn = document.getElementById('compiler-runCode');
+    
+    const originalHTML = disableButton(compileBtn, '<i class="fas fa-spinner fa-spin"></i> Compiling...');
+
+    console.log('Compiling code:', code);
+
+    try {
+        const { data: { session }, error: authError } = await window.supabaseClient.auth.getSession();
+        
+        if (!session) {
+            output.textContent = "Please login to compile code";
+            return;
+        }
+
+        const response = await fetch('http://localhost:8000/compile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                code: code,
+                generate_sass: false,
+                debug: true,
+                user_id: session.user.id
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            
+            console.log('Compilation successful');
+            console.log('PTX output length:', data.ptx?.length);
+
+            if (data.success) {
+                assemblyEditor.setValue(data.ptx);
+                output.textContent = 'Compilation successful';
+                
+                // Setup highlighting by parsing the PTX output directly
+                setupHighlighting(data.ptx);
+                
+                await window.updateUserProfile();
+                updateModalCounts('compiler-submissions-count', 'compiler-hints-count');
+            } else {
+                output.textContent = data.error || 'Compilation failed';
+            }
+        } else {
+            const errorData = await response.json();
+            output.textContent = `Compilation failed: ${errorData.detail || 'Unknown error'}`;
+        }
+    } catch (error) {
+        console.error('Error during compilation:', error);
+        output.textContent = `Error: ${error.message}`;
+    } finally {
+        enableButton(compileBtn, originalHTML);
+    }
+}
+
+// Run and profile code
+async function runAndProfile() {
+    const output = document.getElementById('profile-output');
+    const code = profileEditor.getValue();
+    const runBtn = document.getElementById('profileRunBtn');
+    
+    const originalHTML = disableButton(runBtn, '<i class="fas fa-spinner fa-spin"></i> Running...');
+    
+    try {
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
+        if (!session) {
+            output.textContent = "Error: Please login to run code";
+            return;
+        }
+        
+        const gpu = document.getElementById('profile-gpu-select').value;
+        
+        const response = await fetch("http://localhost:8000/profile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                code: code,
+                user_id: session.user.id,
+                gpu: gpu
+            })
+        });
+        
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        const result = await response.json();
+        output.textContent = JSON.stringify(result, null, 2);
+        
+        await window.updateUserProfile();
+        updateModalCounts('profile-submissions-count', 'profile-hints-count');
+        
+    } catch (error) {
+        console.error('Profile error:', error);
+        output.textContent = "Error: " + error.message;
+    } finally {
+        enableButton(runBtn, originalHTML);
+    }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     // Get playground items
@@ -523,24 +575,34 @@ document.addEventListener('DOMContentLoaded', () => {
             closeModal(modal);
         });
     });
+    
+    // Action buttons
+    document.getElementById('compiler-runCode')?.addEventListener('click', compileCode);
+    document.getElementById('profileRunBtn')?.addEventListener('click', runAndProfile);
+    
+    // ESC key to close
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (document.getElementById('compilerExplorerModal')?.classList.contains('active')) {
+                closeModal(document.getElementById('compilerExplorerModal'));
+            }
+            if (document.getElementById('runProfileModal')?.classList.contains('active')) {
+                closeModal(document.getElementById('runProfileModal'));
+            }
+        }
+    });
 });
 
-// Open Compiler Explorer modal
-function openCompilerExplorer() {
-    const modal = document.getElementById('compilerExplorerModal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
+window.addEventListener('resize', () => {
+    if (compilerEditor) {
+        compilerEditor.layout();
+    }
 
-// Open Run & Profile modal
-function openRunProfile() {
-    const modal = document.getElementById('runProfileModal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
+    if (assemblyEditor) {
+        assemblyEditor.layout();
+    }
 
-// Close modal
-function closeModal(modal) {
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-}
+    if (profileEditor) {
+        profileEditor.layout();
+    }
+});

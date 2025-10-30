@@ -417,8 +417,16 @@
     font-size: 1rem;
 }
 
+.challenge-meta-tab .stat-item .fa-infinity {
+    color: #666; /* Gray color for infinity */
+}
+
 .challenge-meta-tab .stat-item i.fa-lightbulb {
-    color: #ffd700;
+    color: #ffd700; /* Gold color for hints */
+}
+
+.challenge-meta-tab .stat-item i.fa-code {
+    color: #00bf63; /* Green color for submissions */
 }
 
 @media (max-width: 768px) {

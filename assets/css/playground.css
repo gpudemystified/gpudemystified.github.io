@@ -58,7 +58,79 @@
 /* Assembly editor specific styling */
 .assembly-editor {
     height: 100%;
+    width: 100%;
     min-height: 300px;
+}
+
+#compiler-monaco-editor {
+    height: 70%;
+    border-bottom: 1px solid #eee;
+    border-radius: 4px;  /* Optional: adds rounded corners */
+    margin-bottom: 1rem;  /* Add some space between editor and output panel */
+}
+
+
+#profile-monaco-editor {
+    height: 70%;
+    border-bottom: 1px solid #eee;
+    border-radius: 4px;  /* Optional: adds rounded corners */
+    margin-bottom: 1rem;  /* Add some space between editor and output panel */
+}
+
+.compiler-output {
+    height: 85%;
+    margin: 0;
+    padding: 1rem;
+    overflow-y: auto;
+    overflow-x: auto;
+    white-space: pre-wrap;       /* Wrap on line breaks and spaces */
+    word-wrap: break-word;       /* Break long words if needed */
+    font-family: monospace;
+    background: #f8f8f8;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Assembly line highlighting */
+.assembly-line-highlight {
+    background-color: rgba(255, 140, 0, 0.2) !important;
+}
+
+.assembly-line-glyph {
+    background-color: #ff8c00 !important;
+    width: 3px !important;
+}
+
+/* Source line highlighting (when hovering assembly) */
+.source-line-highlight {
+    background-color: rgba(100, 200, 255, 0.2) !important;
+}
+
+.source-line-glyph {
+    background-color: #64c8ff !important;
+    width: 3px !important;
+}
+
+
+.challenge-details-compiler-explorer-assembly h2 {
+    margin: 0 0 0.5rem 0;
+    padding: 0.75rem 1rem;
+    background: #fff;
+    border-bottom: 1px solid #eaeaea;
+    font-size: 1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.challenge-details-compiler-explorer-assembly {
+    width: 28%;
+    padding: 0.5rem;
+    border-right: 1px solid #eee;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 0.0;  /* Add space between flex items */
 }
 
 @media (max-width: 768px) {
