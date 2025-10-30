@@ -23,12 +23,71 @@
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
+    position: relative; /* Add this to make absolute positioning work */
 }
 
 .playground-item:hover {
     border-color: #ff8c00;
     box-shadow: 0 4px 12px rgba(255, 140, 0, 0.1);
     transform: translateY(-2px);
+}
+
+/* Disabled/Coming Soon playground item */
+.playground-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    position: relative;
+}
+
+.playground-item.disabled:hover {
+    background: #f8f9fa;
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.playground-item.disabled::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.6);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.coming-soon-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(255, 140, 0, 0.3);
+}
+
+/* Beta badge */
+.beta-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
 }
 
 .playground-icon {
