@@ -57,8 +57,16 @@ async function openChallenge(challengeId) {
         console.log('User profile in modal:', profile);
         
         // Update submissions and hints counters in the meta tab
-        document.getElementById('modal-submissions-count').textContent = profile?.submissions_count ?? '0';
-        document.getElementById('modal-hints-count').textContent = profile?.hints_count ?? '0';
+        const submissionsEl = document.getElementById('modal-submissions-count');
+        const hintsEl = document.getElementById('modal-hints-count');
+        
+        if (profile?.is_pro) {
+            submissionsEl.innerHTML = '<i class="fas fa-infinity"></i>';
+            hintsEl.innerHTML = '<i class="fas fa-infinity"></i>';
+        } else {
+            submissionsEl.textContent = profile?.submissions_count ?? '0';
+            hintsEl.textContent = profile?.hints_count ?? '0';
+        }
         
         let codeToUse = challenge.initial_code;
 
@@ -321,9 +329,15 @@ async function runCode() {
         // Update profile after running code
         await window.updateUserProfile();
         
-        // Update the meta tab counters
+        // Update the meta tab counters with infinity for Pro
         const profile = window.userProfile;
-        document.getElementById('modal-submissions-count').textContent = profile?.submissions_count ?? '0';
+        const submissionsEl = document.getElementById('modal-submissions-count');
+        
+        if (profile?.is_pro) {
+            submissionsEl.innerHTML = '<i class="fas fa-infinity"></i>';
+        } else {
+            submissionsEl.textContent = profile?.submissions_count ?? '0';
+        }
 
     } catch (error) {
         console.error('Run code error:', error);
@@ -409,9 +423,15 @@ async function handleHintRequest() {
         // Update profile after using hint
         await window.updateUserProfile();
         
-        // Update the meta tab counters
+        // Update the meta tab counters with infinity for Pro
         const profile = window.userProfile;
-        document.getElementById('modal-hints-count').textContent = profile?.hints_count ?? '0';
+        const hintsEl = document.getElementById('modal-hints-count');
+        
+        if (profile?.is_pro) {
+            hintsEl.innerHTML = '<i class="fas fa-infinity"></i>';
+        } else {
+            hintsEl.textContent = profile?.hints_count ?? '0';
+        }
 
     } catch (error) {
         console.error('Error getting hint:', error);
