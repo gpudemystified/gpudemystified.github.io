@@ -70,7 +70,19 @@ async function openChallenge(challengeId) {
             }
         }
 
-        if (editor) {
+        // Recreate editor if it doesn't exist or was disposed
+        if (!editor && document.getElementById('monaco-editor')) {
+            editor = monaco.editor.create(document.getElementById('monaco-editor'), {
+                    value: codeToUse || '// No code available',
+                    language: 'cuda',
+                    theme: 'vs-light',
+                    minimap: { enabled: false },
+                    automaticLayout: true
+                });
+
+            console.log('Created new Monaco editor');
+        } else if (editor) {
+            // Editor exists, just update the value
             editor.setValue(codeToUse || '// No code available');
             requestAnimationFrame(() => {
                 editor.layout();
@@ -153,9 +165,11 @@ function closeModal() {
     modal.classList.remove('active');
     document.body.style.overflow = '';
     
-    // Reset editor content
+    // Dispose of Monaco editor to free resources
     if (editor) {
-        editor.setValue('');
+        editor.dispose();
+        editor = null;
+        console.log('Disposed Monaco editor');
     }
 
     // Clear output

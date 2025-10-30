@@ -384,8 +384,8 @@ async function initializeRunProfile() {
         if (!profileEditor && document.getElementById('profile-monaco-editor')) {
             profileEditor = monaco.editor.create(document.getElementById('profile-monaco-editor'), {
                value: codeToUse,
-                language: 'cpp',
-                theme: 'vs-dark',
+                language: 'cuda',
+                theme: 'vs-light',
                 minimap: { enabled: false },
                 automaticLayout: true
             });
@@ -439,6 +439,35 @@ async function openRunProfile() {
 function closeModal(modal) {
     modal.classList.remove('active');
     document.body.style.overflow = '';
+    
+    // Dispose of editors when closing modals
+    const modalId = modal.id;
+    
+    if (modalId === 'compilerExplorerModal') {
+        // Dispose compiler and assembly editors
+        if (compilerEditor) {
+            compilerEditor.dispose();
+            compilerEditor = null;
+        }
+        if (assemblyEditor) {
+            assemblyEditor.dispose();
+            assemblyEditor = null;
+        }
+        
+        // Clear decorations and mappings
+        currentDecorations = [];
+        currentLineMapping = null;
+        
+        console.log('Disposed compiler explorer editors');
+    } else if (modalId === 'runProfileModal') {
+        // Dispose profile editor
+        if (profileEditor) {
+            profileEditor.dispose();
+            profileEditor = null;
+        }
+        
+        console.log('Disposed run & profile editor');
+    }
 }
 
 // Compile code (Compiler Explorer)
