@@ -532,7 +532,7 @@ async function compileCode() {
 // Run and profile code
 async function runAndProfile() {
     const output = document.getElementById('profile-output');
-    const code = profileEditor.getValue();
+    const metricsOutput = document.getElementById('profile-metrics-output');
     const runBtn = document.getElementById('profileRunBtn');
     
     const originalHTML = disableButton(runBtn, '<i class="fas fa-spinner fa-spin"></i> Running...');
@@ -550,28 +550,162 @@ async function runAndProfile() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                code: code,
+                code: profileEditor.getValue(),
                 user_id: session.user.id,
-                gpu: gpu
+                debug: true
+                // gpu: gpu
             })
         });
         
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
         const result = await response.json();
-        output.textContent = JSON.stringify(result, null, 2);
+        console.log('Profile result:', result);
         
-        await window.updateUserProfile();
-        updateModalCounts('profile-submissions-count', 'profile-hints-count');
+        // Check if the request was successful
+        if (result.success) {
+            // Display stdout in output panel
+            if (result.stdout) {
+                output.textContent = result.stdout;
+            } else {
+                output.textContent = "Program executed successfully (no output)";
+            }
+            
+            // Display kernel metrics in the metrics panel
+            if (result.kernels && result.kernels.length > 0) {
+                displayKernelMetrics(result.kernels, metricsOutput);
+            } else {
+                metricsOutput.innerHTML = '<div class="no-metrics">No kernel profiling data available</div>';
+            }
+            
+            await window.updateUserProfile();
+            updateModalCounts('profile-submissions-count', 'profile-hints-count');
+        } else {
+            // Handle failure case
+            const errorMessage = result.error || result.stderr || 'Profile execution failed';
+            output.textContent = `Error:\n${errorMessage}`;
+            metricsOutput.innerHTML = '<div class="error-metrics">Profiling failed</div>';
+        }
         
     } catch (error) {
         console.error('Profile error:', error);
         output.textContent = "Error: " + error.message;
+        metricsOutput.innerHTML = '<div class="error-metrics">Failed to retrieve profiling data</div>';
     } finally {
         enableButton(runBtn, originalHTML);
     }
 }
 
+// Display kernel metrics in a formatted way
+function displayKernelMetrics(kernels, container) {
+    // Parse kernels if they're in raw format
+    const parsedKernels = kernels.map(kernel => {
+        // If kernel is an array: [name, dur_ns, dur_us, dur_ms, gx, gy, gz, bx, by, bz, ...]
+        if (Array.isArray(kernel)) {
+            const [name, dur_ns, dur_us, dur_ms, gx, gy, gz, bx, by, bz] = kernel;
+            return {
+                name: name || 'Unknown Kernel',
+                dur_ns: parseFloat(dur_ns) || 0,
+                dur_us: parseFloat(dur_us) || 0,
+                dur_ms: parseFloat(dur_ms) || 0,
+                grid_size: {
+                    x: parseInt(gx) || 1,
+                    y: parseInt(gy) || 1,
+                    z: parseInt(gz) || 1
+                },
+                block_size: {
+                    x: parseInt(bx) || 1,
+                    y: parseInt(by) || 1,
+                    z: parseInt(bz) || 1
+                }
+            };
+        }
+        // If it's already an object, return as is
+        return kernel;
+    });
+    
+    // Find the max time for scaling bars
+    const maxTime = Math.max(...parsedKernels.map(k => k.dur_ms || 0));
+    
+    let html = '<div class="metrics-container">';
+    html += '<h3>Kernel Performance</h3>';
+    html += '<div class="metrics-list">';
+    
+    parsedKernels.forEach((kernel, index) => {
+        const time = kernel.dur_ms || 0;
+        const percentage = maxTime > 0 ? (time / maxTime) * 100 : 0;
+        
+        html += `
+            <div class="metric-item">
+                <div class="metric-header">
+                    <span class="metric-name">${kernel.name || `Kernel ${index + 1}`}</span>
+                    <span class="metric-time">${time.toFixed(3)} ms</span>
+                </div>
+                <div class="metric-bar-container">
+                    <div class="metric-bar" style="width: ${percentage}%"></div>
+                </div>
+                <div class="metric-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Grid Size:</span>
+                        <span class="detail-value">
+                            <span class="dim-value">${kernel.grid_size?.x || 1}</span> × 
+                            <span class="dim-value">${kernel.grid_size?.y || 1}</span> × 
+                            <span class="dim-value">${kernel.grid_size?.z || 1}</span>
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Block Size:</span>
+                        <span class="detail-value">
+                            <span class="dim-value">${kernel.block_size?.x || 1}</span> × 
+                            <span class="dim-value">${kernel.block_size?.y || 1}</span> × 
+                            <span class="dim-value">${kernel.block_size?.z || 1}</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    
+    // Add summary statistics
+    const totalTime = parsedKernels.reduce((sum, k) => sum + (k.dur_ms || 0), 0);
+    const avgTime = totalTime / parsedKernels.length;
+    
+    html += `
+        <div class="metrics-summary">
+            <div class="summary-item">
+                <span class="summary-label">Total Time:</span>
+                <span class="summary-value">${totalTime.toFixed(3)} ms</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Average Time:</span>
+                <span class="summary-value">${avgTime.toFixed(3)} ms</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Kernel Count:</span>
+                <span class="summary-value">${parsedKernels.length}</span>
+            </div>
+        </div>
+    `;
+    
+    html += '</div>';
+    
+    container.innerHTML = html;
+}
+
+// Format time in appropriate units
+function formatTime(microseconds) {
+    if (microseconds < 1) {
+        return `${(microseconds * 1000).toFixed(2)} ns`;
+    } else if (microseconds < 1000) {
+        return `${microseconds.toFixed(2)} µs`;
+    } else if (microseconds < 1000000) {
+        return `${(microseconds / 1000).toFixed(2)} ms`;
+    } else {
+        return `${(microseconds / 1000000).toFixed(2)} s`;
+    }
+}
 document.addEventListener('DOMContentLoaded', () => {
     // Get playground items
     const playgroundItems = document.querySelectorAll('.playground-item');

@@ -192,6 +192,117 @@
     gap: 0.0;  /* Add space between flex items */
 }
 
+/* Profile Metrics Styling */
+.profile-metrics-output {
+    height: 100%;
+    overflow-y: auto;
+    background: #f8f8f8;
+    padding: 1rem;
+}
+
+.metrics-container {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.metrics-container h3 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.1rem;
+    color: #333;
+    border-bottom: 2px solid #ff8c00;
+    padding-bottom: 0.5rem;
+}
+
+.metrics-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.metric-item {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 1rem;
+    border-left: 3px solid #ff8c00;
+}
+
+.metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.metric-name {
+    font-family: monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.metric-time {
+    font-family: monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ff8c00;
+}
+
+.metric-bar-container {
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.metric-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ff8c00 0%, #ff6b00 100%);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.metrics-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.summary-label {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.summary-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333;
+    font-family: monospace;
+}
+
+.no-metrics,
+.error-metrics {
+    padding: 2rem;
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+.error-metrics {
+    color: #dc3545;
+}
+
 @media (max-width: 768px) {
     .playground-item {
         flex-direction: column;
