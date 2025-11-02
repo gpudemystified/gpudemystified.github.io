@@ -208,6 +208,7 @@ body {
     padding: 0.5rem 1rem;
     border-radius: 24px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    flex-wrap: wrap;
 }
 
 .account-badge {
@@ -472,19 +473,34 @@ body {
     .site-description {
         font-size: 0.9rem;
     }
+
+    .user-stats {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .account-badge,
+    .stat-item {
+        width: 100%;
+        justify-content: space-between;
+        padding: 0.5rem;
+    }
+
+    .stat-item {
+        background: #f8f9fa;
+        border-radius: 6px;
+    }
 }
 
 @media (max-width: 480px) {
     .header-left {
         flex-direction: column;
-        align-items: flex-start;
         gap: 1rem;
     }
 
-    .user-stats {
-        flex-direction: column;
-        width: 100%;
-        gap: 0.75rem;
+    .header-content {
+        padding: 1rem 0;
     }
 }
 
@@ -604,4 +620,42 @@ body {
 }
 
   
+}
+
+/* User stats widget */
+.user-stats {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    flex-wrap: wrap;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+
+    .header-right {
+        width: 100%;
+    }
+
+    .user-stats {
+        width: 100%;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .logout-btn {
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
 }
