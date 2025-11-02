@@ -37,6 +37,27 @@ body {
   margin-bottom: 0.5rem;
 }
 
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;  /* Changed from center to flex-start */
+    padding: 1.5rem 0;
+    gap: 2rem;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 1;
+}
+
+.header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
 .logo {
   width: 128px;
   height: 128px;
@@ -46,28 +67,48 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
 
-.site-title-desc {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: left;
-  
-  white-space: pre-line;
-}
-
 .site-name {
-  margin: 0;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #222;
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+    line-height: 1.2;
 }
 
 .site-description {
-  margin: 0.25rem 0 0 0;
-  font-size: 1rem;
-  color: #555;
-  
-  max-width: 600px;
+    margin: 0;
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+.social-logos {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.social_logo {
+  height: 26px;
+  width: 26px;
+  display: block;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.social_logo {
+    width: 24px;
+    height: 24px;
+    transition: opacity 0.2s;
+}
+
+.social_logo:hover {
+    opacity: 0.7;
+}
+
+.header-right {
+    display: flex;
+    align-items: flex-start;  /* Align to top */
+    flex-shrink: 0;
 }
 
 .main-nav ul {
@@ -133,31 +174,33 @@ body {
 
 /* Login button styles */
 .login-btn {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    padding: 0.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
     border: none;
     border-radius: 18px;
-    background: #00bf63;
-    color: #fff;
-    font-weight: 600;
+    background: linear-gradient(135deg, #00bf63 0%, #00a055 100%);
+    color: white;
     font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: background 200ms ease;
+    transition: all 0.2s ease;
     font-family: var(--font-body);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    box-shadow: 0 2px 8px rgba(0, 191, 99, 0.2);
 }
 
 .login-btn:hover {
-    background: #ff6500;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 191, 99, 0.3);
+}
+
+.login-btn i {
+    font-size: 1rem;
 }
 
 /* User stats widget */
 .user-stats {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
     display: flex;
     align-items: center;
     gap: 1.5rem;
@@ -398,6 +441,50 @@ body {
         margin-bottom: 1rem;
         width: auto;
         align-self: flex-end;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+        padding: 1rem 0;
+    }
+
+    .header-left {
+        width: 100%;
+    }
+
+    .header-right {
+        width: 100%;
+    }
+
+    .logo {
+        width: 60px;
+        height: 60px;
+    }
+
+    .site-name {
+        font-size: 1.5rem;
+    }
+
+    .site-description {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .user-stats {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.75rem;
     }
 }
 
