@@ -18,21 +18,21 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Your awesome title
-email: your-email@example.com
+title: gpudemystified
+email: contact@gpudemystified.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
+  All about GPU programming - CUDA challenges, tutorials, and playground
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://gpudemystified.github.io" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: jekyllrb
-github_username:  jekyll
+url: "https://gpudemystified.com" # the base hostname & protocol for your site, e.g. http://example.com
+twitter_username: gpudemystified
+github_username:  gpudemystified
 
 # Build settings
 theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
 
 markdown: kramdown
 highlighter: rouge
@@ -67,3 +67,7 @@ collections:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+
+# Social/SEO image (used for Open Graph and Twitter Cards)
+logo: /assets/images/Logo.jpg
+og_image: /assets/images/Logo.jpg
