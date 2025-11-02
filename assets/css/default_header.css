@@ -20,7 +20,6 @@ body {
 }
 
 .site-header {
-  padding: 1rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -429,6 +428,16 @@ body {
     color: #666;
     font-size: 0.9rem;
 }
+
+/* Logo and title links */
+.logo-link,
+.title-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+
 
 /* RESPONSIVE */
 @media (max-width: 600px) {

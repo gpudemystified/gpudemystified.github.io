@@ -78,7 +78,7 @@
     position: fixed;
     bottom: 2rem;
     right: 2rem; /* Change to left: 2rem; for bottom left */
-    z-index: 1200;
+    z-index: 900;
     background: #00bf63;
     color: white;
     border: none;
