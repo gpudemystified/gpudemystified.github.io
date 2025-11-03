@@ -199,4 +199,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize auth session check
     checkAuthSession();
+
+    // Add forgot password handler
+    document.getElementById('forgotPasswordLink')?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        
+        const email = prompt('Enter your email address to reset your password:');
+        
+        if (!email) return;
+        
+        try {
+            const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/reset-password.html`,
+            });
+            
+            if (error) throw error;
+            
+            alert('Password reset email sent! Please check your inbox.');
+            closeAuthModal();
+        } catch (error) {
+            console.error('Password reset error:', error);
+            alert('Error sending reset email: ' + error.message);
+        }
+    });
 });

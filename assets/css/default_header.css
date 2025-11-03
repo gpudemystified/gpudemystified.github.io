@@ -437,6 +437,77 @@ body {
     display: block;
 }
 
+/* Forgot password link */
+.forgot-password-link {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: #ff8c00;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.forgot-password-link:hover {
+    color: #ff6b00;
+    text-decoration: underline;
+}
+
+.auth-mini-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2001;
+}
+
+.auth-mini-modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 400px;
+    width: 90%;
+    position: relative;
+}
+
+.auth-mini-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.auth-mini-modal h3 {
+    margin: 0 0 0.5rem 0;
+}
+
+.auth-mini-modal p {
+    margin: 0 0 1.5rem 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+#forgotPasswordForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#forgotPasswordForm input {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
 
 
 /* RESPONSIVE */
