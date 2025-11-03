@@ -99,6 +99,9 @@
                         <span id="points-count">0</span>
                         <i class="fas fa-star"></i>
                     </div>
+                    <button class="profile-settings-btn" onclick="showProfileSettings()" title="Profile Settings">
+                        <i class="fas fa-user-cog"></i>
+                    </button>
                     <button class="logout-btn" id="logout-btn">
                         <i class="fas fa-sign-out-alt"></i>
                         Logout
@@ -221,5 +224,56 @@
         </div>
     </div>
   </div>
+
+  <!-- Profile Settings Modal -->
+  <div id="profileModal" class="auth-modal" style="display: none;">
+    <div class="auth-modal-overlay" onclick="document.getElementById('profileModal').style.display='none'"></div>
+    <div class="auth-modal-content">
+        <button class="auth-modal-close" onclick="document.getElementById('profileModal').style.display='none'">&times;</button>
+        
+        <div class="profile-modal-header">
+            <img src="/assets/images/Logo.jpg" alt="gpudemystified" class="profile-avatar">
+            <h2 id="profileGreeting">Hi, User!</h2>
+        </div>
+        
+        <!-- Account Type Display -->
+        <div class="profile-account-type">
+            <div class="account-type-label">Account Type</div>
+            <div class="account-type-badge" id="profileAccountBadge">
+                <i class="fas fa-crown"></i>
+                <span id="profileAccountType">Basic</span>
+            </div>
+        </div>
+        
+        <!-- Username Form -->
+        <form id="profileForm" onsubmit="saveUsername(event)">
+            <div class="auth-input-group">
+                <label for="usernameInput">Username</label>
+                <input 
+                    type="text" 
+                    id="usernameInput" 
+                    placeholder="Choose a username" 
+                    required 
+                    minlength="3"
+                    maxlength="50"
+                    pattern="[a-zA-Z0-9_-]+"
+                    title="Only letters, numbers, underscores, and hyphens allowed"
+                >
+                <small>This will be displayed on the leaderboard</small>
+            </div>
+            <button type="submit" class="auth-submit-btn">Save Username</button>
+        </form>
+        
+        <!-- Reset Password Button -->
+        <div class="profile-actions">
+            <button class="reset-password-btn" onclick="handleResetPasswordFromProfile()">
+                <i class="fas fa-key"></i>
+                Reset Password
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="{{ '/assets/js/profile_modal.js' | relative_url }}"></script>
 </body>
 </html>
