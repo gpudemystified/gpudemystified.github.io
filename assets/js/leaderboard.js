@@ -9,11 +9,14 @@ async function fetchLeaderboard() {
     }
 }
 
-function createLeaderboardEntry(rank, user, points) {
+function createLeaderboardEntry(rank, user, points, isCurrentUser = false) {
+    const highlightClass = isCurrentUser ? 'current-user' : '';
+    const crown = isCurrentUser ? '<i class="fas fa-user-circle"></i>' : '';
+    
     return `
-        <div class="leaderboard-entry">
+        <div class="leaderboard-entry ${highlightClass}">
             <div class="rank">${rank}</div>
-            <div class="user">${user}</div>
+            <div class="user">${crown} ${user}</div>
             <div class="points">${points} <i class="fas fa-star"></i></div>
         </div>
     `;
@@ -29,8 +32,15 @@ async function updateLeaderboard() {
         return;
     }
     
+    // Get current user's username
+    const currentUsername = window.userProfile?.username || null;
+    
     container.innerHTML = entries
-            .slice(0, 50)
-            .map((entry, index) => createLeaderboardEntry(index + 1, entry.email, entry.points))
-            .join('');
+        .slice(0, 50)
+        .map((entry, index) => {
+            const isCurrentUser = currentUsername && entry.username === currentUsername;
+            
+            return createLeaderboardEntry(index + 2, entry.username, entry.points, isCurrentUser);
+        })
+        .join('');
 }

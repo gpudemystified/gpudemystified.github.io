@@ -8,6 +8,7 @@ function showProfileSettings() {
     
     // Set greeting with username
     const greeting = document.getElementById('profileGreeting');
+    console.log('username:', profile?.username);
     if (profile?.username) {
         greeting.textContent = `Hi, ${profile.username}!`;
         document.getElementById('usernameInput').value = profile.username;
@@ -56,9 +57,9 @@ async function saveUsername(e) {
         const { data: { session } } = await window.supabaseClient.auth.getSession();
         
         const { data, error } = await window.supabaseClient
-            .from('users')
+            .from('profiles')
             .update({ username: username })
-            .eq('user_id', session.user.id);
+            .eq('id', session.user.id);
         
         if (error) {
             if (error.code === '23505') { // Unique constraint violation

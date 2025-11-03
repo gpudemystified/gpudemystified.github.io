@@ -137,6 +137,31 @@
     cursor: pointer;
 }
 
+/* Highlight current user in leaderboard */
+.leaderboard-entry.current-user {
+    background: linear-gradient(135deg, rgba(255, 140, 0, 0.1) 0%, rgba(255, 107, 0, 0.1) 100%);
+    border-left: 4px solid #ff8c00;
+    font-weight: 600;
+}
+
+.leaderboard-entry.current-user .user {
+    color: #ff8c00;
+}
+
+.leaderboard-entry.current-user .user i {
+    margin-right: 0.5rem;
+    color: #ff8c00;
+}
+
+.leaderboard-entry.current-user .rank {
+    color: #ff8c00;
+    font-weight: 700;
+}
+
+.leaderboard-entry.current-user .points {
+    color: #ff8c00;
+}
+
 @media (max-width: 600px) {
     .leaderboard-header, .leaderboard-entry {
         grid-template-columns: 50px 1fr 80px;

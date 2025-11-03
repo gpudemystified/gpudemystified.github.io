@@ -85,11 +85,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 password
             });
 
-            if (error) throw error;
+            if (error) {
+                console.error('Sign up error details:', error);
+                throw error;
+            }
 
+            console.log('Sign up successful:', data);
             alert('Registration successful! Please check your email for confirmation.');
             closeAuthModal();
         } catch (error) {
+            console.error('Full error object:', error);
+            console.error('Error message:', error.message);
+            console.error('Error status:', error.status);
             alert('Error registering: ' + error.message);
         }
     });

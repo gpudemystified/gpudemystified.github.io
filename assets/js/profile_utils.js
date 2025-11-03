@@ -10,7 +10,7 @@ async function updateUserProfile() {
         // Fetch updated profile
         const { data: profile, error } = await window.supabaseClient
             .from('profiles')
-            .select('is_pro, submissions_count, hints_count, points')
+            .select('is_pro, submissions_count, hints_count, points, username')
             .eq('id', session.user.id)
             .single();
 
