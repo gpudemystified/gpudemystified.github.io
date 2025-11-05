@@ -159,7 +159,7 @@ window.getChallengeById = getChallengeById;
 window.renderChallenges = renderChallenges;
 
 // Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     renderChallenges();
 
     const sortSelect = document.getElementById('sortSelect');
@@ -169,12 +169,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    document.getElementById('leaderboard-btn').onclick = function() {
-        console.log('Opening leaderboard modal');
-        document.getElementById('leaderboardModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-        updateLeaderboard(); 
-    };
+   // Update leaderboard button state (utility handles everything)
+    if (typeof window.updateLeaderboardButton === 'function') {
+        await window.updateLeaderboardButton();
+    }
 
     document.querySelector('.leaderboard-modal-close').onclick = function() {
         document.getElementById('leaderboardModal').classList.remove('active');

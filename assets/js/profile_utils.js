@@ -2,6 +2,12 @@ async function updateUserProfile() {
     try {
         // Get current user session
         const { data: { session }, error: authError } = await window.supabaseClient.auth.getSession();
+        
+        // Update leaderboard button state
+        if (typeof window.updateLeaderboardButton === 'function') {
+            await window.updateLeaderboardButton();
+        }
+        
         if (!session) {
             window.userProfile = null;
             return;
@@ -52,6 +58,12 @@ async function updateUserProfile() {
     } catch (error) {
         console.error('Error updating profile:', error);
         window.userProfile = null;
+        
+        // Update leaderboard button on error
+        if (typeof window.updateLeaderboardButton === 'function') {
+            await window.updateLeaderboardButton();
+        }
+        
         return null;
     }
 }
