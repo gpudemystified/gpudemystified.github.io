@@ -39,6 +39,7 @@
   <script src="{{ '/assets/js/auth_modal.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/supabase-config.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/leaderboard_button.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/report_problem.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/profile_utils.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/progress_utils.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/leaderboard.js' | relative_url }}"></script>
@@ -272,6 +273,79 @@
                 Reset Password
             </button>
         </div>
+    </div>
+</div>
+
+<!-- Report Problem Button -->
+<button id="reportProblemBtn" class="report-problem-btn" title="Report an Issue">
+    <i class="fas fa-bug"></i>
+    <span class="report-text">Report an issue</span>
+</button>
+
+<!-- Report Problem Modal -->
+<div id="reportProblemModal" class="auth-modal" style="display: none;">
+    <div class="auth-modal-overlay" onclick="document.getElementById('reportProblemModal').style.display='none'"></div>
+    <div class="auth-modal-content">
+        <button class="auth-modal-close" onclick="document.getElementById('reportProblemModal').style.display='none'">&times;</button>
+        
+        <div class="report-modal-header">
+            <i class="fas fa-bug report-icon"></i>
+            <h2>Report a Problem</h2>
+            <p>Help us improve by reporting bugs or issues</p>
+        </div>
+        
+        <form id="reportProblemForm">
+            <div class="auth-input-group">
+                <label for="reportType">Problem Type</label>
+                <select id="reportType" required>
+                    <option value="">Select a type...</option>
+                    <option value="bug">🐛 Bug / Error</option>
+                    <option value="typo">✏️ Typo / Content Issue</option>
+                    <option value="performance">⚡ Performance Issue</option>
+                    <option value="feature">💡 Feature Request</option>
+                    <option value="other">📝 Other</option>
+                </select>
+            </div>
+            
+            <div class="auth-input-group">
+                <label for="reportPage">Page / Challenge</label>
+                <input 
+                    type="text" 
+                    id="reportPage" 
+                    placeholder="e.g., Matrix Multiplication challenge" 
+                    required
+                >
+            </div>
+            
+            <div class="auth-input-group">
+                <label for="reportDescription">Description</label>
+                <textarea 
+                    id="reportDescription" 
+                    rows="5" 
+                    placeholder="Please describe the problem in detail..."
+                    required
+                    minlength="10"
+                ></textarea>
+                <small>Be as specific as possible to help us fix it faster</small>
+            </div>
+            
+            <div class="auth-input-group">
+                <label for="reportEmail">Email (optional)</label>
+                <input 
+                    type="email" 
+                    id="reportEmail" 
+                    placeholder="your@email.com"
+                >
+                <small>Leave your email if you'd like us to follow up</small>
+            </div>
+            
+            <button type="submit" class="auth-submit-btn">
+                <i class="fas fa-paper-plane"></i>
+                Submit Report
+            </button>
+        </form>
+        
+        <div id="reportMessage" class="report-message"></div>
     </div>
 </div>
 
