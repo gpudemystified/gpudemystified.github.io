@@ -78,6 +78,11 @@ async function handleUpgrade() {
     // Handle upgrade confirmation
     confirmBtn.onclick = async () => {
         try {
+            if (confirmBtn) {
+                confirmBtn.disabled = true;
+                confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Processing...';
+            }
+
             const { data: { session } } = await window.supabaseClient.auth.getSession();
             
             if (!session) {
@@ -91,13 +96,30 @@ async function handleUpgrade() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    user_id: session.user.id,
-                    price_id: 'your_stripe_price_id'
+                    user_id: session.user.id
                 })
             });
 
-            const { url } = await response.json();
-            window.location.href = url;
+             console.log('Response status:', response.status);
+            
+            const responseData = await response.json();
+            console.log('Full response data:', responseData);
+            
+            if (!response.ok) {
+                throw new Error(responseData.detail || 'Failed to create checkout session');
+            }
+            
+            // Backend returns 'checkout_url' not 'url'
+            const checkoutUrl = responseData.checkout_url;
+            
+            if (!checkoutUrl) {
+                throw new Error('No checkout URL returned from server');
+            }
+            
+            console.log('Redirecting to Stripe checkout:', checkoutUrl);
+            
+            // Redirect to Stripe Checkout
+            window.location.href = checkoutUrl;
 
         } catch (error) {
             console.error('Error initiating upgrade:', error);
