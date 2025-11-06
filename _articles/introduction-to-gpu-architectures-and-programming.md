@@ -11,7 +11,8 @@ topics:
   - NVIDIA Streaming Multiprocessor
 articleId: "article01"
 ---
-
+<br>
+<br>
 Over the past two decades, GPUs have evolved well beyond their original purpose of rendering pixels on a screen. Today, they’re powerful parallel processors at the heart of many tech-fields: graphics, computer vision, simulations, signal processing, bioinformatics, and—of course—AI and machine learning. Because of this, understanding how GPUs work and how to use them efficiently has become a valuable skill for any programmer.
 
 In this article, I’d like us to explore how GPUs work from the ground up—from SIMD units to real GPU architectures—and learn how to program, debug, and profile the code that runs on them. This is (hopefully) a beginner-friendly tutorial, with occasional deep dives into technical details. We’ll be using CUDA and NVIDIA architectures for the examples, but the concepts apply to other platforms as well.

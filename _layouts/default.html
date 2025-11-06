@@ -33,6 +33,7 @@
   <link rel="stylesheet" href="{{ '/assets/css/markdown_light.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/syntax.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/notes.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/main-tabs.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/auth_modal.css' | relative_url }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -113,6 +114,25 @@
             </div>
         </div>
     </header>
+
+<div class="main-container">
+    <!-- Main Tab Navigation -->
+    <div class="main-tabs">
+        <button class="main-tab active" data-tab="challenges">
+            <i class="fas fa-trophy"></i>
+            Challenges
+        </button>
+        <button class="main-tab" data-tab="playground">
+            <i class="fas fa-code"></i>
+            Playground
+        </button>
+        <button class="main-tab" data-tab="learn">
+            <i class="fas fa-graduation-cap"></i>
+            Learn
+        </button>
+    </div>
+</div>
+
 
   <main>
     {{ content }}
@@ -349,7 +369,7 @@
         <div id="reportMessage" class="report-message"></div>
     </div>
 </div>
-
+<script src="{{ '/assets/js/main-tabs.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/profile_modal.js' | relative_url }}"></script>
 </body>
 </html>
