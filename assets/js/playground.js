@@ -410,6 +410,7 @@ async function openCompilerExplorer() {
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
     
+    populateGPUSelect('compiler-explorer-gpu-select');
     // Initialize editors and setup
     await initializeCompilerExplorer();
     
@@ -426,6 +427,8 @@ async function openRunProfile() {
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
     
+    populateGPUSelect('profile-gpu-select');
+
     // Initialize editor and setup
     await initializeRunProfile();
     

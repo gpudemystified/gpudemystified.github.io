@@ -25,6 +25,8 @@ async function openChallenge(challengeId) {
     const challenge = await getChallengeById(challengeId);
     if (!challenge) return;
 
+    populateGPUSelect('gpu-select', true);
+
     currentChallengeId = challengeId;
 
     // Update title and points
