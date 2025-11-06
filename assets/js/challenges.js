@@ -183,4 +183,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('leaderboardModal').classList.remove('active');
         document.body.style.overflow = '';
     };
+
+    // NEW: Check if URL contains a challenge hash (e.g., #challenge_vector_addition)
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#challenge_')) {
+        const challengeId = hash.substring('#challenge_'.length); // Extract ID after #challenge_
+        console.log('Opening challenge from URL:', challengeId);
+        // Wait a bit for the page to fully load
+        setTimeout(() => {
+            if (typeof window.openChallenge === 'function') {
+                window.openChallenge(challengeId);
+            }
+        }, 500);
+    }
 });
