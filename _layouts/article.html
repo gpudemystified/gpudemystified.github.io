@@ -3,5 +3,33 @@ layout: default
 ---
 
 <main class="markdown-body">
+
+  <div class="main-container">
+    <!-- Main Tab Navigation -->
+    <div class="main-tabs">
+        <button class="main-tab" data-tab="challenges" onclick="window.location.href='/'">
+            <i class="fas fa-trophy"></i>
+            Challenges
+        </button>
+        <button class="main-tab" data-tab="playground" onclick="window.location.href='/'">
+            <i class="fas fa-code"></i>
+            Playground
+        </button>
+        <button class="main-tab active" data-tab="learn">
+            <i class="fas fa-graduation-cap"></i>
+            Learn
+        </button>
+    </div>
+  </div>
+  
   {{ content }}
 </main>
+
+<script>
+// Handle tab clicks - redirect to home page for Challenges and Playground
+document.querySelectorAll('.main-tab[data-tab="challenges"], .main-tab[data-tab="playground"]').forEach(tab => {
+    tab.addEventListener('click', () => {
+        window.location.href = '/';
+    });
+});
+</script>
