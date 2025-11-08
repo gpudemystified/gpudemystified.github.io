@@ -491,7 +491,7 @@ async function compileCode() {
             return;
         }
 
-        const response = await fetch('http://localhost:8000/compile', {
+        const response = await fetch(`${getApiUrl()}/compile`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
@@ -549,7 +549,7 @@ async function runAndProfile() {
         
         const gpu = document.getElementById('profile-gpu-select').value;
         
-        const response = await fetch("http://localhost:8000/profile", {
+        const response = await fetch(`${getApiUrl()}/profile`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

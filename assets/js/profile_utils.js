@@ -102,7 +102,7 @@ async function handleUpgrade() {
                 return;
             }
 
-            const response = await fetch('http://localhost:8000/create-checkout-session', {
+            const response = await fetch(`${getApiUrl()}/create-checkout-session`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

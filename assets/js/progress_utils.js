@@ -6,7 +6,7 @@ async function saveProgress(challengeId, code) {
             return;
         }
 
-        const response = await fetch('http://localhost:8000/progress/save', {
+        const response = await fetch(`${getApiUrl()}/progress/save`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ async function loadProgress(challengeId) {
             return { exists: false, code: null };
         }
         
-        const url = `http://localhost:8000/progress/${session.user.id}?challenge_id=${challengeId}`;
+        const url = `${getApiUrl()}/progress/${session.user.id}?challenge_id=${challengeId}`;
         const response = await fetch(url);
 
         if (!response.ok) {

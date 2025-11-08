@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 
                 // Send to your backend
-                const response = await fetch('http://localhost:8000/report-problem', {
+                const response = await fetch(`${getApiUrl()}/report-problem`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

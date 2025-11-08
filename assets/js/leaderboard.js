@@ -1,6 +1,6 @@
 async function fetchLeaderboard() {
     try {
-        const response = await fetch('http://localhost:8000/leaderboard');
+        const response = await fetch(`${getApiUrl()}/leaderboard`);
         if (!response.ok) throw new Error('Failed to fetch leaderboard');
         return await response.json();
     } catch (error) {

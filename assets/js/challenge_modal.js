@@ -299,7 +299,7 @@ async function runCode() {
             fullPayload: payload
         });
 
-        const response = await fetch("http://localhost:8000/run", {
+        const response = await fetch(`${getApiUrl()}/run`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -398,7 +398,7 @@ async function handleHintRequest() {
         }
 
         // Construct the hint request URL
-        const url = `http://localhost:8000/hints/challenge_${currentChallengeId}?user_id=${session.user.id}`;
+        const url = `${getApiUrl()}/hints/challenge_${currentChallengeId}?user_id=${session.user.id}`;
         console.log('Requesting hint:', url);
 
         const response = await fetch(url);
