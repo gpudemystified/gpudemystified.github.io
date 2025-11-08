@@ -1089,3 +1089,55 @@ body {
     background: #ff8c00;
     color: white;
 }
+
+/* Beta Banner */
+.beta-banner {
+     background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-content: center;
+    font-size: 0.9rem;
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.beta-banner i.fa-flask {
+    font-size: 1.1rem;
+}
+
+.beta-banner strong {
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.beta-banner-close {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    margin-left: auto;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.beta-banner-close:hover {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .beta-banner {
+        font-size: 0.85rem;
+        padding: 0.6rem 1rem;
+        text-align: center;
+    }
+    
+    .beta-banner span {
+        flex: 1;
+    }
+}
