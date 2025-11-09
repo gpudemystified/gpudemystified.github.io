@@ -1,6 +1,6 @@
 // Available GPUs - simple list
 const availableGPUs = [
-    { id: 'rtx_4090', name: 'NVIDIA RTX 4090' }
+    { id: 'rtx_3060', name: 'NVIDIA RTX 3060' }
     // Add more GPUs here as they become available:
     // { id: 'a100', name: 'NVIDIA A100' },
     // { id: 'mi250', name: 'AMD MI250' },

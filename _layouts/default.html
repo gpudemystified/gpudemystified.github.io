@@ -46,6 +46,7 @@
   <script src="{{ '/assets/js/leaderboard.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/gpu_config.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/api_config.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/donation.js' | relative_url }}"></script>
 </head>
 
 <!-- Google tag (gtag.js) -->
@@ -293,6 +294,12 @@
     <span class="report-text">Report an issue</span>
 </button>
 
+<!-- Donation Button (NEW) -->
+<button id="donationBtn" class="donation-btn" title="Support This Project">
+    <i class="fas fa-hand-holding-heart"></i>
+    <span class="donation-text">Support</span>
+</button>
+
 <!-- Report Problem Modal -->
 <div id="reportProblemModal" class="auth-modal" style="display: none;">
     <div class="auth-modal-overlay" onclick="document.getElementById('reportProblemModal').style.display='none'"></div>
@@ -359,6 +366,90 @@
         <div id="reportMessage" class="report-message"></div>
     </div>
 </div>
+
+<!-- Donation Modal (NEW) -->
+<div id="donationModal" class="auth-modal" style="display: none;">
+    <div class="auth-modal-overlay" onclick="document.getElementById('donationModal').style.display='none'"></div>
+    <div class="auth-modal-content" style="max-width: 450px;">
+        <button class="auth-modal-close" onclick="document.getElementById('donationModal').style.display='none'">&times;</button>
+        
+        <div class="donation-modal-header">
+            <i class="fas fa-heart donation-icon"></i>
+            <h2>Support GPU Challenges</h2>
+            <p>This is a 1-person, after-hours effort. Any donation helps keep this project alive and growing!</p>
+        </div>
+        
+        <form id="donationForm">
+            <div class="donation-options">
+                <label class="donation-option">
+                    <input type="radio" name="amount" value="2" checked>
+                    <span class="option-content">
+                        <i class="fas fa-coffee"></i>
+                        <span class="amount">$2</span>
+                        <span class="description">Buy me a coffee</span>
+                    </span>
+                </label>
+                
+                <label class="donation-option">
+                    <input type="radio" name="amount" value="5">
+                    <span class="option-content">
+                        <i class="fas fa-pizza-slice"></i>
+                        <span class="amount">$5</span>
+                        <span class="description">Buy me lunch</span>
+                    </span>
+                </label>
+                
+                <label class="donation-option">
+                    <input type="radio" name="amount" value="10">
+                    <span class="option-content">
+                        <i class="fas fa-rocket"></i>
+                        <span class="amount">$10</span>
+                        <span class="description">Fuel development</span>
+                    </span>
+                </label>
+                
+                <label class="donation-option">
+                    <input type="radio" name="amount" value="25">
+                    <span class="option-content">
+                        <i class="fas fa-heart"></i>
+                        <span class="amount">$25</span>
+                        <span class="description">Super supporter</span>
+                    </span>
+                </label>
+                
+                <label class="donation-option">
+                    <input type="radio" name="amount" value="custom">
+                    <span class="option-content">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <span class="amount">Custom</span>
+                        <span class="description">Choose your amount</span>
+                    </span>
+                </label>
+            </div>
+            
+            <div class="custom-amount-input" id="customAmountInput" style="display: none;">
+                <label for="customAmount">Enter Amount ($)</label>
+                <input 
+                    type="number" 
+                    id="customAmount" 
+                    placeholder="Enter amount" 
+                    min="1"
+                    step="1"
+                >
+            </div>
+            
+            <button type="submit" class="auth-submit-btn donation-submit-btn">
+                <i class="fas fa-heart"></i>
+                Support Now
+            </button>
+        </form>
+        
+        <div class="donation-footer">
+            <small>💝 Thank you for your support!</small>
+        </div>
+    </div>
+</div>
+
 <script src="{{ '/assets/js/main-tabs.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/profile_modal.js' | relative_url }}"></script>
 </body>
