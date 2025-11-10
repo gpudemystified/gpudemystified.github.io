@@ -33,16 +33,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const submitBtn = e.target.querySelector('.donation-submit-btn');
             const selectedAmount = document.querySelector('input[name="amount"]:checked').value;
             
-            let amount;
+            let amountInDollars;
             if (selectedAmount === 'custom') {
-                amount = parseFloat(document.getElementById('customAmount').value);
-                if (!amount || amount < 1) {
+                amountInDollars = parseFloat(document.getElementById('customAmount').value);
+                if (!amountInDollars || amountInDollars < 1) {
                     alert('Please enter a valid amount (minimum $1)');
                     return;
                 }
             } else {
-                amount = parseFloat(selectedAmount);
+                amountInDollars = parseFloat(selectedAmount);
             }
+            
+            // Convert to cents as integer
+            const amountInCents = Math.round(amountInDollars * 100);
             
             // Disable button during processing
             submitBtn.disabled = true;
@@ -52,24 +55,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Get user session
                 const { data: { session } } = await window.supabaseClient.auth.getSession();
                 
+                // Prepare payload
+                const payload = {
+                    amount: amountInCents
+                };
+                
+                // Only add email and name if they exist
+                if (session?.user?.email) {
+                    payload.email = session.user.email;
+                }
+                
+                if (session?.user?.user_metadata?.full_name) {
+                    payload.name = session.user.user_metadata.full_name;
+                }
+                
+                console.log('Sending donation request:', payload);
+                
                 // Send to backend
                 const response = await fetch(`${getApiUrl()}/create-donation-session`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        amount: amount,
-                        user_id: session?.user?.id || null,
-                        email: session?.user?.email || null
-                    })
+                    body: JSON.stringify(payload)
                 });
                 
+                console.log('Response status:', response.status);
+                
                 if (!response.ok) {
-                    throw new Error('Failed to create donation session');
+                    const errorData = await response.json();
+                    console.error('Error response:', errorData);
+                    throw new Error(errorData.detail || 'Failed to create donation session');
                 }
                 
                 const data = await response.json();
+                console.log('Success response:', data);
                 
                 // Redirect to Stripe checkout
                 if (data.checkout_url) {
@@ -80,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
             } catch (error) {
                 console.error('Error processing donation:', error);
-                alert('Failed to process donation. Please try again.');
+                alert('Failed to process donation. Please try again.\n\n' + error.message);
                 
                 // Re-enable button
                 submitBtn.disabled = false;
