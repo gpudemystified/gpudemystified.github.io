@@ -12,18 +12,93 @@ const defaultCompilerCode = `__global__ void example(float* data) {
     data[idx] = data[idx] * 2.0f;
 }`;
 
-const defaultProfileCode = `#include <cuda_runtime.h>
-#include <stdio.h>
+const defaultProfileCode = `#include <iostream>
+#include <cmath>
+#include <cuda_runtime.h>
 
-__global__ void kernel(float* data, int n) {
+#define N 10240
+#define THREADS_PER_BLOCK 256
+
+// Kernel 1: Add two vectors element-wise
+__global__ void vectorAdd(const float* A, const float* B, float* C, int n) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (idx < n) {
-        data[idx] = data[idx] * 2.0f;
+        C[idx] = A[idx] + B[idx];
+    }
+}
+
+// Kernel 2: Multiply each element of C by a scalar
+__global__ void scalarMultiply(float* C, float scalar, int n) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx < n) {
+        C[idx] *= scalar;
+    }
+}
+
+// Kernel 3: Apply a more complex transformation
+__global__ void complexTransform(float* C, int n) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx < n) {
+        float x = C[idx];
+        C[idx] = sqrtf(fabsf(x)) + sinf(x);
     }
 }
 
 int main() {
-    // Your code here
+    const float scalar = 2.5f;
+    size_t size = N * sizeof(float);
+
+    // Allocate host memory
+    float *h_A = new float[N];
+    float *h_B = new float[N];
+    float *h_C = new float[N];
+
+    // Initialize host vectors
+    for (int i = 0; i < N; i++) {
+        h_A[i] = i * 0.5f;
+        h_B[i] = i * 0.25f;
+    }
+
+    // Allocate device memory
+    float *d_A, *d_B, *d_C;
+    cudaMalloc(&d_A, size);
+    cudaMalloc(&d_B, size);
+    cudaMalloc(&d_C, size);
+
+    // Copy data from host to device
+    cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_B, h_B, size, cudaMemcpyHostToDevice);
+
+    // Define grid and block dimensions
+    int blocks = (N + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
+
+    // Launch kernels
+    vectorAdd<<<blocks, THREADS_PER_BLOCK>>>(d_A, d_B, d_C, N);
+    cudaDeviceSynchronize();
+
+    scalarMultiply<<<blocks, THREADS_PER_BLOCK>>>(d_C, scalar, N);
+    cudaDeviceSynchronize();
+
+    complexTransform<<<blocks, THREADS_PER_BLOCK>>>(d_C, N);
+    cudaDeviceSynchronize();
+
+    // Copy result back to host
+    cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);
+
+    // Print a few results
+    std::cout << "Results (first 10 elements):\\n";
+    for (int i = 0; i < 10; i++) {
+        std::cout << "C[" << i << "] = " << h_C[i] << "\\n";
+    }
+
+    // Free memory
+    delete[] h_A;
+    delete[] h_B;
+    delete[] h_C;
+    cudaFree(d_A);
+    cudaFree(d_B);
+    cudaFree(d_C);
+
     return 0;
 }`;
 
@@ -374,8 +449,12 @@ async function initializeRunProfile() {
         // Update user profile
         await window.updateUserProfile();
         
-        // Clear output
+        // Clear output panel
         document.getElementById('profile-output').textContent = '';
+        
+        // Clear metrics panel with default message
+        const metricsOutput = document.getElementById('profile-metrics-output');
+        metricsOutput.innerHTML = '<div class="no-metrics">Run your code to see kernel performance metrics</div>';
         
         // Load saved code or use default
         const codeToUse = await loadSavedCode(RUN_PROFILE_ID, defaultProfileCode);
@@ -553,7 +632,10 @@ async function runAndProfile() {
         
         const response = await fetch(`${getApiUrl()}/profile`, {
             method: "POST",
-            headers: { "Content-Type": "application/json", 'Authorization': `Bearer ${session?.access_token}`},
+            headers: { 
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${session.access_token}`
+            },
             body: JSON.stringify({
                 code: profileEditor.getValue(),
                 user_id: session.user.id,

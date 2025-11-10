@@ -150,6 +150,51 @@
     line-height: 1.4;
 }
 
+/* Make output panels scrollable */
+.compiler-output,
+.profile-metrics-output {
+    overflow-y: auto;
+    overflow-x: auto;
+    max-height: 100%;
+    word-wrap: break-word;
+}
+
+#profile-output {
+    overflow-y: auto;
+    overflow-x: auto;
+    max-height: 100%;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+#compiler-output {
+    overflow-y: auto;
+    overflow-x: auto;
+    max-height: 100%;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Ensure output container allows scrolling */
+.challenge-output-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Parent doesn't scroll */
+}
+
+.challenge-output-header {
+    flex-shrink: 0; /* Header stays fixed */
+}
+
+.compiler-output,
+.profile-metrics-output,
+#profile-output,
+#compiler-output {
+    flex: 1;
+    overflow-y: auto; /* Content scrolls */
+    overflow-x: auto;
+}
+
 /* Assembly line highlighting */
 .assembly-line-highlight {
     background-color: rgba(255, 140, 0, 0.2) !important;

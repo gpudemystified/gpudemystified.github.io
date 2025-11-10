@@ -125,7 +125,14 @@ async function loadCompletedChallengesData() {
         const { data: { session } } = await window.supabaseClient.auth.getSession();
         if (!session) return new Set();
 
-        const response = await fetch(`${getApiUrl()}/challenges/completed/${session.user.id}`);
+        const response = await fetch(`${getApiUrl()}/challenges/completed/${session.user.id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`
+            }
+        });
+        
         if (!response.ok) throw new Error('Failed to fetch completed challenges');
 
         const completed = await response.json();
