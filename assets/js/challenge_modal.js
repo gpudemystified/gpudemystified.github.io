@@ -302,7 +302,8 @@ async function runCode() {
         const response = await fetch(`${getApiUrl()}/run`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${session.access_token}`
             },
             body: JSON.stringify(payload)
         });
@@ -401,7 +402,14 @@ async function handleHintRequest() {
         const url = `${getApiUrl()}/hints/challenge_${currentChallengeId}?user_id=${session.user.id}`;
         console.log('Requesting hint:', url);
 
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`
+            }
+        });
+        
         const data = await response.json();
 
         if (!response.ok) {

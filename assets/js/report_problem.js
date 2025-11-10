@@ -38,6 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
             
             try {
+                const { data: { session } } = await window.supabaseClient.auth.getSession();
+                
                 const reportData = {
                     type: document.getElementById('reportType').value,
                     page: document.getElementById('reportPage').value,
@@ -52,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session?.access_token}`
                     },
                     body: JSON.stringify(reportData)
                 });

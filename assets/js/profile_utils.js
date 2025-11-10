@@ -105,7 +105,8 @@ async function handleUpgrade() {
             const response = await fetch(`${getApiUrl()}/create-checkout-session`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
                 },
                 body: JSON.stringify({
                     user_id: session.user.id

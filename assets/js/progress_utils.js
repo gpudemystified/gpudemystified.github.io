@@ -9,7 +9,8 @@ async function saveProgress(challengeId, code) {
         const response = await fetch(`${getApiUrl()}/progress/save`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session?.access_token}`
             },
             body: JSON.stringify({
                 user_id: session.user.id,
@@ -40,7 +41,13 @@ async function loadProgress(challengeId) {
         }
         
         const url = `${getApiUrl()}/progress/${session.user.id}?challenge_id=${challengeId}`;
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`
+            }
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

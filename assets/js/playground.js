@@ -493,7 +493,9 @@ async function compileCode() {
 
         const response = await fetch(`${getApiUrl()}/compile`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session?.access_token}`
+            },
             body: JSON.stringify({ 
                 code: code,
                 generate_sass: false,
@@ -551,7 +553,7 @@ async function runAndProfile() {
         
         const response = await fetch(`${getApiUrl()}/profile`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", 'Authorization': `Bearer ${session?.access_token}`},
             body: JSON.stringify({
                 code: profileEditor.getValue(),
                 user_id: session.user.id,
