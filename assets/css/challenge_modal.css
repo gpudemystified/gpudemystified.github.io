@@ -429,17 +429,124 @@
     color: #00bf63; /* Green color for submissions */
 }
 
+@media (max-width: 1024px) {
+    .challenge-modal-content {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+    
+    .challenge-meta-tab {
+        font-size: 0.9rem;
+    }
+    
+    .challenge-details {
+        font-size: 0.95rem;
+    }
+    
+    .challenge-details h2 {
+        font-size: 1.5rem;
+    }
+    
+    .challenge-details p {
+        font-size: 0.95rem;
+    }
+    
+    #output {
+        font-size: 0.85rem;
+    }
+    
+    .challenge-output-header {
+        font-size: 0.9rem;
+    }
+    
+    .challenge-run-button,
+    .challenge-save-button {
+        font-size: 0.95rem;
+    }
+    
+    .hint-button {
+        font-size: 0.95rem;
+    }
+    
+    .modal-challenge-points {
+        font-size: 0.9rem;
+    }
+}
+
 @media (max-width: 768px) {
+    .challenge-modal-content {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+    
     .challenge-meta-tab {
         flex-direction: column;
         height: auto;
         gap: 0.5rem;
         padding: 0.75rem 1rem;
+        font-size: 0.85rem;  /* Reduce font size */
     }
     
     .challenge-meta-tab .meta-right {
         width: 100%;
         justify-content: flex-end;
+    }
+    
+    .challenge-modal-body {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    
+    .challenge-details {
+        width: 100%;
+        padding: 1rem;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        max-height: 40%;
+        font-size: 0.9rem;  /* Reduce font size */
+    }
+    
+    .challenge-details h2 {
+        font-size: 1.25rem;  /* Reduce title size */
+    }
+    
+    .challenge-details p {
+        font-size: 0.9rem;  /* Reduce paragraph size */
+    }
+    
+    .challenge-workspace {
+        width: 100%;
+        padding: 1rem;
+        overflow-y: auto;
+        flex: 1;
+    }
+    
+    #output {
+        font-size: 0.8rem;  /* Reduce output font size */
+    }
+    
+    .challenge-output-header {
+        font-size: 0.85rem;  /* Reduce header font size */
+        padding: 0.4rem;
+    }
+    
+    .challenge-run-button,
+    .challenge-save-button {
+        padding: 0.5rem 1rem;  /* Reduce button padding */
+        font-size: 0.9rem;  /* Reduce button font size */
+    }
+    
+    .hint-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+    }
+    
+    .modal-challenge-points {
+        font-size: 0.85rem;
+        padding: 0.2rem 0.6rem;
     }
 }
 

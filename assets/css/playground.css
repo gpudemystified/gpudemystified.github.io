@@ -313,7 +313,50 @@
     color: #dc3545;
 }
 
+@media (max-width: 1024px) {
+    /* Tablet breakpoint - font size reductions only */
+    .profile-and-run-modal-h2,
+    .challenge-details-compiler-explorer-assembly h2 {
+        font-size: 0.9rem;
+    }
+    
+    .compiler-output,
+    .profile-metrics-output {
+        font-size: 0.85rem;
+    }
+    
+    .metric-name {
+        font-size: 0.85rem;
+    }
+    
+    .metric-time {
+        font-size: 0.9rem;
+    }
+    
+    .summary-label {
+        font-size: 0.8rem;
+    }
+    
+    .summary-value {
+        font-size: 1rem;
+    }
+    
+    .metrics-container h3 {
+        font-size: 1rem;
+    }
+    
+    .playground-text h2 {
+        font-size: 1.35rem;
+    }
+    
+    .playground-text p {
+        font-size: 0.95rem;
+    }
+}
+
 @media (max-width: 768px) {
+    /* Mobile breakpoint - full responsive treatment */
+    /* Playground list */
     .playground-item {
         flex-direction: column;
         text-align: center;
@@ -330,5 +373,128 @@
     
     .playground-text p {
         font-size: 0.9rem;
+    }
+    
+    /* Full screen modals */
+    .challenge-modal-content {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 0 !important;
+    }
+    
+    /* Make modal body scrollable and stack vertically */
+    .challenge-modal-body {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    
+    /* Reduce padding */
+    .challenge-details-compiler-explorer-assembly {
+        padding: 0.5rem;
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        max-height: 40%;
+    }
+    
+    .challenge-workspace {
+        padding: 0.5rem;
+        width: 100%;
+        overflow-y: auto;
+        flex: 1;
+    }
+    
+    /* Font size reductions */
+    .profile-and-run-modal-h2,
+    .challenge-details-compiler-explorer-assembly h2 {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .compiler-output {
+        font-size: 0.8rem;
+        padding: 0.75rem;
+    }
+    
+    .profile-metrics-output {
+        font-size: 0.8rem;
+        padding: 0.75rem;
+    }
+    
+    .metrics-container {
+        padding: 1rem;
+    }
+    
+    .metrics-container h3 {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .metric-item {
+        padding: 0.75rem;
+    }
+    
+    .metric-name {
+        font-size: 0.8rem;
+    }
+    
+    .metric-time {
+        font-size: 0.85rem;
+    }
+    
+    .summary-label {
+        font-size: 0.75rem;
+    }
+    
+    .summary-value {
+        font-size: 0.95rem;
+    }
+    
+    .metrics-summary {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.75rem;
+    }
+    
+    /* Compiler Explorer specific */
+    #compiler-monaco-editor,
+    #profile-monaco-editor {
+        height: 60%;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Button sizes */
+    .challenge-run-button,
+    .challenge-save-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Very small phones */
+    .metrics-summary {
+        grid-template-columns: 1fr;
+    }
+    
+    .compiler-output,
+    .profile-metrics-output {
+        font-size: 0.75rem;
+        padding: 0.5rem;
+    }
+    
+    .metric-name {
+        font-size: 0.75rem;
+    }
+    
+    .metric-time {
+        font-size: 0.8rem;
+    }
+    
+    .playground-text h2 {
+        font-size: 1.1rem;
+    }
+    
+    .playground-text p {
+        font-size: 0.85rem;
     }
 }
