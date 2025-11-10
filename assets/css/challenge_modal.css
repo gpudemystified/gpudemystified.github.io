@@ -474,7 +474,7 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 768px) and (orientation: portrait){
     .challenge-modal-content {
         width: 100%;
         height: 100%;
@@ -547,6 +547,202 @@
     .modal-challenge-points {
         font-size: 0.85rem;
         padding: 0.2rem 0.6rem;
+    }
+}
+
+/* Landscape mode - Keep side by side, full screen */
+@media (max-width: 1024px) and (orientation: landscape) {
+    .challenge-modal {
+        align-items: stretch !important;
+        padding: 0 !important;
+    }
+    
+    .challenge-modal-content {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100vh !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .challenge-modal-body {
+        flex-direction: row !important; /* Force horizontal with !important */
+    }
+    
+    .challenge-details {
+        width: 35% !important;
+        max-width: 35% !important;
+        padding: 1rem;
+        max-height: 100% !important;
+        border-right: 1px solid #eee;
+        border-bottom: none !important; /* Remove portrait border */
+        overflow-y: auto;
+        font-size: 0.85rem; /* Smaller font */
+    }
+    
+    .challenge-details h2 {
+        font-size: 1.1rem; /* Smaller title */
+    }
+    
+    .challenge-details p {
+        font-size: 0.85rem; /* Smaller paragraphs */
+    }
+    
+    .challenge-workspace {
+        width: 65% !important;
+        max-width: 65% !important;
+        padding: 1rem;
+        display: flex !important;
+        flex-direction: column;
+        overflow-y: visible !important; /* Override portrait overflow */
+    }
+    
+    /* Compact meta tab */
+    .challenge-meta-tab {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem; /* Smaller font */
+        flex-direction: row !important; /* Override mobile stacking */
+        height: 40px !important; /* Fixed height instead of auto */
+        flex-shrink: 0;
+    }
+    
+    .challenge-meta-tab .stat-item {
+        font-size: 0.8rem; /* Smaller stats */
+    }
+    
+    .challenge-meta-tab .stat-item i {
+        font-size: 0.9rem; /* Smaller icons */
+    }
+    
+    #gpu-select {
+        font-size: 0.8rem; /* Smaller dropdown */
+        padding: 0.25rem 0.5rem;
+    }
+    
+    /* Adjust editor and output heights - bigger output, account for hint button */
+    #monaco-editor {
+        height: calc(100% - 240px) !important; /* More space for output + hint button */
+        min-height: 150px;
+        flex-shrink: 0;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem; /* Smaller editor font */
+    }
+    
+    .challenge-output-panel {
+        height: 180px !important; /* Bigger output window */
+        min-height: 180px;
+        flex-shrink: 0;
+    }
+    
+    .challenge-output-header {
+        font-size: 0.8rem; /* Smaller output header */
+        padding: 0.4rem;
+    }
+    
+    #output {
+        font-size: 0.8rem; /* Smaller output text */
+    }
+    
+    /* Compact buttons */
+    .challenge-run-button,
+    .challenge-save-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem; /* Smaller button text */
+    }
+    
+    .hint-button {
+        display: flex !important; /* Force show hint button */
+        margin-bottom: 1rem !important;
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .modal-challenge-points {
+        font-size: 0.8rem; /* Smaller points badge */
+        padding: 0.2rem 0.6rem;
+    }
+}
+
+/* Extra adjustments for very small landscape heights */
+@media (max-width: 1024px) and (max-height: 500px) and (orientation: landscape) {
+    .challenge-details {
+        width: 30% !important;
+        max-width: 30% !important;
+        padding: 0.5rem;
+        font-size: 0.75rem; /* Even smaller font */
+    }
+    
+    .challenge-details h2 {
+        font-size: 1rem; /* Even smaller title */
+    }
+    
+    .challenge-details p {
+        font-size: 0.75rem; /* Even smaller paragraphs */
+    }
+    
+    .challenge-workspace {
+        width: 70% !important;
+        max-width: 70% !important;
+        padding: 0.5rem;
+    }
+    
+    .challenge-meta-tab {
+        height: 35px !important;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem; /* Even smaller */
+    }
+    
+    .challenge-meta-tab .stat-item {
+        font-size: 0.75rem;
+    }
+    
+    .challenge-meta-tab .stat-item i {
+        font-size: 0.8rem;
+    }
+    
+    #gpu-select {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    #monaco-editor {
+        height: calc(100% - 160px) !important; /* Account for larger output */
+        min-height: 100px; /* Smaller min height for small screens */
+        font-size: 0.75rem; /* Even smaller editor */
+    }
+    
+    .challenge-output-panel {
+        height: 140px !important; /* Bigger output for small screens too */
+        min-height: 140px;
+    }
+    
+    .challenge-output-header {
+        padding: 0.25rem;
+        font-size: 0.75rem; /* Even smaller */
+    }
+    
+    #output {
+        font-size: 0.7rem; /* Even smaller output */
+        padding: 0.5rem;
+    }
+    
+    .challenge-run-button,
+    .challenge-save-button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem; /* Even smaller buttons */
+    }
+    
+    .modal-challenge-points {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.5rem;
+    }
+    
+    .hint-button {
+        display: flex !important; /* Show hint button even on small screens */
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+        margin-bottom: 0.5rem !important;
     }
 }
 
