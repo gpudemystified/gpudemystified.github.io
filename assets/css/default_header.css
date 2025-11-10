@@ -1757,7 +1757,6 @@ body {
 .pro-modal-content,
 .report-modal-content {
     overflow-y: auto;
-    max-height: 90vh;
     padding-bottom: 2rem; /* Add extra padding at bottom */
 }
 
