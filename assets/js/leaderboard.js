@@ -40,7 +40,7 @@ async function updateLeaderboard() {
         .map((entry, index) => {
             const isCurrentUser = currentUsername && entry.username === currentUsername;
             
-            return createLeaderboardEntry(index + 2, entry.username, entry.points, isCurrentUser);
+            return createLeaderboardEntry(index + 1, entry.username, entry.points, isCurrentUser);
         })
         .join('');
 }
