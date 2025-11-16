@@ -4,3 +4,26 @@ _site
 .jekyll-metadata
 vendor
 Gemfile.lock
+
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Package lock files (optional - some prefer to commit these)
+package-lock.json
+
+# Screenshots/outputs
+*.png
+*.jpg
+*.jpeg
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
