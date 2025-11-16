@@ -8,6 +8,37 @@ let currentChallengeId = null;
 // Add this variable at the top with other globals
 let hintUsedForChallenge = false;
 
+// Template for response
+// {
+//   "result": "passed" | "failed",
+//   "steps": [
+//     {
+//       "name": "compilation",
+//       "status": "passed" | "failed",
+//       "message": "Compilation successful" | "Error message here",
+//       "details": "Optional: compiler warnings, line numbers, etc."
+//     },
+//     {
+//       "name": "validation",
+//       "status": "passed" | "failed" | "skipped",
+//       "message": "All test cases passed" | "Test case 2 failed: expected 42, got 24",
+//       "details": "Optional: detailed test results, comparison data"
+//     },
+//     {
+//       "name": "profiling",
+//       "status": "passed" | "failed" | "skipped",
+//       "message": "Performance metrics collected" | "Profiling failed",
+//       "details": "Optional: execution time, memory usage, etc."
+//     }
+//   ],
+//   "user_output": "stdout from user's program",
+//   "metadata": {
+//     "execution_time_ms": 150,
+//     "memory_used_mb": 512,
+//     "gpu_used": "NVIDIA RTX 4090"
+//   }
+// }
+
 function setupMarked() {
     marked.use({
         mangle: false,
@@ -290,13 +321,7 @@ async function runCode() {
             //gpu: selectedGpu  // TODO: Add selected GPU to payload
         };
 
-        console.log('Sending request to /run:', {
-            originalId: currentChallengeId,
-            formattedId: formattedId,
-            userId: session.user.id,
-            codeLength: code.length,
-            fullPayload: payload
-        });
+        console.log('Sending request to /run:', payload);
 
         const response = await fetch(`${getApiUrl()}/run`, {
             method: "POST",
@@ -320,7 +345,7 @@ async function runCode() {
         const result = await response.json();
         console.log('Server response:', result);
         
-        // Format output with pass/fail status - FIX: Actually use the formatted output
+        // Format output with pass/fail status
         const formattedOutput = formatChallengeOutput(result);
         output.innerHTML = formattedOutput;
         console.log('Formatted output:', formattedOutput);
@@ -358,33 +383,71 @@ async function runCode() {
 
 // Add this new function to format the output
 function formatChallengeOutput(result) {
-    // Determine if passed or failed
-    const passed = result.success || result.passed || result.status === 'success';
+    const isPassed = result.result === "passed";
     
-    if (passed) {
-        return `<div class="output-success">
-        <div class="output-status"><i class="fas fa-check-circle"></i><strong>Challenge Passed!</strong></div>${result.output ? `<pre class="output-details">${escapeHtml(result.output)}</pre>` : ''}</div>`;
-    } else {
-        // Failed case
-        let errorMessage = result.error || result.message || result.output || 'Test failed';
-        
-        return `<div class="output-failure">
-        
-        <div class="output-status">
-              <i class="fas fa-times-circle">
-              </i><strong>Challenge Failed</strong></div><pre class="output-details">${escapeHtml(errorMessage)}</pre></div>`;
+    // Build steps HTML
+    let stepsHtml = '';
+    if (result.steps && result.steps.length > 0) {
+        stepsHtml = result.steps.map(step => {
+            const icon = step.status === 'passed' ? '✓' : 
+                        step.status === 'failed' ? '✗' : '⊘';
+            const statusClass = step.status === 'passed' ? 'step-passed' : 
+                               step.status === 'failed' ? 'step-failed' : 'step-skipped';
+            
+            return `<div class="output-step ${statusClass}">
+                <div class="step-header">
+                    <span class="step-icon">${icon}</span>
+                    <span class="step-name">${capitalize(step.name)}</span>
+                    <span class="step-status">${step.status}</span>
+                </div>
+                ${step.message ? `<div class="step-message">${escapeHtml(step.message)}</div>` : ''}
+                ${step.details ? `<pre class="step-details">${escapeHtml(step.details)}</pre>` : ''}
+            </div>`;
+        }).join('');
     }
+    
+    // Build user output section
+    let userOutputHtml = '';
+    if (result.user_output) {
+        userOutputHtml = `<div class="user-output-section">
+            <div class="section-header">Program Output</div>
+            <pre class="output-details">${escapeHtml(result.user_output)}</pre>
+        </div>`;
+    }
+    
+    // Build metadata section
+    let metadataHtml = '';
+    if (result.metadata) {
+        const items = [];
+        if (result.metadata.execution_time_ms) {
+            items.push(`⏱️ ${result.metadata.execution_time_ms}ms`);
+        }
+        if (result.metadata.memory_used_mb) {
+            items.push(`💾 ${result.metadata.memory_used_mb}MB`);
+        }
+        if (result.metadata.gpu_used) {
+            items.push(`🎮 ${result.metadata.gpu_used}`);
+        }
+        
+        if (items.length > 0) {
+            metadataHtml = `<div class="output-metadata">${items.join(' • ')}</div>`;
+        }
+    }
+    
+    // Combine everything
+    return `<div class="${isPassed ? 'output-success' : 'output-failure'}">
+        <div class="output-status">
+            <i class="fas fa-${isPassed ? 'check' : 'times'}-circle"></i>
+            <strong>${isPassed ? 'Success!' : 'Failed'}</strong>
+        </div>
+        ${stepsHtml}
+        ${userOutputHtml}
+        ${metadataHtml}
+    </div>`;
 }
 
-// Helper function to escape HTML
-function escapeHtml(text) {
-    if (!text) return '';
-    if (typeof text !== 'string') {
-        text = JSON.stringify(text, null, 2);
-    }
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function showCompletionPopup(points) {
@@ -484,6 +547,17 @@ async function handleHintRequest() {
         hintButton.disabled = false;
         hintButton.classList.remove('disabled');
     }
+}
+
+// Helper function to escape HTML
+function escapeHtml(text) {
+    if (!text) return '';
+    if (typeof text !== 'string') {
+        text = JSON.stringify(text, null, 2);
+    }
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // Add CSS for disabled button

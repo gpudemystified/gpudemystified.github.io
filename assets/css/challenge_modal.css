@@ -497,6 +497,105 @@
     color: #00bf63; /* Green color for submissions */
 }
 
+.output-step {
+    margin: 12px 0;
+    padding: 12px;
+    border-radius: 6px;
+    border-left: 3px solid;
+}
+
+.output-step.step-passed {
+    background: rgba(5, 150, 105, 0.05);
+    border-left-color: #059669;
+}
+
+.output-step.step-failed {
+    background: rgba(220, 38, 38, 0.05);
+    border-left-color: #dc2626;
+}
+
+.output-step.step-skipped {
+    background: rgba(156, 163, 175, 0.05);
+    border-left-color: #9ca3af;
+    opacity: 0.7;
+}
+
+.step-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.step-icon {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.step-passed .step-icon {
+    color: #059669;
+}
+
+.step-failed .step-icon {
+    color: #dc2626;
+}
+
+.step-skipped .step-icon {
+    color: #9ca3af;
+}
+
+.step-name {
+    flex: 1;
+    text-transform: capitalize;
+}
+
+.step-status {
+    font-size: 12px;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.step-message {
+    font-size: 13px;
+    color: #4a5568;
+    margin: 4px 0;
+}
+
+.step-details {
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin: 6px 0 0 0;
+    overflow-x: auto;
+}
+
+.user-output-section {
+    margin: 16px 0 8px 0;
+}
+
+.section-header {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1a202c;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.output-metadata {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+    color: #6b7280;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
 @media (max-width: 1024px) {
     .challenge-modal-content {
         width: 100%;
