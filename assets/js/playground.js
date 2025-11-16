@@ -632,7 +632,7 @@ async function runAndProfile() {
     try {
         const { data: { session } } = await window.supabaseClient.auth.getSession();
         if (!session) {
-            output.textContent = "Error: Please login to run code";
+            output.innerHTML = '<span class="error-message">⚠️ Please login to run code</span>';
             return;
         }
         
@@ -652,39 +652,33 @@ async function runAndProfile() {
             })
         });
         
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`Server error (${response.status})`);
+        }
         
         const result = await response.json();
         console.log('Profile result:', result);
         
-        // Check if the request was successful
-        if (result.success) {
-            // Display stdout in output panel
-            if (result.stdout) {
-                output.textContent = result.stdout;
-            } else {
-                output.textContent = "Program executed successfully (no output)";
-            }
-            
-            // Display kernel metrics in the metrics panel
-            if (result.kernels && result.kernels.length > 0) {
-                displayKernelMetrics(result.kernels, metricsOutput);
-            } else {
-                metricsOutput.innerHTML = '<div class="no-metrics">No kernel profiling data available</div>';
-            }
-            
-            await window.updateUserProfile();
-            updateModalCounts('profile-submissions-count', 'profile-hints-count');
+        // Use OutputFormatter to display results
+        const formattedOutput = OutputFormatter.format(result);
+        output.innerHTML = formattedOutput;
+        
+        // If profiling succeeded and has kernel data, display metrics
+        if (result.result === 'passed' && result.output?.kernels && result.output.kernels.length > 0) {
+            displayKernelMetrics(result.output.kernels, metricsOutput);
+        } else if (result.result === 'passed') {
+            metricsOutput.innerHTML = '<div class="no-metrics">No kernel profiling data available</div>';
         } else {
-            // Handle failure case
-            const errorMessage = result.error || result.stderr || 'Profile execution failed';
-            output.textContent = `Error:\n${errorMessage}`;
             metricsOutput.innerHTML = '<div class="error-metrics">Profiling failed</div>';
         }
         
+        // Update user profile and counts
+        await window.updateUserProfile();
+        updateModalCounts('profile-submissions-count', 'profile-hints-count');
+        
     } catch (error) {
         console.error('Profile error:', error);
-        output.textContent = "Error: " + error.message;
+        output.innerHTML = `<span class="error-message">❌ Error: ${OutputFormatter.escapeHtml(error.message)}</span>`;
         metricsOutput.innerHTML = '<div class="error-metrics">Failed to retrieve profiling data</div>';
     } finally {
         enableButton(runBtn, originalHTML);
