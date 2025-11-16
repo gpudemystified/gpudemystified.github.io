@@ -139,11 +139,11 @@
 .compiler-output {
     height: 85%;
     margin: 0;
-    padding: 1rem;
+    padding: 0;  /* Changed from 1rem to 0 */
     overflow-y: auto;
     overflow-x: auto;
-    white-space: pre-wrap;       /* Wrap on line breaks and spaces */
-    word-wrap: break-word;       /* Break long words if needed */
+    white-space: normal;  /* Changed from pre-wrap to normal */
+    word-wrap: break-word;
     font-family: monospace;
     background: #f8f8f8;
     font-size: 0.9rem;
@@ -163,16 +163,20 @@
     overflow-y: auto;
     overflow-x: auto;
     max-height: 100%;
-    white-space: pre-wrap;
+    white-space: normal;  /* Changed from pre-wrap to normal */
     word-wrap: break-word;
+    padding: 0;  /* Add this */
+    margin: 0;   /* Add this */
 }
 
 #compiler-output {
     overflow-y: auto;
     overflow-x: auto;
     max-height: 100%;
-    white-space: pre-wrap;
+    white-space: normal;  /* Changed from pre-wrap to normal */
     word-wrap: break-word;
+    padding: 0;  /* Add this */
+    margin: 0;   /* Add this */
 }
 
 /* Ensure output container allows scrolling */
@@ -252,7 +256,7 @@
     height: 100%;
     overflow-y: auto;
     background: #f8f8f8;
-    padding: 1rem;
+    padding: 0;  /* Changed from 1rem to 0 */
 }
 
 .metrics-container {

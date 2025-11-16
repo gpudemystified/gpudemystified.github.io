@@ -566,13 +566,14 @@ async function compileCode() {
         const { data: { session }, error: authError } = await window.supabaseClient.auth.getSession();
         
         if (!session) {
-            output.textContent = "Please login to compile code";
+            output.innerHTML = '<span class="error-message">⚠️ Please login to compile code</span>';
             return;
         }
 
         const response = await fetch(`${getApiUrl()}/compile`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json',
+            headers: { 
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${session?.access_token}`
             },
             body: JSON.stringify({ 
@@ -583,31 +584,38 @@ async function compileCode() {
             })
         });
 
-        if (response.ok) {
-            const data = await response.json();
-            
-            console.log('Compilation successful');
-            console.log('PTX output length:', data.ptx?.length);
+        if (!response.ok) {
+            throw new Error(`Server error (${response.status})`);
+        }
 
-            if (data.success) {
-                assemblyEditor.setValue(data.ptx);
-                output.textContent = 'Compilation successful';
+        const result = await response.json();
+        console.log('Compile response:', result);
+        
+        // Use OutputFormatter to display results
+        const formattedOutput = OutputFormatter.format(result);
+        output.innerHTML = formattedOutput;
+
+        // If compilation succeeded, extract PTX and line mapping from nested structure
+        if (result.result === 'passed' && result.output) {
+            const ptx = result.output.ptx;
+            const lineMapping = result.output.line_mapping;
+            
+            if (ptx) {
+                console.log('Compilation successful, PTX length:', ptx.length);
+                assemblyEditor.setValue(ptx);
                 
                 // Setup highlighting by parsing the PTX output directly
-                setupHighlighting(data.ptx);
-                
-                await window.updateUserProfile();
-                updateModalCounts('compiler-submissions-count', 'compiler-hints-count');
-            } else {
-                output.textContent = data.error || 'Compilation failed';
+                setupHighlighting(ptx);
             }
-        } else {
-            const errorData = await response.json();
-            output.textContent = `Compilation failed: ${errorData.detail || 'Unknown error'}`;
         }
+        
+        // Update user profile and counts
+        await window.updateUserProfile();
+        updateModalCounts('compiler-submissions-count', 'compiler-hints-count');
+
     } catch (error) {
         console.error('Error during compilation:', error);
-        output.textContent = `Error: ${error.message}`;
+        output.innerHTML = `<span class="error-message">❌ Error: ${OutputFormatter.escapeHtml(error.message)}</span>`;
     } finally {
         enableButton(compileBtn, originalHTML);
     }
