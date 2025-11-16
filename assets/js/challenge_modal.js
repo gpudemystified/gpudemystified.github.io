@@ -345,8 +345,8 @@ async function runCode() {
         const result = await response.json();
         console.log('Server response:', result);
         
-        // Format output with pass/fail status
-        const formattedOutput = formatChallengeOutput(result);
+        // Use the formatter utility
+        const formattedOutput = OutputFormatter.format(result);
         output.innerHTML = formattedOutput;
         console.log('Formatted output:', formattedOutput);
 
