@@ -271,7 +271,7 @@ async function runCode() {
         // Check if user is logged in
         const { data: { session }, error } = await window.supabaseClient.auth.getSession();
         if (!session) {
-            output.innerText = "Error: Please login to run code";
+            output.innerHTML = '<span class="error-message">⚠️ Please login to run code</span>';
             return;
         }
 
@@ -290,7 +290,6 @@ async function runCode() {
             //gpu: selectedGpu  // TODO: Add selected GPU to payload
         };
 
-        // Log the request details
         console.log('Sending request to /run:', {
             originalId: currentChallengeId,
             formattedId: formattedId,
@@ -315,12 +314,16 @@ async function runCode() {
                 statusText: response.statusText,
                 body: errorText
             });
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`Server error (${response.status})`);
         }
 
         const result = await response.json();
         console.log('Server response:', result);
-        output.innerText = JSON.stringify(result, null, 2);
+        
+        // Format output with pass/fail status - FIX: Actually use the formatted output
+        const formattedOutput = formatChallengeOutput(result);
+        output.innerHTML = formattedOutput;
+        console.log('Formatted output:', formattedOutput);
 
         // Show completion popup if it's the first completion
         if (result.first_completion) {
@@ -344,13 +347,44 @@ async function runCode() {
 
     } catch (error) {
         console.error('Run code error:', error);
-        output.innerText = "Error: " + error.message;
+        output.innerHTML = `<span class="error-message">❌ Error: ${escapeHtml(error.message)}</span>`;
     } finally {
         // Re-enable button after response (success or error)
         runBtn.disabled = false;
         runBtn.classList.remove('disabled');
         runBtn.innerHTML = originalHTML;
     }
+}
+
+// Add this new function to format the output
+function formatChallengeOutput(result) {
+    // Determine if passed or failed
+    const passed = result.success || result.passed || result.status === 'success';
+    
+    if (passed) {
+        return `<div class="output-success">
+        <div class="output-status"><i class="fas fa-check-circle"></i><strong>Challenge Passed!</strong></div>${result.output ? `<pre class="output-details">${escapeHtml(result.output)}</pre>` : ''}</div>`;
+    } else {
+        // Failed case
+        let errorMessage = result.error || result.message || result.output || 'Test failed';
+        
+        return `<div class="output-failure">
+        
+        <div class="output-status">
+              <i class="fas fa-times-circle">
+              </i><strong>Challenge Failed</strong></div><pre class="output-details">${escapeHtml(errorMessage)}</pre></div>`;
+    }
+}
+
+// Helper function to escape HTML
+function escapeHtml(text) {
+    if (!text) return '';
+    if (typeof text !== 'string') {
+        text = JSON.stringify(text, null, 2);
+    }
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 function showCompletionPopup(points) {
