@@ -78,6 +78,7 @@ async function handleUpgrade() {
     // Show modal
     proModal.classList.add('active');
     document.body.style.overflow = 'hidden';
+    proModal.style.display = 'flex';  // Add this line
 
     // Handle close actions
     const closeModal = () => {
