@@ -570,6 +570,13 @@ async function compileCode() {
             return;
         }
 
+        // Check submissions before compiling
+        const profile = window.userProfile;
+        if (!profile?.is_pro && (!profile?.submissions_count || profile.submissions_count <= 0)) {
+            OutputFormatter.showNoSubmissionsError(output);
+            return;
+        }
+
         const response = await fetch(`${getApiUrl()}/compile`, {
             method: 'POST',
             headers: { 
@@ -585,6 +592,14 @@ async function compileCode() {
         });
 
         if (!response.ok) {
+            const errorText = await response.text();
+            
+            // Check if it's a submissions limit error from backend
+            if (response.status === 429 || (errorText && errorText.includes('submission'))) {
+                OutputFormatter.showNoSubmissionsError(output);
+                return;
+            }
+            
             throw new Error(`Server error (${response.status})`);
         }
 
@@ -635,6 +650,13 @@ async function runAndProfile() {
             output.innerHTML = '<span class="error-message">⚠️ Please login to run code</span>';
             return;
         }
+
+        // Check submissions before running
+        const profile = window.userProfile;
+        if (!profile?.is_pro && (!profile?.submissions_count || profile.submissions_count <= 0)) {
+            OutputFormatter.showNoSubmissionsError(output);
+            return;
+        }
         
         const gpu = document.getElementById('profile-gpu-select').value;
         
@@ -653,6 +675,14 @@ async function runAndProfile() {
         });
         
         if (!response.ok) {
+            const errorText = await response.text();
+            
+            // Check if it's a submissions limit error from backend
+            if (response.status === 429 || (errorText && errorText.includes('submission'))) {
+                OutputFormatter.showNoSubmissionsError(output);
+                return;
+            }
+            
             throw new Error(`Server error (${response.status})`);
         }
         

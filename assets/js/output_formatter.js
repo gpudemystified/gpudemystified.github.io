@@ -104,6 +104,37 @@ if (typeof window.OutputFormatter === 'undefined') {
         },
 
         /**
+         * Show no submissions left error
+         * @param {HTMLElement} outputElement - The output container element
+         */
+        showNoSubmissionsError(outputElement) {
+            const errorHtml = `
+                <div class="no-submissions-error">
+                    <div class="error-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="error-content">
+                        <h3>No Submissions Left</h3>
+                        <p>You've used all your daily code submissions.</p>
+                        <div class="error-options">
+                            <div class="option">
+                                <i class="fas fa-clock"></i>
+                                <span>Wait for daily reset</span>
+                            </div>
+                            <div class="or-divider">OR</div>
+                            <div class="option option-pro">
+                                <i class="fas fa-crown"></i>
+                                <span>Upgrade to Pro for unlimited submissions</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            outputElement.innerHTML = errorHtml;
+        },
+
+        /**
          * Capitalize first letter of string
          * @param {string} str - Input string
          * @returns {string} Capitalized string

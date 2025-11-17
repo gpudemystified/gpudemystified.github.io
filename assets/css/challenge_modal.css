@@ -919,3 +919,132 @@
     80% { opacity: 1; transform: translate(-50%, -50%); }
     100% { opacity: 0; transform: translate(-50%, -60%); }
 }
+
+/* No submissions error */
+.no-submissions-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px;  /* Reduced from 40px 20px */
+    text-align: center;
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.05) 0%, rgba(220, 38, 38, 0.02) 100%);
+    border-radius: 12px;
+    min-height: 200px;  /* Reduced from 300px */
+}
+
+.no-submissions-error .error-icon {
+    font-size: 32px;  /* Reduced from 64px */
+    color: #dc2626;
+}
+
+.no-submissions-error .error-content h3 {
+    font-size: 16px;  /* Reduced from 24px */
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0 0 8px 0;  /* Reduced from 12px */
+}
+
+.no-submissions-error .error-content p {
+    font-size: 14px;  /* Reduced from 16px */
+    color: #4a5568;
+    margin: 0 0 16px 0;  /* Reduced from 30px */
+}
+
+.error-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;  /* Reduced from 16px */
+    margin-bottom: 0;  /* Removed margin since no button below */
+    text-align: left;
+}
+
+.error-options .option {
+    display: flex;
+    align-items: center;
+    gap: 10px;  /* Reduced from 12px */
+    padding: 12px;  /* Reduced from 16px */
+    background: white;
+    border-radius: 8px;
+    border: 2px solid #e5e7eb;
+    font-size: 13px;  /* Reduced from 14px */
+    color: #4a5568;
+}
+
+.error-options .option i {
+    font-size: 18px;  /* Reduced from 20px */
+    color: #6b7280;
+}
+
+.error-options .option-pro {
+    border-color: #fbbf24;
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%);
+}
+
+.error-options .option-pro i {
+    color: #fbbf24;
+}
+
+/* Remove upgrade button styles */
+.upgrade-btn {
+    display: none;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .no-submissions-error {
+        padding: 16px 12px;  /* Reduced from 30px 16px */
+        min-height: 180px;  /* Reduced from 250px */
+    }
+    
+    .no-submissions-error .error-icon {
+        font-size: 40px;  /* Reduced from 48px */
+        margin-bottom: 10px;
+    }
+    
+    .no-submissions-error .error-content h3 {
+        font-size: 18px;  /* Reduced from 20px */
+    }
+    
+    .no-submissions-error .error-content p {
+        font-size: 13px;
+        margin: 0 0 12px 0;
+    }
+    
+    .error-options .option {
+        font-size: 12px;  /* Reduced from 13px */
+        padding: 10px;  /* Reduced from 12px */
+    }
+    
+    .error-options .option i {
+        font-size: 16px;
+    }
+}
+
+/* OR divider */
+.or-divider {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #9ca3af;
+    margin: 8px 0;  /* Reduced from default */
+    position: relative;
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+.or-divider::before {
+    left: 0;
+}
+
+.or-divider::after {
+    right: 0;
+}

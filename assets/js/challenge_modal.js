@@ -306,6 +306,13 @@ async function runCode() {
             return;
         }
 
+        // Check submissions before running
+        const profile = window.userProfile;
+        if (!profile?.is_pro && (!profile?.submissions_count || profile.submissions_count <= 0)) {
+            OutputFormatter.showNoSubmissionsError(output);
+            return;
+        }
+
         // Format challenge ID
         const formattedId = `challenge_${currentChallengeId}`;
 
@@ -318,7 +325,6 @@ async function runCode() {
             code: code,
             debug: false,
             user_id: session.user.id
-            //gpu: selectedGpu  // TODO: Add selected GPU to payload
         };
 
         console.log('Sending request to /run:', payload);
@@ -339,6 +345,13 @@ async function runCode() {
                 statusText: response.statusText,
                 body: errorText
             });
+            
+            // Check if it's a submissions limit error from backend
+            if (response.status === 429 || (errorText && errorText.includes('submission'))) {
+                OutputFormatter.showNoSubmissionsError(output);
+                return;
+            }
+            
             throw new Error(`Server error (${response.status})`);
         }
 
@@ -348,7 +361,6 @@ async function runCode() {
         // Use the formatter utility
         const formattedOutput = OutputFormatter.format(result);
         output.innerHTML = formattedOutput;
-        console.log('Formatted output:', formattedOutput);
 
         // Show completion popup if it's the first completion
         if (result.first_completion) {
@@ -360,8 +372,7 @@ async function runCode() {
         // Update profile after running code
         await window.updateUserProfile();
         
-        // Update the meta tab counters with infinity for Pro
-        const profile = window.userProfile;
+        // Update the meta tab counters
         const submissionsEl = document.getElementById('modal-submissions-count');
         
         if (profile?.is_pro) {
@@ -372,82 +383,13 @@ async function runCode() {
 
     } catch (error) {
         console.error('Run code error:', error);
-        output.innerHTML = `<span class="error-message">❌ Error: ${escapeHtml(error.message)}</span>`;
+        output.innerHTML = `<span class="error-message">❌ Error: ${OutputFormatter.escapeHtml(error.message)}</span>`;
     } finally {
         // Re-enable button after response (success or error)
         runBtn.disabled = false;
         runBtn.classList.remove('disabled');
         runBtn.innerHTML = originalHTML;
     }
-}
-
-// Add this new function to format the output
-function formatChallengeOutput(result) {
-    const isPassed = result.result === "passed";
-    
-    // Build steps HTML
-    let stepsHtml = '';
-    if (result.steps && result.steps.length > 0) {
-        stepsHtml = result.steps.map(step => {
-            const icon = step.status === 'passed' ? '✓' : 
-                        step.status === 'failed' ? '✗' : '⊘';
-            const statusClass = step.status === 'passed' ? 'step-passed' : 
-                               step.status === 'failed' ? 'step-failed' : 'step-skipped';
-            
-            return `<div class="output-step ${statusClass}">
-                <div class="step-header">
-                    <span class="step-icon">${icon}</span>
-                    <span class="step-name">${capitalize(step.name)}</span>
-                    <span class="step-status">${step.status}</span>
-                </div>
-                ${step.message ? `<div class="step-message">${escapeHtml(step.message)}</div>` : ''}
-                ${step.details ? `<pre class="step-details">${escapeHtml(step.details)}</pre>` : ''}
-            </div>`;
-        }).join('');
-    }
-    
-    // Build user output section
-    let userOutputHtml = '';
-    if (result.user_output) {
-        userOutputHtml = `<div class="user-output-section">
-            <div class="section-header">Program Output</div>
-            <pre class="output-details">${escapeHtml(result.user_output)}</pre>
-        </div>`;
-    }
-    
-    // Build metadata section
-    let metadataHtml = '';
-    if (result.metadata) {
-        const items = [];
-        if (result.metadata.execution_time_ms) {
-            items.push(`⏱️ ${result.metadata.execution_time_ms}ms`);
-        }
-        if (result.metadata.memory_used_mb) {
-            items.push(`💾 ${result.metadata.memory_used_mb}MB`);
-        }
-        if (result.metadata.gpu_used) {
-            items.push(`🎮 ${result.metadata.gpu_used}`);
-        }
-        
-        if (items.length > 0) {
-            metadataHtml = `<div class="output-metadata">${items.join(' • ')}</div>`;
-        }
-    }
-    
-    // Combine everything
-    return `<div class="${isPassed ? 'output-success' : 'output-failure'}">
-        <div class="output-status">
-            <i class="fas fa-${isPassed ? 'check' : 'times'}-circle"></i>
-            <strong>${isPassed ? 'Success!' : 'Failed'}</strong>
-        </div>
-        ${stepsHtml}
-        ${userOutputHtml}
-        ${metadataHtml}
-    </div>`;
-}
-
-function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function showCompletionPopup(points) {
