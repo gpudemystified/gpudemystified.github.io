@@ -33,7 +33,10 @@ async function updateUserProfile() {
             accountBadge.className = 'account-badge pro';
             accountBadge.onclick = null;
         } else {
-            accountBadge.innerHTML = `<i class="fas fa-crown"></i> Upgrade to Pro`;
+            accountBadge.innerHTML = `
+                <span class="badge-sale-dot"></span>
+                <i class="fas fa-crown"></i> Upgrade to Pro
+            `;
             accountBadge.className = 'account-badge basic';
             accountBadge.onclick = handleUpgrade;
         }

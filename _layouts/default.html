@@ -59,10 +59,17 @@
 </script>
 
 <body>
-    <!-- Beta Banner -->
+    <!-- Beta Banner with Sale -->
     <div class="beta-banner" id="betaBanner">
-        <i class="fas fa-flask"></i>
-        <span>This site is currently in <strong>beta testing</strong>. You may encounter bugs or incomplete features.</span>
+        <div class="banner-content">
+            <i class="fas fa-flask"></i>
+            <span>
+                <strong>Beta Testing</strong> • You may encounter bugs or incomplete features
+            </span>
+            <span class="banner-divider">•</span>
+            <i class="fas fa-fire"></i>
+            <span class="sale-highlight">50% OFF</span>
+        </div>
         <button class="beta-banner-close" onclick="document.getElementById('betaBanner').style.display='none'">
             <i class="fas fa-times"></i>
         </button>
