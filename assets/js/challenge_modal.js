@@ -229,21 +229,6 @@ document.addEventListener('keydown', e => {
     }
 });
 
-async function updateRunButtonState() {
-    const runBtn = document.getElementById('runCode');
-    const { data: { session }, error } = await window.supabaseClient.auth.getSession();
-    console.log ('Update run button state Auth session:', session);
-    if (!session) {
-        runBtn.disabled = true;
-        runBtn.classList.add('disabled');
-        runBtn.title = 'Please login to run code';
-    } else {
-        runBtn.disabled = false;
-        runBtn.classList.remove('disabled');
-        runBtn.title = 'Run code (Ctrl + Enter)';
-    }
-}
-
 // Add this function to check hint availability
 async function updateHintButtonState() {
     const hintButton = document.querySelector('.hint-button');
@@ -302,7 +287,7 @@ async function runCode() {
         // Check if user is logged in
         const { data: { session }, error } = await window.supabaseClient.auth.getSession();
         if (!session) {
-            output.innerHTML = '<span class="error-message">⚠️ Please login to run code</span>';
+            OutputFormatter.showLoginRequired(output);
             return;
         }
 
@@ -527,12 +512,10 @@ document.head.appendChild(style2);
 // Update event listeners
 document.addEventListener('DOMContentLoaded', () => {
     setupMarked();
-    updateRunButtonState();
 });
 
 // Listen for auth state changes
 window.supabaseClient.auth.onAuthStateChange((event, session) => {
-    updateRunButtonState();
     updateHintButtonState();
 });
 

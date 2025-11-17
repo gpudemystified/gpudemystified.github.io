@@ -135,6 +135,26 @@ if (typeof window.OutputFormatter === 'undefined') {
         },
 
         /**
+         * Show login required error message
+         * @param {HTMLElement} outputElement - The output container element
+         */
+        showLoginRequired(outputElement) {
+            const errorHtml = `
+                <div class="simple-error-message">
+                    <div class="error-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="error-text">
+                        <strong>Login Required</strong>
+                        <p>Please login to run your code on our GPUs.</p>
+                    </div>
+                </div>
+            `;
+            
+            outputElement.innerHTML = errorHtml;
+        },
+
+        /**
          * Capitalize first letter of string
          * @param {string} str - Input string
          * @returns {string} Capitalized string

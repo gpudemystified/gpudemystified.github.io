@@ -566,7 +566,7 @@ async function compileCode() {
         const { data: { session }, error: authError } = await window.supabaseClient.auth.getSession();
         
         if (!session) {
-            output.innerHTML = '<span class="error-message">⚠️ Please login to compile code</span>';
+            OutputFormatter.showLoginRequired(output);
             return;
         }
 
@@ -647,7 +647,7 @@ async function runAndProfile() {
     try {
         const { data: { session } } = await window.supabaseClient.auth.getSession();
         if (!session) {
-            output.innerHTML = '<span class="error-message">⚠️ Please login to run code</span>';
+            OutputFormatter.showLoginRequired(output);
             return;
         }
 
