@@ -72,6 +72,7 @@ async function handleUpgrade() {
     const proModal = document.getElementById('proModal');
     const closeBtn = proModal.querySelector('.pro-modal-close');
     const confirmBtn = document.getElementById('confirmUpgrade');
+    const buySubmissionsBtn = document.getElementById('buySubmissions');
     const overlay = proModal.querySelector('.pro-modal-overlay');
 
     // Show modal
@@ -81,24 +82,26 @@ async function handleUpgrade() {
     // Handle close actions
     const closeModal = () => {
         proModal.classList.remove('active');
+        proModal.style.display = 'none';
         document.body.style.overflow = '';
     };
 
     closeBtn.onclick = closeModal;
     overlay.onclick = closeModal;
 
-    // Handle upgrade confirmation
+    // Handle Pro subscription upgrade
     confirmBtn.onclick = async () => {
         try {
-            if (confirmBtn) {
-                confirmBtn.disabled = true;
-                confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Processing...';
-            }
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
             const { data: { session } } = await window.supabaseClient.auth.getSession();
             
             if (!session) {
                 alert('Please login first');
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = '<i class="fas fa-crown"></i> <span>Subscribe to Pro</span>';
+                closeModal();
                 return;
             }
 
@@ -122,7 +125,6 @@ async function handleUpgrade() {
                 throw new Error(responseData.detail || 'Failed to create checkout session');
             }
             
-            // Backend returns 'checkout_url' not 'url'
             const checkoutUrl = responseData.checkout_url;
             
             if (!checkoutUrl) {
@@ -137,6 +139,65 @@ async function handleUpgrade() {
         } catch (error) {
             console.error('Error initiating upgrade:', error);
             alert('Failed to start upgrade process. Please try again.');
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = '<i class="fas fa-crown"></i> <span>Subscribe to Pro</span>';
+        }
+    };
+
+    // Handle Buy Submissions
+    buySubmissionsBtn.onclick = async () => {
+        try {
+            buySubmissionsBtn.disabled = true;
+            buySubmissionsBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            
+            if (!session) {
+                alert('Please login first');
+                buySubmissionsBtn.disabled = false;
+                buySubmissionsBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> <span>Buy 500 Submissions</span>';
+                closeModal();
+                return;
+            }
+
+            const response = await fetch(`${getApiUrl()}/purchase-submissions`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({
+                    user_id: session.user.id,
+                    quantity: 500,
+                    amount: 799  // $7.99 in cents
+                })
+            });
+
+            console.log('Response status:', response.status);
+            
+            const responseData = await response.json();
+            console.log('Full response data:', responseData);
+            
+            if (!response.ok) {
+                throw new Error(responseData.detail || 'Failed to create checkout session');
+            }
+            
+            const checkoutUrl = responseData.checkout_url;
+            
+            if (!checkoutUrl) {
+                throw new Error('No checkout URL returned from server');
+            }
+            
+            console.log('Redirecting to Stripe checkout:', checkoutUrl);
+            
+            // Redirect to Stripe Checkout
+            window.location.href = checkoutUrl;
+
+        } catch (error) {
+            console.error('Error purchasing submissions:', error);
+            alert('Failed to process purchase. Please try again.');
+            buySubmissionsBtn.disabled = false;
+            buySubmissionsBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> <span>Buy 500 Submissions</span>';
         }
     };
 }

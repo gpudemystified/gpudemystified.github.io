@@ -314,8 +314,8 @@ body {
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    max-width: 480px;
-    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
     z-index: 1001;
 }
 
@@ -407,6 +407,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;  /* Center children horizontally */
+    max-height: none;
+    overflow: visible;
 }
 
 .pricing-info {
@@ -1819,5 +1821,322 @@ body {
     .reset-password-btn,
     .donation-submit-btn {
         margin-bottom: 1.5rem;
+    }
+}
+
+/* Add these styles to your existing PRO MODAL STYLES section */
+
+/* Update existing pro-modal-body */
+.pro-modal-body h2 {
+    text-align: center;
+    margin: 0 0 2rem 0;
+    font-size: 1.75rem;
+    color: #333;
+}
+
+/* Two-column grid for options */
+.upgrade-options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.upgrade-card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.upgrade-card:hover {
+    border-color: #fbbf24;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.pro-card {
+    border-color: #fbbf24;
+    background: linear-gradient(to bottom, rgba(251, 191, 36, 0.05), white);
+}
+
+.submissions-card:hover {
+    border-color: #3b82f6;
+}
+
+/* Card badges */
+.card-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+}
+
+.one-time-badge {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.upgrade-card h3 {
+    text-align: center;
+    margin: 1rem 0 1.5rem 0;
+    font-size: 1.3rem;
+    color: #333;
+}
+
+/* Update pricing-info to work within cards */
+.upgrade-card .pricing-info {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.upgrade-card .price-amount {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.price-amount .period {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #666;
+}
+
+.upgrade-card .cancel-text {
+    display: block;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* Submissions package visual */
+.submissions-package {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+    border: 2px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.package-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #3b82f6;
+    line-height: 1;
+}
+
+.package-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Update pro-benefits to work in both cards */
+.upgrade-card .pro-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.upgrade-card .benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+.upgrade-card .benefit-item i {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.pro-card .benefit-item i {
+    color: #fbbf24;
+}
+
+.submissions-card .benefit-item i {
+    color: #3b82f6;
+}
+
+/* Secondary button style */
+.secondary-button {
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+}
+
+.secondary-button:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+}
+
+/* Responsive - stack on mobile */
+@media (max-width: 768px) {
+    .upgrade-options-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .pro-modal-body h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .upgrade-card h3 {
+        font-size: 1.2rem;
+    }
+    
+    .upgrade-card .price-amount {
+        font-size: 1.75rem;
+    }
+    
+    .package-number {
+        font-size: 2.5rem;
+    }
+}
+
+/* Landscape mode adjustments */
+@media (max-width: 1024px) and (max-height: 768px) and (orientation: landscape) {
+    .upgrade-options-grid {
+        gap: 1rem;
+    }
+    
+    .upgrade-card {
+        padding: 1rem;
+    }
+    
+    .upgrade-card h3 {
+        margin: 0.75rem 0 1rem 0;
+        font-size: 1.1rem;
+    }
+    
+    .upgrade-card .pricing-info {
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+    }
+    
+    .upgrade-card .price-amount {
+        font-size: 1.5rem;
+    }
+    
+    .submissions-package {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .package-number {
+        font-size: 2rem;
+    }
+    
+    .package-label {
+        font-size: 0.85rem;
+    }
+    
+    .upgrade-card .pro-benefits {
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .upgrade-card .benefit-item {
+        font-size: 0.85rem;
+    }
+    
+    .confirm-upgrade-button {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Fix scrolling for small portrait screens */
+.pro-modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.pro-modal-body {
+    max-height: none;
+    overflow: visible;
+}
+
+/* Ensure upgrade options grid doesn't overflow */
+@media (max-width: 768px) {
+    .upgrade-options-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0 1rem 1rem 1rem;
+    }
+    
+    .pro-modal-body h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        padding: 0 1rem;
+    }
+    
+    .upgrade-card {
+        margin-bottom: 0;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .pro-modal-content {
+        width: 95%;
+        max-height: 95vh;
+        padding: 1rem;
+    }
+    
+    .upgrade-options-grid {
+        padding: 0 0.5rem 0.5rem 0.5rem;
+        gap: 1rem;
+    }
+    
+    .upgrade-card {
+        padding: 1rem;
+    }
+    
+    .card-badge {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.8rem;
+    }
+    
+    .upgrade-card h3 {
+        font-size: 1.1rem;
+        margin: 0.75rem 0 1rem 0;
+    }
+    
+    .upgrade-card .price-amount {
+        font-size: 1.75rem;
+    }
+    
+    .package-number {
+        font-size: 2.5rem;
+    }
+    
+    .upgrade-card .benefit-item {
+        font-size: 0.85rem;
+    }
+    
+    .confirm-upgrade-button {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
     }
 }

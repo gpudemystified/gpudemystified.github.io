@@ -205,36 +205,80 @@
     <div class="pro-modal-content">
         <button class="pro-modal-close">&times;</button>
         <div class="pro-modal-body">
-            <h2><i class="fas fa-crown"></i> Pro Benefits</h2>
-            <div class="pro-benefits">
-                <div class="benefit-item">
-                    <i class="fas fa-infinity"></i>
-                    <span>Unlimited Code Submissions</span>
+            <h2><i class="fas fa-crown"></i> Choose Your Plan</h2>
+            
+            <!-- Two options side by side -->
+            <div class="upgrade-options-grid">
+                <!-- Pro Subscription -->
+                <div class="upgrade-card pro-card">
+                    <div class="card-badge">
+                        <i class="fas fa-crown"></i>
+                        Most Popular
+                    </div>
+                    <h3>Pro Subscription</h3>
+                    <div class="pricing-info">
+                        <span class="price-amount">$9.99<span class="period">/month</span></span>
+                        <span class="cancel-text">Cancel anytime</span>
+                    </div>
+                    <div class="pro-benefits">
+                        <div class="benefit-item">
+                            <i class="fas fa-infinity"></i>
+                            <span>Unlimited Code Submissions</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Unlimited Hints</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-rocket"></i>
+                            <span>Advanced Compilation Options</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Detailed Performance Analytics</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-save"></i>
+                            <span>Save and Resume Code Progress</span>
+                        </div>
+                    </div>
+                    <button id="confirmUpgrade" class="confirm-upgrade-button">
+                        <i class="fas fa-crown"></i>
+                        <span>. Subscribe to Pro</span>
+                    </button>
                 </div>
-                <div class="benefit-item">
-                    <i class="fas fa-lightbulb"></i>
-                    <span>Unlimited Hints</span>
-                </div>
-                <div class="benefit-item">
-                    <i class="fas fa-rocket"></i>
-                    <span>Advanced Compilation Options</span>
-                </div>
-                <div class="benefit-item">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Detailed Performance Analytics</span>
-                </div>
-                <div class="benefit-item">
-                    <i class="fas fa-save"></i>
-                    <span>Save and Resume Your Code Progress</span>
+
+                <!-- Buy Submissions -->
+                <div class="upgrade-card submissions-card">
+                    <div class="card-badge one-time-badge">
+                        <i class="fas fa-bolt"></i>
+                        One-Time
+                    </div>
+                    <h3>Buy Submissions</h3>
+                    <div class="pricing-info">
+                        <span class="price-amount">$7.99</span>
+                        <span class="cancel-text">One-time payment</span>
+                    </div>
+                    <div class="submissions-package">
+                        <div class="package-number">500</div>
+                        <div class="package-label">Submissions</div>
+                    </div>
+                    <div class="pro-benefits">
+                        <div class="benefit-item">
+                            <i class="fas fa-check"></i>
+                            <span>No recurring charges</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check"></i>
+                            <span>Use across all challenges</span>
+                        </div>
+                    </div>
+                    <button id="buySubmissions" class="confirm-upgrade-button secondary-button">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>. Buy 500 Submissions</span>
+                    </button>
                 </div>
             </div>
-            <div class="pricing-info">
-                <span class="price-amount">$9.99/month</span>
-                <span class="cancel-text">Cancel anytime</span>
-            </div>
-            <button id="confirmUpgrade" class="confirm-upgrade-button">
-                Upgrade Now
-            </button>
         </div>
     </div>
   </div>
