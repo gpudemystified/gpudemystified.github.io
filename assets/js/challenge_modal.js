@@ -371,14 +371,14 @@ async function runCode() {
 
         // Update profile after running code
         await window.updateUserProfile();
-        
+
         // Update the meta tab counters
         const submissionsEl = document.getElementById('modal-submissions-count');
         
-        if (profile?.is_pro) {
+        if (window.userProfile?.is_pro) {
             submissionsEl.innerHTML = '<i class="fas fa-infinity"></i>';
         } else {
-            submissionsEl.textContent = profile?.submissions_count ?? '0';
+            submissionsEl.textContent = window.userProfile?.submissions_count ?? '0';
         }
 
     } catch (error) {
