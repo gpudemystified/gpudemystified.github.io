@@ -3,7 +3,7 @@ const mockChallenges = [
         id: "vector_addition",
         title: "Vector Addition",
         short_description: "Add two vectors element-wise on the GPU.",
-        tags: ["CUDA", "Beginner"],
+        tags: ["CUDA", "Beginner", "chapter1"],
         points: 10,
         code: "#include <cuda_runtime.h> \n\n__global__ void vectorAdd(float *A, float *B, float *C, int N) {\n    int i = blockIdx.x * blockDim.x + threadIdx.x;\n    if (i < N) C[i] = A[i] + B[i];\n}"
     },
@@ -11,7 +11,7 @@ const mockChallenges = [
         id: "matrix_multiplication",
         title: "Matrix Multiplication",
         short_description: "Multiply two matrices using shared memory optimization.",
-        tags: ["CUDA", "Intermediate"],
+        tags: ["CUDA", "Intermediate", "chapter2"],
         points: 20,
         code: "__global__ void matMul(float *A, float *B, float *C, int N) {\n    int row = blockIdx.y * blockDim.y + threadIdx.y;\n    int col = blockIdx.x * blockDim.x + threadIdx.x;\n    if (row < N && col < N) {\n        float sum = 0;\n        for (int k = 0; k < N; ++k)\n            sum += A[row * N + k] * B[k * N + col];\n        C[row * N + col] = sum;\n    }\n}"
     },
@@ -19,7 +19,7 @@ const mockChallenges = [
         id: "image_convolution",
         title: "Image Convolution",
         short_description: "Implement a 2D image convolution kernel.",
-        tags: ["CUDA", "Advanced", "Image Processing"],
+        tags: ["CUDA", "Advanced", "Image Processing", "chapter3"],
         points: 30,
         code: "__global__ void conv2d(float *input, float *kernel, float *output, int width, int height, int ksize) {\n    int x = blockIdx.x * blockDim.x + threadIdx.x;\n    int y = blockIdx.y * blockDim.y + threadIdx.y;\n    if (x >= width || y >= height) return;\n    float sum = 0;\n    for (int ky = 0; ky < ksize; ky++) {\n        for (int kx = 0; kx < ksize; kx++) {\n            int ix = x + kx - ksize / 2;\n            int iy = y + ky - ksize / 2;\n            if (ix >= 0 && iy >= 0 && ix < width && iy < height)\n                sum += input[iy * width + ix] * kernel[ky * ksize + kx];\n        }\n    }\n    output[y * width + x] = sum;\n}"
     }
@@ -27,6 +27,7 @@ const mockChallenges = [
 
 let cachedChallenges = null;
 let completedChallenges = new Set();
+let currentFilter = null;
 
 async function getChallenges() {
     if (cachedChallenges) {
@@ -50,11 +51,27 @@ async function getChallenges() {
     }
 }
 
+// Parse URL parameters to get filter
+function getFilterFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('filter');
+}
+
+// Filter challenges by filter tag
+function filterChallengesByTag(challenges, filterTag) {
+    if (!filterTag) return challenges;
+    
+    return challenges.filter(challenge => 
+        challenge.filters && challenge.filters.some(f => 
+            f.toLowerCase() === filterTag.toLowerCase()
+        )
+    );
+}
+
 function sortChallenges(challenges, sortBy) {
     console.log(`Sorting challenges by: ${sortBy}`);
     if (sortBy === 'default') {
         return [...challenges].sort((a, b) => {
-            // Handle numeric IDs
             return (a.id || 0) - (b.id || 0);
         });
     }
@@ -71,25 +88,49 @@ function sortChallenges(challenges, sortBy) {
                 const bDifficulty = (b.tags || []).find(tag => difficultyOrder[tag]) || 'Beginner';
                 return difficultyOrder[aDifficulty] - difficultyOrder[bDifficulty];
             default:
-                // Use numeric comparison for IDs
                 return (a.id || 0) - (b.id || 0);
         }
     });
 }
 
-async function renderChallenges() {
+async function renderChallenges(filterTag = null) {
+    console.log('Rendering challenges with filter:', filterTag);
     const grid = document.getElementById('challenges-grid');
     const sortSelect = document.getElementById('sortSelect');
     
+    // If challenges tab is not visible, don't render
+    if (!grid) return;
+    
     try {
+        // Use provided filter or get from URL
+        currentFilter = filterTag || getFilterFromURL();
+        
         // Load both challenges and completion status in parallel
-        const [challenges, completedStatus] = await Promise.all([
+        const [allChallenges, completedStatus] = await Promise.all([
             getChallenges(),
-            loadCompletedChallengesData()  // New function to get just the data
+            loadCompletedChallengesData()
         ]);
 
-        const sortedChallenges = sortChallenges(challenges, sortSelect.value);
+        // Filter challenges if a tag is specified
+        let challenges = filterChallengesByTag(allChallenges, currentFilter);
+
+        // Sort challenges
+        const sortedChallenges = sortChallenges(challenges, sortSelect ? sortSelect.value : 'default');
         
+        // Show message if no challenges found
+        if (sortedChallenges.length === 0) {
+            grid.innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: #666;">
+                    <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                    <p style="font-size: 1.2rem;">No challenges found${currentFilter ? ` for "${currentFilter}"` : ''}</p>
+                    <button onclick="clearFilterAndShowAll()" style="color: #3b82f6; text-decoration: none; font-weight: 600; background: none; border: none; cursor: pointer; font-size: 1rem;">
+                        View all challenges
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
         grid.innerHTML = sortedChallenges.map(challenge => {
             const isCompleted = completedChallenges.has(`challenge_${challenge.id}`);
             return `
@@ -119,7 +160,6 @@ async function renderChallenges() {
     }
 }
 
-// New function to fetch completed challenges data
 async function loadCompletedChallengesData() {
     try {
         const { data: { session } } = await window.supabaseClient.auth.getSession();
@@ -145,6 +185,20 @@ async function loadCompletedChallengesData() {
     }
 }
 
+function clearFilterAndShowAll() {
+    console.log('Clearing filter and showing all challenges');
+    
+    // Clear URL parameter
+    const url = new URL(window.location);
+    url.searchParams.delete('filter');
+    const newURL = url.pathname + url.search + url.hash;
+    window.history.replaceState({}, '', newURL);
+    
+    // Reset filter and re-render
+    currentFilter = null;
+    renderChallenges(null);
+}
+
 async function getChallengeById(challengeId) {
     try {
         const { data, error } = await window.supabaseClient
@@ -161,42 +215,59 @@ async function getChallengeById(challengeId) {
     }
 }
 
+// Reset challenges filter
+function resetChallengesFilter() {
+    console.log('Resetting challenges filter');
+    currentFilter = null;
+}
+
 // Make functions available globally
 window.getChallengeById = getChallengeById;
 window.renderChallenges = renderChallenges;
+window.resetChallengesFilter = resetChallengesFilter;
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
-    renderChallenges();
+    // Check if we're on a page with challenges
+    const challengesGrid = document.getElementById('challenges-grid');
+    if (challengesGrid) {
+        renderChallenges();
+    }
 
     const sortSelect = document.getElementById('sortSelect');
     if (sortSelect) {
         sortSelect.addEventListener('change', () => {
-            renderChallenges();
+            renderChallenges(currentFilter);
         });
     }
 
-   // Update leaderboard button state (utility handles everything)
+   // Update leaderboard button state
     if (typeof window.updateLeaderboardButton === 'function') {
         await window.updateLeaderboardButton();
     }
 
-    document.querySelector('.leaderboard-modal-close').onclick = function() {
-        document.getElementById('leaderboardModal').classList.remove('active');
-        document.body.style.overflow = '';
-    };
+    const leaderboardClose = document.querySelector('.leaderboard-modal-close');
+    const leaderboardOverlay = document.querySelector('.leaderboard-modal-overlay');
+    
+    if (leaderboardClose) {
+        leaderboardClose.onclick = function() {
+            document.getElementById('leaderboardModal').classList.remove('active');
+            document.body.style.overflow = '';
+        };
+    }
 
-    document.querySelector('.leaderboard-modal-overlay').onclick = function() {
-        document.getElementById('leaderboardModal').classList.remove('active');
-        document.body.style.overflow = '';
-    };
+    if (leaderboardOverlay) {
+        leaderboardOverlay.onclick = function() {
+            document.getElementById('leaderboardModal').classList.remove('active');
+            document.body.style.overflow = '';
+        };
+    }
 
-    // NEW: Check if URL contains a challenge hash (e.g., #challenge_vector_addition)
+    // Check if URL contains a challenge hash
     const hash = window.location.hash;
     if (hash && hash.startsWith('#challenge_')) {
-        const challengeId = hash.substring('#challenge_'.length); // Extract ID after #challenge_
+        const challengeId = hash.substring('#challenge_'.length);
         console.log('Opening challenge from URL:', challengeId);
-        // Wait a bit for the page to fully load
         setTimeout(() => {
             if (typeof window.openChallenge === 'function') {
                 window.openChallenge(challengeId);

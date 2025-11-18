@@ -14,8 +14,23 @@ document.addEventListener('DOMContentLoaded', function() {
             tab.classList.add('active');
             document.getElementById(`${targetTab}-section`).classList.add('active');
 
-            // Update URL without reload (optional)
-            history.pushState(null, '', `#${targetTab}`);
+            // Clear filter parameter from URL whenever any tab is clicked
+            const url = new URL(window.location);
+            url.searchParams.delete('filter');
+            
+            // Update URL without reload
+            const newURL = url.pathname + url.search + `#${targetTab}`;
+            history.pushState(null, '', newURL);
+
+            // Reset challenges filter
+            if (typeof window.resetChallengesFilter === 'function') {
+                window.resetChallengesFilter();
+            }
+            console.log(targetTab + ' tab clicked, URL updated to remove filter.');
+            // Re-render challenges when challenges tab is clicked
+            if (targetTab === 'challenges' && typeof window.renderChallenges === 'function') {
+                window.renderChallenges(null);
+            }
 
             // Track tab change
             gtag('event', 'tab_switch', {
