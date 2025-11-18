@@ -81,29 +81,6 @@ body {
     line-height: 1.4;
 }
 
-.social-logos {
-    display: flex;
-    gap: 0.75rem;
-    margin-top: 0.25rem;
-}
-
-.social_logo {
-  height: 26px;
-  width: 26px;
-  display: block;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-}
-
-.social_logo {
-    width: 24px;
-    height: 24px;
-    transition: opacity 0.2s;
-}
-
-.social_logo:hover {
-    opacity: 0.7;
-}
-
 .header-right {
     display: flex;
     align-items: flex-start;  /* Align to top */
@@ -118,28 +95,6 @@ body {
   justify-content: center;  /* center nav links */
   gap: 2rem;
   border-bottom: 2px solid transparent; /* spacing */
-}
-
-.social-logos-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 0.0em;
-  width: 100%;
-  font-family: 'DM Sans', sans-serif;
-}
-
-.social-logos {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.social_logo {
-  height: 26px;
-  width: 26px;
-  display: block;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
 
 .main-nav li {
@@ -961,15 +916,6 @@ body {
     max-width: 100%;  /* prevent overflow */
   }
 
-  .social-logos-row {
-    flex-direction: column;  /* stack logos & button */
-    align-items: center;
-  }
-
-  .social-logos {
-    gap: 16px; /* tighter spacing on small screens */
-  }
-
   .subscribe-btn {
     width: 100%;      /* full-width button */
     max-width: 300px; /* but not too wide */
@@ -1013,26 +959,10 @@ body {
     max-width: 100%;  /* prevent overflow */
   }
 
-  .social-logos-row {
-    flex-direction: column;  /* stack logos & button */
-    align-items: center;
-  }
-
-  .social-logos {
-    gap: 16px; /* tighter spacing on small screens */
-  }
-
   .subscribe-btn {
     width: 100%;      /* full-width button */
     max-width: 300px; /* but not too wide */
   }
-
-  .social_logo {
-  height: 24px;
-  width: 24px;
-}
-
-  
 }
 
 /* User stats widget */
@@ -2390,5 +2320,89 @@ body {
 @media (max-width: 768px) {
     .banner-divider {
         display: none; /* Hide divider on mobile, line break naturally */
+    }
+}
+
+/* Enhanced Social Media Icons */
+.social-logos a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.social-logos a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.social-logos a i {
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+/* Individual brand colors on hover */
+.social-logos a:hover i.fa-linkedin {
+    color: #0077B5;
+}
+
+.social-logos a:hover i.fa-instagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.social-logos a:hover i.fa-envelope {
+    color: #EA4335;
+}
+
+.social-logos a.discord-icon:hover i.fa-discord {
+    color: #5865F2;
+}
+
+/* Banner Discord link styling */
+.discord-link {
+    color: white;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    transition: all 0.2s ease;
+}
+
+.discord-link:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+.discord-link i {
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .social-logos a {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .social-logos a i {
+        font-size: 16px;
+    }
+    
+    .discord-link {
+        padding: 0.25rem 0.6rem;
+        gap: 0.3rem;
+    }
+    
+    .discord-link i {
+        font-size: 1rem;
     }
 }
