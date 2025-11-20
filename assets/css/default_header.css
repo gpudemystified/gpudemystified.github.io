@@ -2333,6 +2333,7 @@ body {
     border-radius: 8px;
     transition: all 0.3s ease;
     background: rgba(0, 0, 0, 0.05);
+    text-decoration: none;
 }
 
 .social-logos a:hover {
@@ -2342,27 +2343,40 @@ body {
 
 .social-logos a i {
     font-size: 18px;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
-/* Individual brand colors on hover */
-.social-logos a:hover i.fa-linkedin {
+/* Brand colors - always visible */
+.social-logos a i.fa-linkedin {
     color: #0077B5;
 }
 
-.social-logos a:hover i.fa-instagram {
+.social-logos a i.fa-instagram {
     background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-.social-logos a:hover i.fa-envelope {
+.social-logos a i.fa-envelope {
     color: #EA4335;
 }
 
-.social-logos a.discord-icon:hover i.fa-discord {
+.social-logos a.discord-icon i.fa-discord {
     color: #5865F2;
+}
+
+/* Slightly brighter on hover */
+.social-logos a:hover i.fa-linkedin {
+    color: #0096dc;
+}
+
+.social-logos a:hover i.fa-envelope {
+    color: #ff4435;
+}
+
+.social-logos a.discord-icon:hover i.fa-discord {
+    color: #6875ff;
 }
 
 /* Banner Discord link styling */
